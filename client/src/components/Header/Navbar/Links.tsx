@@ -1,4 +1,6 @@
-import { FaHome, FaEnvelope, FaSignInAlt, FaUser } from 'react-icons/fa'; 
+
+import { HomeIcon, ChatBubbleBottomCenterIcon, UsersIcon } from "@heroicons/react/24/outline";
+
 
 interface Link {
   id: number;
@@ -11,25 +13,19 @@ export const links: Link[] = [
   {
     id: 1,
     name: "Home",
-    url: "/",
-    icon: <FaHome />, 
+    url: "/home",
+    icon: <HomeIcon className="h-5 w-5" />, 
   },
   {
     id: 2,
     name: "Message",
     url: "/Message",
-    icon: <FaEnvelope />,
+    icon: <ChatBubbleBottomCenterIcon className="h-5 w-5" />,
   },
   {
     id: 3,
-    name: "Login",
-    url: "/Login",
-    icon: <FaSignInAlt />,
-  },
-  {
-    id: 4,
-    name: "Profile",
-    url: "/Profile",
-    icon: <FaUser />,
+    name: "Connect",
+    url: "/connect",
+    icon: <UsersIcon className="h-5 w-5" />,
   },
 ];
