@@ -8,7 +8,6 @@ import { profileApi } from "@/services/profileApi";
 
 // slices
 import userSlice from '../slices/userSlice'
-import { chatsApi } from "@/services/chatsApi";
 
 const store = configureStore({
     reducer: {
@@ -20,7 +19,6 @@ const store = configureStore({
         [authApi.reducerPath]: authApi.reducer,
         [recentlyApi.reducerPath]: recentlyApi.reducer,
         [profileApi.reducerPath]: profileApi.reducer,
-        [chatsApi.reducerPath]: chatsApi.reducer,
     },
 
     middleware: (getDefaultMiddleware)=> getDefaultMiddleware().concat(
@@ -28,7 +26,6 @@ const store = configureStore({
         authApi.middleware,
         recentlyApi.middleware,
         profileApi.middleware,
-        chatsApi.middleware,
     )
 })
 
