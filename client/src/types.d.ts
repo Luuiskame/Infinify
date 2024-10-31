@@ -64,3 +64,30 @@ export interface Userinfo {
   created_at: string
 
 }
+
+export interface Chat {
+  id: string
+  chat_type: 'direct' | 'group'
+  chat_name: string | null
+  created_at: string
+  updated_at: string
+  last_message_at: string
+}
+
+export interface ChatParticipant {
+  chat_id: string
+  user_id: string
+  joined_at: string
+  last_read_at: string
+  is_admin: boolean
+}
+
+export interface ChatMessage {
+  id: string
+  chat_id: string
+  sender_id: string
+  content: string
+  created_at: string
+  updated_at: string
+  is_edited: boolean
+} 
