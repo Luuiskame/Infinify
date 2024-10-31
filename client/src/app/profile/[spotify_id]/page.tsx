@@ -36,6 +36,7 @@ export default function Page({ params }: { params: Params }) {
         });
       } else {
         const users = await searchUsersById(spotify_id);
+        console.log("users", users)
         if (users.length > 0) {
           setUserData(users[0]);
         } else {
