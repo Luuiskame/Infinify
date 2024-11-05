@@ -1,7 +1,7 @@
 import { supabase } from '../../db.js'
 import { filteredFavoriteArtists } from '../algorithms/filteredFavoriteArtists.js';
 
-export const registerUserDb = async (userInfo, userTopSongs, userTopArtist) => {
+export const registerUserDb = async (userInfo, userTopSongs, userTopArtist, req) => {
   const favoriteUserGenres = []
   try {
     const {
@@ -73,6 +73,12 @@ export const registerUserDb = async (userInfo, userTopSongs, userTopArtist) => {
     // Insert top artist
     const userId = newUser[0].id;
 
+    // store userId in session
+
+    if(req && req.session){
+      req.session.userId = userId
+    }
+
     const topArtistData = userTopArtist.map(artist => ({
       user_id: userId,
       artist_name: artist.artist_name,
@@ -138,7 +144,7 @@ export const registerUserDb = async (userInfo, userTopSongs, userTopArtist) => {
 };
 
 
-export const verifyUserExist = async (spotify_id) => {
+export const verifyUserExist = async (spotify_id, req) => {
   const { data: existingUserWithDetails, error: selectError } = await supabase
     .from('user')
     .select(`*, user_top_artist (*), user_top_songs (*)`)
@@ -158,6 +164,12 @@ export const verifyUserExist = async (spotify_id) => {
 
     const user = existingUserWithDetails[0];
     const { user_top_artist, user_top_songs, ...userData } = user;
+
+    const userId = userData.id
+
+    if(req && req.session){
+      req.session.userId = userId
+    }
 
     return {
       success: true,

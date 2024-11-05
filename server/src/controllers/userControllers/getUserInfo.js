@@ -35,7 +35,7 @@ export const getUserInfo = async (req, res) => {
       refresh_token: refresh_token,
     };
 
-    const userExist = await verifyUserExist(userInfo.spotify_id);
+    const userExist = await verifyUserExist(userInfo.spotify_id, req);
 
     if (userExist.success === true) {
       res.status(200).json(userExist)
@@ -50,7 +50,7 @@ export const getUserInfo = async (req, res) => {
         "artists"
       );
 
-      const newUser = await registerUserDb( userInfo, userTopSongs, userTopArtist );
+      const newUser = await registerUserDb( userInfo, userTopSongs, userTopArtist, req );
 
       if(newUser.success === true){
         console.log(newUser)
