@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { useGetUserProfileInfoQuery } from '@/services/profileApi'
 import { setUser } from '@/slices/userSlice';
 import { useRouter } from 'next/navigation';
+import Loading from '../Loading/Loading';
 
 export default function VerifyInfo() {
   const { data, isLoading, error } = useGetUserProfileInfoQuery({}) 
@@ -41,7 +42,7 @@ export default function VerifyInfo() {
 
     return (
       <div className='bg-spotify-black'>
-        <h3>hey</h3>
+       <Loading />
       </div>
     )
   }
