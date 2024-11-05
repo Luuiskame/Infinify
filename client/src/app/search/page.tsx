@@ -6,6 +6,7 @@ import { searchUsers } from "@/supabase/searchUsers";
 import { Userinfo } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowRightIcon } from "@heroicons/react/24/solid";
 
 const PageContent = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -36,14 +37,16 @@ const PageContent = () => {
       const users = await searchUsers(searchTerm);
       setResults(users);
       setIsLoading(false);
-    }, 3000);
+    }, 2000);
 
     return () => clearTimeout(delayDebounceFn);
   }, [searchTerm, router]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    router.push(`/search?q=${searchTerm}`);
+    if (searchTerm) {
+      router.push(`/search?q=${searchTerm}`);
+    }
   };
 
   return (
@@ -58,12 +61,14 @@ const PageContent = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="rounded-full px-14 py-2 bg-spotify-light-gray border-2 border-[#63707F] text-white"
           />
-          <button
-            type="submit"
-            className={`absolute top-1/2 transform -translate-y-1/2 px-2 bg-spotify-green rounded-full text-black hover:bg-spotify-green-dark ${isLoading && "px-3 py-1 right-2"}`}
-          >
-            {isLoading && <Loading />}
-          </button>
+          {searchTerm && (
+            <button
+              type="submit"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 px-2 py-1 bg-spotify-green rounded-full text-black hover:bg-spotify-green-dark"
+            >
+              {isLoading ? <Loading /> : <ArrowRightIcon className="w-6 h-6 font-bold" />}
+            </button>
+          )}
         </form>
       </div>
 
