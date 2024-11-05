@@ -63,6 +63,17 @@ io.use(wrap(sessionMiddleware))
 
 io.use((socket, next)=> {
   const session = socket.request.session
+
+  if(session && session.userId){
+    socket.userId = session.userId
+    next()
+  } else {
+    next(new Error('Unathorized, no userId found in socket'))
+  }
+})
+
+io.on('connection', (socket)=> {
+  console.log(`user connected: ${socket.userId}`)
 })
 
 

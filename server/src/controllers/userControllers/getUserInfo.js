@@ -34,7 +34,8 @@ export const getUserInfo = async (req, res) => {
       profile_photo: response?.data.images?.[0]?.url || null,
       refresh_token: refresh_token,
     };
-
+      
+    //! we send the req to set the userId to our session
     const userExist = await verifyUserExist(userInfo.spotify_id, req);
 
     if (userExist.success === true) {
@@ -50,6 +51,7 @@ export const getUserInfo = async (req, res) => {
         "artists"
       );
 
+      //! we send the req to set the userId to our session
       const newUser = await registerUserDb( userInfo, userTopSongs, userTopArtist, req );
 
       if(newUser.success === true){
