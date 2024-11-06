@@ -13,6 +13,8 @@ import { getSongOfTheDay } from '../controllers/spotifyControllers/getSongOfTheD
 import { getUserInfo } from '../controllers/userControllers/getUserInfo.js';
 import { getNewUsertoken } from '../controllers/authControllers/getNewUserToken.js';
 
+import { createChats } from '../controllers/chatControllers/createChats.js';
+
 const clientId = process.env.SPOTIFY_CLIENT_ID;
 const redirectUri = process.env.SPOTIFY_REDIRECT_URI; 
 const scopes = 'user-read-private user-read-email user-top-read user-read-playback-state'; // Adjust scopes as needed
@@ -55,5 +57,8 @@ routes.get('/song-of-the-day', getSongOfTheDay)
 // users profile info
 routes.get('/get-profile', getUserInfo)
 routes.get('/get-user-refresh-token', getNewUsertoken)
+
+//chats
+routes.post('/chats', createChats)
 
 export default routes

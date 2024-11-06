@@ -22,7 +22,7 @@ const Header = () => {
     // Initialize Socket.IO connection
     if(userId){
       socket = io('http://localhost:3001/', {
-        withCredentials: true, // Ensure cookies are sent with the connection
+        withCredentials: true,
       });
   
       socket.on('connect', () => {
@@ -36,7 +36,7 @@ const Header = () => {
         }
       };
     }
-  }, []);
+  }, [userId]);
 
   return (
     <div className=" bg-spotify-dark-gray px-8 py-6 flex justify-between gap-4 ">
