@@ -74,6 +74,15 @@ io.use((socket, next)=> {
 
 io.on('connection', (socket)=> {
   console.log(`user connected: ${socket.userId}`)
+
+  socket.on('disconnected', ()=> {
+    console.log(`user disconnected: ${socket.userId}`)
+  })
+
+  socket.on('join_room', (chatId)=> {
+    socket.join(chatId)
+    console.log(`user ${socket.userId} joined to chat ${chatId}`)
+  })
 })
 
 

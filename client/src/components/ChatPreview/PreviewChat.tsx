@@ -1,6 +1,7 @@
 'use client'
 import Image from "next/image";
 import { useAppSelector } from "@/redux/hooks";
+import LastMessage from "./LastMessage";
 
 import Link from "next/link";
 
@@ -32,8 +33,7 @@ const PreviewChat = () => {
               <p className="text-xs text-gray-500">{chat.chatInfo.last_message_at}</p>
             </div>
           </div>
-          <p className="text-sm">hey ...</p>
-          {/* <p className="text-sm">{chat.message.substring(0, 100)}...</p> */}
+          <LastMessage chatId={chat.chatInfo.id}/>
         </Link>
       ))}
     </div>
