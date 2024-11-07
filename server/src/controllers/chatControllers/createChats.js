@@ -34,6 +34,22 @@ export const createChats = async (req, res) => {
       });
     }
 
+    // Check if all participants exist in the auth.users table
+    const { data: users, error: usersError } = await supabase
+      .from('user')
+      .select('id')
+      .in('id', participantsIds);
+
+    if (usersError) {
+      throw usersError;
+    }
+
+    if (users.length !== participantsIds.length) {
+      return res.status(400).json({
+        error: 'One or more participants do not exist in the system',
+      });
+    }
+
     // Start a transaction
     const { data: chat, error: chatError } = await supabase
       .from('chats')

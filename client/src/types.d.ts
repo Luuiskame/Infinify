@@ -65,6 +65,20 @@ export interface Userinfo {
 
 }
 
+export interface Chats {
+  chatInfo: Chat
+  chat_participants: ChatParticipant[]
+}
+
+export interface ChatParticipant {
+  chat_id: string;
+  display_name: string
+  is_admin: boolean;
+  joined_at: string;
+  profile_photo: string;
+  user_id: string
+}
+
 export interface Chat {
   id: string
   chat_type: 'direct' | 'group'

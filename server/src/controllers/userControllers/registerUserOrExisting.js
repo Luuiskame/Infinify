@@ -158,24 +158,94 @@ export const verifyUserExist = async (spotify_id, req) => {
     };
   }
 
-
   if (existingUserWithDetails && existingUserWithDetails.length > 0) {
     console.log('User found and data retrieved');
 
     const user = existingUserWithDetails[0];
     const { user_top_artist, user_top_songs, ...userData } = user;
+    const userId = userData.id;
 
-    const userId = userData.id
-
-    if(req && req.session){
-      req.session.userId = userId
+    // Set userId in the session
+    if (req && req.session) {
+      req.session.userId = userId;
     }
+
+    // First, get all chats the user is part of
+    const { data: userChats, error: chatsError } = await supabase
+      .from('chat_participants')
+      .select(`
+        chat_id,
+        user_id,
+        joined_at,
+        is_admin,
+        chats (
+          id,
+          chat_type,
+          chat_name,
+          last_message_at
+        )
+      `)
+      .eq('user_id', userId);
+
+    if (chatsError) {
+      console.error('Error fetching user chats:', chatsError);
+      return {
+        success: false,
+        message: 'Error fetching user chats',
+      };
+    }
+
+    // Get all participants for each chat with their user information
+    const formattedChats = await Promise.all(userChats.map(async (chat) => {
+      const { data: allParticipants, error: participantsError } = await supabase
+        .from('chat_participants')
+        .select(`
+          chat_id,
+          user_id,
+          joined_at,
+          is_admin,
+          user:user_id (
+            id,
+            display_name,
+            profile_photo
+          )
+        `)
+        .eq('chat_id', chat.chat_id);
+
+      if (participantsError) {
+        console.error('Error fetching chat participants:', participantsError);
+        return null;
+      }
+
+      const formattedParticipants = allParticipants.map(participant => ({
+        chat_id: participant.chat_id,
+        user_id: participant.user_id,
+        joined_at: participant.joined_at,
+        is_admin: participant.is_admin,
+        display_name: participant.user?.display_name,
+        profile_photo: participant.user?.profile_photo
+      }));
+
+      return {
+        chatInfo: {
+          id: chat.chats.id,
+          chat_type: chat.chats.chat_type,
+          chat_name: chat.chats.chat_name,
+          last_message_at: chat.chats.last_message_at
+        },
+        chat_participants: formattedParticipants
+      };
+    }));
+
+    // Filter out any null values from failed queries
+    const validChats = formattedChats.filter(chat => chat !== null);
 
     return {
       success: true,
       user: userData,
-      user_top_artist: user_top_artist, 
-      user_top_songs: user_top_songs 
+      user_top_artist: user_top_artist,
+      user_top_songs: user_top_songs,
+      user_chats: validChats
     };
   } else {
     console.log('User not found in the database, returning success: false');
