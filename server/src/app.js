@@ -9,6 +9,8 @@ import cookieParser from 'cookie-parser'
 import session from 'express-session'
 import cors from 'cors'
 
+import { sendMessage, validateChatParticipant } from './controllers/chatControllers/senMessage.js'
+
 dotenv.config()
 
 // Crear la aplicación de Express
@@ -82,6 +84,49 @@ io.on('connection', (socket)=> {
   socket.on('join_room', (chatId)=> {
     socket.join(chatId)
     console.log(`user ${socket.userId} joined to chat ${chatId}`)
+  })
+
+  socket.on('send_message', async (messageInfo)=> {
+    try {
+      console.log(messageInfo)
+      // Validate the message data
+      const { chatId, content } = messageInfo
+      if (!chatId || !content) {
+        throw new Error('Missing required message information')
+      }
+
+      // Validate that the sender is a participant in the chat
+      const isParticipant = await validateChatParticipant(chatId, socket.userId)
+      if (!isParticipant) {
+        throw new Error('User is not a participant in this chat')
+      }
+
+      // Send the message using our controller
+      const messageData = await sendMessage({
+        chatId,
+        senderId: socket.userId,
+        content
+      })
+
+      // Emit the message to all participants in the chat room
+      io.to(chatId).emit('receive_message', messageData.message)
+
+      // Send notifications to other participants
+      messageData.recipients.forEach(recipientId => {
+        io.to(recipientId).emit('receive_notification', {
+          chatId,
+          messageId: messageData.message.id,
+          senderId: socket.userId
+        })
+      })
+
+    } catch (error) {
+      console.error('Error sending message:', error)
+      // Emit error back to sender only
+      socket.emit('message_error', {
+        error: error.message
+      })
+    }
   })
 })
 

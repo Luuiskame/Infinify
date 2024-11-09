@@ -1,166 +1,137 @@
-import { Userinfo } from "@/types";
-import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useState, useRef } from "react";
+import { useAppSelector } from "@/redux/hooks";
+import { useParams } from "next/navigation";
 
-interface ChatProps {
-  user: Userinfo;
-}
+import { socket } from "@/socket-io/socket";
 
-interface ChatMessage {
-  userId: string;
-  user: string;
-  time: string;
-  avatar: string;
-  message: string;
-}
-
-// Function that creates the initial chat messages
-const createChatBase = (user: Userinfo): ChatMessage[] => {
-  if (!user) {
-    return [
-      {
-        userId: "system",
-        user: "System",
-        time: "10:00",
-        avatar: "default-avatar-url",
-        message: "Welcome to your music app chat! Start a conversation by sending a message.",
-      },
-    ];
-  }
-
-  return [
+const Chat = () => {
+  const userProps = useAppSelector(state=> state.userReducer.user?.user)
+  const chatId = useParams()
+  console.log('chatid:', chatId.idChat)
+  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState([
     {
-      userId: "john_doe",
+      userId: "1",
       user: "John Doe",
+      content: "Hello, how are you?",
       time: "10:00",
       avatar:
         "https://i.scdn.co/image/ab6775700000ee85604fbf7c4e971678ceefd34e",
-      message: "Hola, ¿cómo estás?",
     },
     {
-      userId: user.spotify_id,
-      user: user.display_name || "Usuario Desconocido",
+      userId: userProps?.id,
+      user: "You",
+      content: "I'm doing great, thanks!",
       time: "10:05",
-      avatar: user.profile_photo || "default-avatar-url",
-      message: "¡Todo bien, gracias!",
+      avatar:
+        "https://i.scdn.co/image/ab6775700000ee85604fbf7c4e971678ceefd34e",
     },
-  ];
-};
+  ]);
 
-const Chat: React.FC<ChatProps> = ({ user }) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const [chat, setChat] = useState<ChatMessage[]>(createChatBase(user)); // Initialize the chat using the function
-  const [message, setMessage] = useState<string>("");
+  const messagesEndRef = useRef(null);
 
-  useEffect(() => {
-    if (ref.current) {
-      ref.current.scrollTop = ref.current.scrollHeight;
-    }
-  }, [chat]);
-
-  const handleMessageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMessage(e.target.value);
-  };
-
-  const handleSend = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSend = (e) => {
     e.preventDefault();
-    if (message.trim() === "") return;
+    if (message.trim()) {
+      const newMessage = {
+        userId: userProps?.id,
+        user: "You",
+        content: message,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        avatar:
+          "https://i.scdn.co/image/ab6775700000ee85604fbf7c4e971678ceefd34e",
+      };
+      setMessages([...messages, newMessage]);
+      setMessage("");
+    }
 
-    const date = new Date();
-    const [hour, minute] = date.toTimeString().split(":");
+    const messageInfo = {
+      chatId: chatId.idChat,
+      senderId: userProps?.id,
+      content: message
+    } 
 
-    const newMessage: ChatMessage = {
-      userId: user?.spotify_id,
-      user: user?.display_name || "Usuario Desconocido",
-      time: `${hour}:${minute}`,
-      avatar: user?.profile_photo || "default-avatar-url",
-      message: message.trim(),
-    };
-
-    setChat([...chat, newMessage]);
-    setMessage("");
+    if (socket.connected) {
+      socket.emit('send_message', messageInfo);
+    } else {
+      console.error("Socket is not connected");
+    }
   };
 
   return (
-    <div className="bg-spotify-light-gray mt-4 mb-4 rounded-lg w-full px-6 py-4 h-full flex flex-col min-h-screen">
-      <div
-        ref={ref}
-        className="flex-grow overflow-y-auto border-b-2 border-gray-700 px-6"
-      >
-        {chat.length === 0 ? (
-          <div className="flex justify-center items-center h-full">
-            <p className="text-spotify-gray text-lg">
-              Welcome to your music app chat! Start a conversation by sending a message.
-            </p>
-          </div>
-        ) : (
-          chat.map((chatMessage, idx) => (
-            <div key={idx} className="flex">
-              <div
-                className={`flex flex-col gap-2 p-4 max-w-[70%] mb-4 rounded-b-lg relative ${
-                  chatMessage.userId === user?.spotify_id
-                    ? "rounded-tl-lg mr-4 bg-spotify-green ml-auto"
-                    : "rounded-tr-lg ml-4 bg-spotify-black mr-auto"
-                }`}
-              >
-                <div
-                  className={`flex gap-2 items-center ${
-                    chatMessage.userId === user?.spotify_id
-                      ? "justify-end text-spotify-black"
-                      : ""
-                  }`}
-                >
-                  <Image
-                    src={chatMessage.avatar}
-                    width={32}
-                    height={32}
-                    className="rounded-full w-8 h-8"
-                    alt={chatMessage.user}
-                  />
-                  <div>
-                    <p
-                      className={`text-sm font-semibold ${
-                        chatMessage.userId === user?.spotify_id
-                          ? "justify-end text-spotify-black"
-                          : "text-spotify-gray"
-                      }`}
-                    >
-                      {chatMessage.user}
-                    </p>
-                    <p className="text-xs text-gray-500">{chatMessage.time}</p>
-                  </div>
-                </div>
-                <p
-                  className={`text-sm flex gap-2 items-center ${
-                    chatMessage.userId === user?.spotify_id
-                      ? "justify-end text-spotify-light-gray"
-                      : ""
-                  }`}
-                >
-                  {chatMessage.message}
-                </p>
-              </div>
-            </div>
-          ))
-        )}
-      </div>
-      <div className="pb-6 mx-6">
-        <form className="flex justify-center mt-4 gap-4" onSubmit={handleSend}>
-          <input
-            type="text"
-            className="w-full p-2 rounded-lg"
-            placeholder="Escribe tu mensaje..."
-            value={message}
-            onChange={handleMessageChange}
+    <div className="w-full max-w-[1060px] h-screen max-h-[800px] flex flex-col justify-between mx-auto bg-spotify-light-gray text-spotify-white">
+      {/* Header */}
+      <div className="flex items-center p-4 bg-spotify-light-gray text-spotify-white border-t border-b border-spotify-green">
+        <button className="p-2 text-spotify-green rounded hover:bg-spotify-black">
+          🔙
+        </button>
+        <div className="flex items-center gap-2 ml-4 cursor-pointer hover:bg-spotify-black p-2 rounded">
+          <img
+            src="https://i.scdn.co/image/ab6775700000ee85604fbf7c4e971678ceefd34e"
+            alt="User"
+            className="w-12 h-12 rounded-full"
           />
-          <button
-            type="submit"
-            className="bg-emerald-900 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors duration-300"
-          >
-            Enviar
-          </button>
-        </form>
+          <span className="text-lg font-semibold">John Doe</span>
+          <span className="text-green-500 ml-2">🟢</span>
+        </div>
+        <div className="ml-auto flex items-center gap-4">
+          <button className="text-spotify-green hover:scale-110">📞</button>
+          <button className="text-spotify-green hover:scale-110">📹</button>
+        </div>
       </div>
+
+      {/* Chat Messages */}
+      <div className="flex-grow overflow-y-scroll p-4 chatMiddlePartContainer">
+        {messages.map((msg, idx) => (
+          <div
+            key={idx}
+            className={`flex items-start gap-3 mb-4 ${
+              msg.userId === userProps?.id ? "justify-end" : ""
+            }`}
+          >
+            {msg.userId !== userProps?.id && (
+              <img
+                src={msg.avatar}
+                alt={msg.user}
+                className="w-10 h-10 rounded-full"
+              />
+            )}
+            <div
+              className={`flex flex-col max-w-[70%] p-3 rounded-lg ${
+                msg.userId === userProps?.id
+                  ? "bg-spotify-green text-spotify-black ml-auto"
+                  : "bg-spotify-black text-spotify-white"
+              }`}
+            >
+              <span className="font-semibold">{msg.user}</span>
+              <p>{msg.content}</p>
+              <span className="text-xs text-gray-400 mt-1">{msg.time}</span>
+            </div>
+          </div>
+        ))}
+        <div ref={messagesEndRef} />
+      </div>
+
+      {/* Message Input */}
+      <form
+        onSubmit={handleSend}
+        className="flex items-center p-4 bg-spotify-dark-gray rounded-lg m-4"
+      >
+        <button className="text-spotify-green hover:scale-110 mr-2">➕</button>
+        <input
+          type="text"
+          placeholder="Send a message..."
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          className="flex-grow p-2 rounded-lg bg-spotify-light-gray text-spotify-white outline-none placeholder-gray-400"
+        />
+        <button
+          type="submit"
+          className="ml-2 bg-spotify-green text-spotify-black px-4 py-2 rounded-lg hover:bg-spotify-black hover:text-spotify-green transition-transform"
+        >
+          Send
+        </button>
+      </form>
     </div>
   );
 };
