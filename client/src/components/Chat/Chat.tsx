@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useAppSelector } from "@/redux/hooks";
 import { useParams } from "next/navigation";
 
@@ -57,6 +57,20 @@ const Chat = () => {
       console.error("Socket is not connected");
     }
   };
+
+  useEffect(()=> {
+    if(!socket.connected){
+      socket.connect()
+    }
+
+    // Cleanup on component unmount
+    return () => {
+      if (socket) {
+        socket.disconnect();
+      }
+    };
+
+  },[])
 
   return (
     <div className="w-full max-w-[1060px] h-screen max-h-[800px] flex flex-col justify-between mx-auto bg-spotify-light-gray text-spotify-white">

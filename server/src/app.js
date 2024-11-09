@@ -108,6 +108,8 @@ io.on('connection', (socket)=> {
         content
       })
 
+      console.log(messageData)
+
       // Emit the message to all participants in the chat room
       io.to(chatId).emit('receive_message', messageData.message)
 
