@@ -111,11 +111,11 @@ io.on('connection', (socket)=> {
       console.log(messageData)
 
       // Emit the message to all participants in the chat room
-      io.to(chatId).emit('receive_message', messageData.message)
+      io.to(chatId).emit('receive_message', messageData)
 
       // Send notifications to other participants
       messageData.recipients.forEach(recipientId => {
-        io.to(recipientId).emit('receive_notification', {
+        io.to(chatId).emit('receive_notification', {
           chatId,
           messageId: messageData.message.id,
           senderId: socket.userId

@@ -68,6 +68,7 @@ export interface Userinfo {
 export interface Chats {
   chatInfo: Chat
   chat_participants: ChatParticipant[]
+  chat_messages: ChatMessage[] | []
 }
 
 export interface ChatParticipant {
@@ -104,4 +105,5 @@ export interface ChatMessage {
   created_at: string
   updated_at: string
   is_edited: boolean
+  read: boolean
 } 

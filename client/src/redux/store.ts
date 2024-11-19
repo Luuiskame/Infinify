@@ -4,15 +4,17 @@ import { configureStore } from "@reduxjs/toolkit";
 import { spotifyApi } from "@/services/spotifyApi";
 import { authApi } from "@/services/authApi";
 import { profileApi } from "@/services/profileApi";
+import { chatsApi } from "@/services/chatsApi";
 
 // slices
 import userSlice from '../slices/userSlice'
-import { chatsApi } from "@/services/chatsApi";
+import chatSlice from '../slices/chatSlice'
 
 const store = configureStore({
     reducer: {
         // here we'll use the ones who manage global state
         userReducer: userSlice,
+        chatsReducer: chatSlice,
 
         //hooks
         [spotifyApi.reducerPath]: spotifyApi.reducer,

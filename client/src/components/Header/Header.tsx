@@ -18,28 +18,34 @@ const Header = () => {
   const chats = useAppSelector(state=> state.userReducer.user?.user_chats)
 
   useEffect(() => {
-    console.log('socket mounted')
-    console.log(userId)
-    // Initialize Socket.IO connection
-    if(userId){
+    console.log("Mounting socket in Header component");
 
-      //! auto connect is false on socket, so we connect it when mounting the component
+    if (userId) {
+      // Connect the socket if not already connected
       if (!socket.connected) {
         socket.connect();
       }
 
-      socket.on('connect', () => {
-        console.log('Socket connected:', socket.id);
+      socket.on("connect", () => {
+        console.log("Socket connected:", socket.id);
+
+        // Join all rooms for this user’s chats
+        chats?.forEach(chat => {
+          socket.emit("join_room", chat.chatInfo.id);
+          console.log(`Joining room: ${chat.chatInfo.id}`);
+        });
+
+        // Set up notification listener after connecting
+        socket.on("receive_notification", data => {
+          console.log("Notification received:", data);
+        });
       });
 
-      chats?.forEach(chat => {
-        socket.emit('join_room', chat.chatInfo.id);
-        console.log(`Joining room: ${chat.chatInfo.id}`);
-      });
-      
       // Cleanup on component unmount
       return () => {
         if (socket) {
+          console.log("Disconnecting socket and removing listeners");
+          socket.off("receive_notification");
           socket.disconnect();
         }
       };
