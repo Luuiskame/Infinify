@@ -7,7 +7,7 @@ import Link from "next/link";
 
 const PreviewChat = () => {
   
-  const chats = useAppSelector(state=> state.userReducer.user?.user_chats)
+  const chats = useAppSelector(state=> state.chatsReducer.user_chats)
 
   return (
     <div className="flex flex-col gap-4 w-[90%] mx-auto md:mx-0 md:p-3 max-w-[700px]">
