@@ -4,6 +4,7 @@ import { getAppToken } from '../authControllers/getAppToken.js';
 const baseUrl = process.env.SPOTIFY_BASE_URL;
 
 export const topGlobalSongs = async (req, res) => {
+  console.log('activated')
   try {
     const appToken = await getAppToken();
 
@@ -14,6 +15,7 @@ export const topGlobalSongs = async (req, res) => {
     });
 
     const playlistId = searchResponse.data.playlists.items[0]?.id;
+    console.log(playlistId)
 
     if (!playlistId) {
       return res.status(404).json({ error: 'Top Global playlist not found' });

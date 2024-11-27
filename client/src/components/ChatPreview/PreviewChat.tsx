@@ -41,7 +41,7 @@ const PreviewChat = () => {
               <p className="text-xs text-gray-500">{chat.chatInfo.last_message_at}</p>
             </div>
           </div>
-          <LastMessage chatId={chat.chatInfo.id} lastMessage={chat.chat_messages[-1]}/>
+          <LastMessage chatId={chat.chatInfo.id} lastMessage={chat.chat_messages[0]}/>
         </Link>
         ) : 'chat group not avalaible yet: working on the feature'
       ))}
