@@ -69,7 +69,7 @@ export interface Userinfo {
 export interface Chats {
   chatInfo: Chat
   chat_participants: ChatParticipant[]
-  chat_messages: ChatMessage[] | []
+  chat_messages: ChatMessage[] 
 }
 
 export interface ChatParticipant {

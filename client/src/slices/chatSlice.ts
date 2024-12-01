@@ -1,4 +1,4 @@
-import {Chats} from '@/types'
+import {Chats, ChatMessage} from '@/types'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 
@@ -24,7 +24,18 @@ const chatSlice = createSlice({
             if(userChatDataString){
                 state.user_chats = JSON.parse(userChatDataString)
             }
-        }
+        },
+        setNewMessage: (state,action: PayloadAction<ChatMessage>)=> {
+            const newMessage = action.payload
+
+            if(state.user_chats){
+                const chatIndex = state.user_chats.findIndex(chat=> chat.chatInfo.id === newMessage.chat_id)
+
+                if(chatIndex !== -1){
+                    state.user_chats[chatIndex].chat_messages.push(newMessage)
+                }
+            }
+        },
     }
 })
 
