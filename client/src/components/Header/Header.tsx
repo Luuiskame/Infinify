@@ -3,7 +3,8 @@ import React from "react";
 import Navbar from "./Navbar/Navbar";
 import Link from "next/link";
 import { FiSearch } from "react-icons/fi";
-
+import { setNewMessage } from "@/slices/chatSlice";
+import { useAppDispatch } from "@/redux/hooks";
 // import { DefaultEventsMap } from "@socket.io/component-emitter";
 
 
@@ -14,6 +15,7 @@ import { useAppSelector } from "@/redux/hooks";
 
 
 const Header = () => {
+  const dispatch = useAppDispatch()
   const userId = useAppSelector(state=> state.userReducer.user?.user.id)
   const chats = useAppSelector(state=> state.userReducer.user?.user_chats)
 
@@ -36,8 +38,10 @@ const Header = () => {
         });
 
         // Set up notification listener after connecting
-        socket.on("receive_notification", data => {
-          console.log("Notification received:", data);
+        socket.on("receive_message", data => {
+          console.log("Message received:", data);
+          dispatch(setNewMessage(data.message))
+
         });
       });
 
@@ -45,12 +49,12 @@ const Header = () => {
       return () => {
         if (socket) {
           console.log("Disconnecting socket and removing listeners");
-          socket.off("receive_notification");
+          socket.off("receive_message");
           socket.disconnect();
         }
       };
     }
-  }, [userId, chats]);
+  }, [userId, chats, dispatch]);
 
   return (
     <div className=" bg-spotify-dark-gray px-8 py-6 flex justify-between gap-4 ">

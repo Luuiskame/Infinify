@@ -88,6 +88,7 @@ export interface Chat {
   created_at: string
   updated_at: string
   last_message_at: string
+  unread_messages: number
 }
 
 export interface ChatParticipant {

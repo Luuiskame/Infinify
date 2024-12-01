@@ -11,6 +11,8 @@ const PreviewChat = () => {
   const dispatch = useAppDispatch();
   const chats = useAppSelector(state => state.chatsReducer.user_chats) 
   const userId = useAppSelector(state => state.userReducer.user?.user.id) 
+
+  console.log('user chats with messages', chats)
  
   useEffect(() => {
     dispatch(getChats());

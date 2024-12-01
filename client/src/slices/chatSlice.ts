@@ -27,6 +27,7 @@ const chatSlice = createSlice({
         },
         setNewMessage: (state,action: PayloadAction<ChatMessage>)=> {
             const newMessage = action.payload
+            console.log('messsage at redux', newMessage)
 
             if(state.user_chats){
                 const chatIndex = state.user_chats.findIndex(chat=> chat.chatInfo.id === newMessage.chat_id)
@@ -39,5 +40,5 @@ const chatSlice = createSlice({
     }
 })
 
-export const {setChat, getChats} = chatSlice.actions
+export const {setChat, getChats, setNewMessage} = chatSlice.actions
 export default chatSlice.reducer

@@ -24,7 +24,8 @@ export default function VerifyInfo() {
       dispatch(setUser(data));
       const newChats = data.user_chats.map((chat: Chats)=> ({
         ...chat,
-        chat_messages: []
+        chat_messages: [],
+        unread_messages: 0
       }))
       dispatch(setChat(newChats))
      router.push(`/profile/${data?.user?.spotify_id}`);
