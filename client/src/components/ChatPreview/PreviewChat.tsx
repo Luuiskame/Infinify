@@ -1,22 +1,16 @@
 'use client'
 import Image from "next/image";
-import { useEffect } from "react";
-import { useAppSelector, useAppDispatch } from "@/redux/hooks";
+import { useAppSelector } from "@/redux/hooks";
 import LastMessage from "./LastMessage";
-import { getChats } from "@/slices/chatSlice";
  
 import Link from "next/link"; 
  
 const PreviewChat = () => { 
-  const dispatch = useAppDispatch();
   const chats = useAppSelector(state => state.chatsReducer.user_chats) 
   const userId = useAppSelector(state => state.userReducer.user?.user.id) 
 
   console.log('user chats with messages', chats)
  
-  useEffect(() => {
-    dispatch(getChats());
-  }, [dispatch]);
 
   return (
     <div className="flex flex-col gap-4 w-[90%] mx-auto md:mx-0 md:p-3 max-w-[700px]">
