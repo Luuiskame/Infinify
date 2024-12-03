@@ -5,7 +5,14 @@ import Link from "next/link";
 import { FiSearch } from "react-icons/fi";
 import { setNewMessage } from "@/slices/chatSlice";
 import { useAppDispatch } from "@/redux/hooks";
+import { ChatMessage, Chat } from "@/types";
 // import { DefaultEventsMap } from "@socket.io/component-emitter";
+
+export interface receivedMessage {
+  Chat: Chat
+  message: ChatMessage
+  recipients: string[]
+}  
 
 
 import { useEffect } from "react";
@@ -21,37 +28,41 @@ const Header = () => {
 
   useEffect(() => {
     console.log("Mounting socket in Header component");
-
+  
     if (userId) {
-      // Connect the socket if not already connected
-      if (!socket.connected) {
-        socket.connect();
+      // Disconnect any existing connection first
+      if (socket.connected) {
+        socket.disconnect();
       }
-
-      socket.on("connect", () => {
+  
+      // Connect the socket
+      socket.connect();
+  
+      const onConnect = () => {
         console.log("Socket connected:", socket.id);
-
-        // Join all rooms for this user’s chats
+  
+        // Join all rooms for this user's chats
         chats?.forEach(chat => {
           socket.emit("join_room", chat.chatInfo.id);
           console.log(`Joining room: ${chat.chatInfo.id}`);
         });
-
-        // Set up notification listener after connecting
-        socket.on("receive_message", data => {
-          console.log("Message received:", data);
-          dispatch(setNewMessage(data.message))
-
-        });
-      });
-
+      };
+  
+      const onReceiveMessage = (data: receivedMessage) => {
+        console.log("Message received:", data);
+        dispatch(setNewMessage(data.message));
+      };
+  
+      // Add listeners
+      socket.on("connect", onConnect);
+      socket.on("receive_message", onReceiveMessage);
+  
       // Cleanup on component unmount
       return () => {
-        if (socket) {
-          console.log("Disconnecting socket and removing listeners");
-          socket.off("receive_message");
-          socket.disconnect();
-        }
+        // Remove specific listeners
+        socket.off("connect", onConnect);
+        socket.off("receive_message", onReceiveMessage);
+        socket.disconnect();
       };
     }
   }, [userId, chats, dispatch]);

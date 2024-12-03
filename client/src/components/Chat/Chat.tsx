@@ -2,9 +2,14 @@ import { useState, useRef, useEffect } from "react";
 import { useAppSelector } from "@/redux/hooks";
 import { useParams } from "next/navigation";
 
+import { useAppDispatch } from "@/redux/hooks";
+import { setNewMessage } from "@/slices/chatSlice";
+
 import { socket } from "@/socket-io/socket";
+import { receivedMessage } from "../Header/Header";
 
 const Chat = () => {
+  const dispatch = useAppDispatch()
   const userProps = useAppSelector(state=> state.userReducer.user?.user)
   const chatId = useParams()
   console.log('chatid:', chatId.idChat)
@@ -37,40 +42,50 @@ const Chat = () => {
         userId: userProps?.id,
         user: "You",
         content: message,
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        avatar:
-          "https://i.scdn.co/image/ab6775700000ee85604fbf7c4e971678ceefd34e",
+        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        avatar: "https://i.scdn.co/image/ab6775700000ee85604fbf7c4e971678ceefd34e",
       };
-      setMessages([...messages, newMessage]);
+      setMessages((prev) => [...prev, newMessage]);
       setMessage("");
-    }
 
-    const messageInfo = {
-      chatId: chatId.idChat,
-      senderId: userProps?.id,
-      content: message
-    } 
+      const messageInfo = {
+        chatId: chatId.idChat,
+        senderId: userProps?.id,
+        content: message,
+      };
 
-    if (socket.connected) {
-      socket.emit('send_message', messageInfo);
-    } else {
-      console.error("Socket is not connected");
+      if (socket.connected) {
+        socket.emit("send_message", messageInfo);
+      } else {
+        console.error("Socket is not connected");
+      }
     }
   };
 
-  useEffect(()=> {
-    if(!socket.connected){
-      socket.connect()
-    }
-
-    // Cleanup on component unmount
-    return () => {
-      if (socket) {
-        socket.disconnect();
-      }
+  useEffect(() => {
+    const handleConnect = () => {
+      console.log("Socket connected:", socket.id);
+      socket.emit("join_room", chatId.idChat );
     };
-
-  },[])
+  
+    const handleReceiveMessage = (data: receivedMessage) => {
+      console.log("Message received:", data);
+      dispatch(setNewMessage(data.message));
+      setMessages((prev) => [...prev, data.message]);
+    };
+  
+    socket.on("connect", handleConnect);
+    socket.on("receive_message", handleReceiveMessage);
+  
+    if (!socket.connected) {
+      socket.connect();
+    }
+  
+    return () => {
+      socket.off("connect", handleConnect);
+      socket.off("receive_message", handleReceiveMessage);
+    };
+  }, [chatId.idChat, dispatch]);
 
   return (
     <div className="w-full max-w-[1060px] h-screen max-h-[800px] flex flex-col justify-between mx-auto bg-spotify-light-gray text-spotify-white">
