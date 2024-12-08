@@ -103,6 +103,8 @@ export interface ChatMessage {
   id: string
   chat_id: string
   sender_id: string
+  profile_photo: string
+  display_name: string
   content: string
   created_at: string
   updated_at: string

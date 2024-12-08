@@ -25,7 +25,14 @@ export const sendMessage = async (messageData) => {
       ])
       .select(
         `
-          *,
+          id,
+          chat_id,
+          sender_id,
+          content,
+          created_at,
+          updated_at,
+          is_edited,
+          read,
           sender:user(
             id,
             email,
@@ -67,8 +74,22 @@ export const sendMessage = async (messageData) => {
 
     if (participantsError) throw participantsError;
 
+    // Map to the required ChatMessage format
+    const formattedMessage = {
+      id: message.id,
+      chat_id: message.chat_id,
+      sender_id: message.sender_id,
+      profile_photo: message.sender.profile_photo,
+      display_name: message.sender.display_name,
+      content: message.content,
+      created_at: message.created_at,
+      updated_at: message.updated_at,
+      is_edited: message.is_edited,
+      read: message.read,
+    };
+
     return {
-      message,
+      message: formattedMessage,
       recipients: participants.map((p) => p.user_id),
       chat: {
         id: chatId,
@@ -80,6 +101,7 @@ export const sendMessage = async (messageData) => {
     throw new Error("Failed to send message: " + error.message);
   }
 };
+
 
 /**
  * Helper function to validate that a user is a participant in a chat
