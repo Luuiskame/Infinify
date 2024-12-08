@@ -109,6 +109,9 @@ const Chat = () => {
               {directChatNotUserProps?.display_name?.[0] || "?"}
             </div>
           )}
+          <div>
+              {directChatNotUserProps?.display_name || "?"}
+            </div>
           <span className="text-green-500 ml-2">🟢</span>
         </div>
         <div className="ml-auto flex items-center gap-4">
