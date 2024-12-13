@@ -3,10 +3,12 @@ import { Chats, ChatMessage } from "@/types";
 
 interface chats {
   user_chats: Chats[] | null;
+  total_unread_messages: number 
 }
 
 const initialState: chats = {
   user_chats: null,
+  total_unread_messages: 0
 };
 
 const chatSlice = createSlice({
@@ -30,8 +32,14 @@ const chatSlice = createSlice({
         }
       }
     },
+    substractTotalUnreadMessages: (state,action: PayloadAction<number>)=>{
+      state.total_unread_messages += - action.payload
+    },
+    setTotalUnreadMessages: (state,action: PayloadAction<number>)=>{
+      state.total_unread_messages = action.payload
+    },
   },
 });
 
-export const { setChat, setNewMessage } = chatSlice.actions;
+export const { setChat, setNewMessage, substractTotalUnreadMessages, setTotalUnreadMessages } = chatSlice.actions;
 export default chatSlice.reducer;

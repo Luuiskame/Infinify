@@ -9,6 +9,9 @@ const PreviewChat = () => {
   const chats = useAppSelector(state => state.chatsReducer.user_chats) 
   const userId = useAppSelector(state => state.userReducer.user?.user.id) 
 
+  const chatsNotifications = useAppSelector(state => state.chatsReducer.total_unread_messages)
+  console.log('total unread notis', chatsNotifications)
+
   console.log('user chats with messages', chats)
  
 

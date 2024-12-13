@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { useGetUserProfileInfoQuery } from '@/services/profileApi'
 import { setUser } from '@/slices/userSlice';
-import { setChat } from '@/slices/chatSlice';
+import { setChat, setTotalUnreadMessages } from '@/slices/chatSlice';
 import { useRouter } from 'next/navigation';
 
 import{ Chats} from '../../types'
@@ -25,9 +25,9 @@ export default function VerifyInfo() {
       const newChats = data.user_chats.map((chat: Chats)=> ({
         ...chat,
         chat_messages: [],
-        unread_messages: 0
       }))
       dispatch(setChat(newChats))
+      dispatch(setTotalUnreadMessages(data?.total_unread_messages))
      router.push(`/profile/${data?.user?.spotify_id}`);
     }
   }, [data, error, dispatch, router]);

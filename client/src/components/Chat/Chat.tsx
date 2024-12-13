@@ -41,6 +41,7 @@ const Chat = () => {
 
       setDirectChatNotUserProps(notUserProps);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatId]);
 
   const messagesEndRef = useRef(null);

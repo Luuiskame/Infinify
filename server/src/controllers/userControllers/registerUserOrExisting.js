@@ -170,7 +170,7 @@ export const verifyUserExist = async (spotify_id, req) => {
       req.session.userId = userId;
     }
 
-    // First, get all chats the user is part of
+    // Fetch all chats the user is part of
     const { data: userChats, error: chatsError } = await supabase
       .from('chat_participants')
       .select(`
@@ -195,63 +195,68 @@ export const verifyUserExist = async (spotify_id, req) => {
       };
     }
 
-    // Get all participants for each chat with their user information
-    const formattedChats = await Promise.all(userChats.map(async (chat) => {
-      const { data: allParticipants, error: participantsError } = await supabase
-        .from('chat_participants')
-        .select(`
-          chat_id,
-          user_id,
-          joined_at,
-          is_admin,
-          user:user_id (
-            id,
-            display_name,
-            profile_photo
+    // Format chat data with participants and unread messages
+    const formattedChats = await Promise.all(
+      userChats.map(async (chat) => {
+        const { data: allParticipants, error: participantsError } = await supabase
+          .from('chat_participants')
+          .select(
+            'chat_id, user_id, joined_at, is_admin, user:user_id (id, display_name, profile_photo)'
           )
-        `)
-        .eq('chat_id', chat.chat_id);
+          .eq('chat_id', chat.chat_id);
 
-      if (participantsError) {
-        console.error('Error fetching chat participants:', participantsError);
-        return null;
-      }
+        const { data: unreadMessages, error: unreadError } = await supabase
+          .from('chat_messages')
+          .select('id')
+          .eq('chat_id', chat.chat_id)
+          .eq('read', false)
+          .neq('sender_id', userId); // Only count messages not sent by the current user
 
-      const formattedParticipants = allParticipants.map(participant => ({
-        chat_id: participant.chat_id,
-        user_id: participant.user_id,
-        joined_at: participant.joined_at,
-        is_admin: participant.is_admin,
-        display_name: participant.user?.display_name,
-        profile_photo: participant.user?.profile_photo
-      }));
+        if (participantsError || unreadError) {
+          console.error('Error fetching chat info:', participantsError || unreadError);
+          return null;
+        }
 
-      return {
-        chatInfo: {
-          id: chat.chats.id,
-          chat_type: chat.chats.chat_type,
-          chat_name: chat.chats.chat_name,
-          last_message_at: chat.chats.last_message_at
-        },
-        chat_participants: formattedParticipants
-      };
-    }));
+        const formattedParticipants = allParticipants.map((participant) => ({
+          chat_id: participant.chat_id,
+          user_id: participant.user_id,
+          joined_at: participant.joined_at,
+          is_admin: participant.is_admin,
+          display_name: participant.user?.display_name,
+          profile_photo: participant.user?.profile_photo,
+        }));
 
-    // Filter out any null values from failed queries
-    const validChats = formattedChats.filter(chat => chat !== null);
+        return {
+          chatInfo: {
+            ...chat.chats,
+            unread_messages: unreadMessages?.length || 0,
+          },
+          chat_participants: formattedParticipants,
+        };
+      })
+    );
+
+    const validChats = formattedChats.filter((chat) => chat !== null);
+
+    // Calculate the total number of unread messages
+    const totalUnreadMessages = validChats.reduce(
+      (total, chat) => total + (chat.chatInfo.unread_messages || 0),
+      0
+    );
 
     return {
       success: true,
       user: userData,
-      user_top_artist: user_top_artist,
-      user_top_songs: user_top_songs,
-      user_chats: validChats
-    };
-  } else {
-    console.log('User not found in the database, returning success: false');
-    return {
-      success: false,
-      message: 'User not found',
+      user_top_artist,
+      user_top_songs,
+      user_chats: validChats,
+      total_unread_messages: totalUnreadMessages,
     };
   }
+
+  // User not found
+  return {
+    success: false,
+    message: 'User does not exist',
+  };
 };
