@@ -5,11 +5,13 @@ import { ChatMessage } from '@/types';
 interface props {
   chatId: string;
   lastMessage: ChatMessage
+  notificationsNumber: number
 }
 
 
-export default function LastMessage({chatId, lastMessage}: props) {
+export default function LastMessage({chatId, lastMessage, notificationsNumber}: props) {
   return (
-    <p key={chatId}>{lastMessage?.content || 'Come say hi'} </p>
+    <p key={chatId}> {notificationsNumber > 0 ? `${notificationsNumber} new messages` : `${lastMessage?.content ? lastMessage.content : 'tap to chat'}`} </p>
+
   )
 }

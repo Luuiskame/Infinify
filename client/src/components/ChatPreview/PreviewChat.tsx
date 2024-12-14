@@ -25,7 +25,7 @@ const PreviewChat = () => {
           <Link
           href={`/chats/${chat.chatInfo.id}`}
           key={chat.chatInfo.id}
-          className="flex flex-col gap-2 p-4 rounded-lg bg-spotify-light-gray"
+          className={`flex flex-col gap-2 p-4 rounded-lg bg-spotify-light-gray ${chat.chatInfo.unread_messages > 0 ? 'bg-red-600' : ''}`}
         >
           <div className="flex gap-2 items-center">
             <Image
@@ -40,7 +40,7 @@ const PreviewChat = () => {
               <p className="text-xs text-gray-500">{chat.chatInfo.last_message_at}</p>
             </div>
           </div>
-          <LastMessage chatId={chat.chatInfo.id} lastMessage={chat.chat_messages[0]}/>
+          <LastMessage chatId={chat.chatInfo.id} lastMessage={chat.chat_messages[0]} notificationsNumber={chat.chatInfo.unread_messages}/>
         </Link>
         ) : 'chat group not avalaible yet: working on the feature'
       ))}
