@@ -4,7 +4,8 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 
 import { useAppDispatch } from "@/redux/hooks";
-import { setNewMessage } from "@/slices/chatSlice";
+import { setNewMessage, substractTotalUnreadMessages } from "@/slices/chatSlice";
+import { substractChatUnreadMessages } from "@/slices/chatSlice";
 
 import { socket } from "@/socket-io/socket";
 import { receivedMessage } from "../Header/Header";
@@ -30,6 +31,7 @@ const Chat = () => {
   const chatMessages = chats?.find(
     (chat) => chat.chatInfo.id === chatId.idChat
   );
+  const chatTotalUnreadMessages = chatMessages?.chatInfo.unread_messages
 
   const [message, setMessage] = useState("");
 
@@ -66,6 +68,16 @@ const Chat = () => {
   };
 
   useEffect(() => {
+
+    //! dispatching unread messages when component unmounts 
+    if(chatTotalUnreadMessages && chatTotalUnreadMessages !== 0){
+      dispatch(substractChatUnreadMessages({
+        chatId: chatId.idChat as string,
+        numberToSubstract: chatTotalUnreadMessages}))
+
+        dispatch(substractTotalUnreadMessages(chatTotalUnreadMessages))
+    }
+
     const handleConnect = () => {
       console.log("Socket connected:", socket.id);
       socket.emit("join_room", chatId.idChat);
@@ -87,7 +99,7 @@ const Chat = () => {
       socket.off("connect", handleConnect);
       socket.off("receive_message", handleReceiveMessage);
     };
-  }, [chatId.idChat, dispatch]);
+  }, [chatId.idChat, chatTotalUnreadMessages, dispatch]);
 
   return (
     <div className="w-full max-w-[1060px] h-screen max-h-[800px] flex flex-col justify-between mx-auto bg-spotify-light-gray text-spotify-white">
