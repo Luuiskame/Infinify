@@ -4,7 +4,7 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 
 import { useAppDispatch } from "@/redux/hooks";
-import { setNewMessage, substractTotalUnreadMessages } from "@/slices/chatSlice";
+import { setNewMessage,substractTotalUnreadMessages} from "@/slices/chatSlice";
 import { substractChatUnreadMessages } from "@/slices/chatSlice";
 
 import { socket } from "@/socket-io/socket";
@@ -69,13 +69,14 @@ const Chat = () => {
 
   useEffect(() => {
 
-    //! dispatching unread messages when component unmounts 
+    //! dispatching unread messages when component mounts 
     if(chatTotalUnreadMessages && chatTotalUnreadMessages !== 0){
       dispatch(substractChatUnreadMessages({
         chatId: chatId.idChat as string,
         numberToSubstract: chatTotalUnreadMessages}))
 
         dispatch(substractTotalUnreadMessages(chatTotalUnreadMessages))
+        socket.emit('markAsRead',{chatId: chatMessages?.chatInfo.id, userId: userProps?.id})
     }
 
     const handleConnect = () => {
@@ -99,7 +100,24 @@ const Chat = () => {
       socket.off("connect", handleConnect);
       socket.off("receive_message", handleReceiveMessage);
     };
-  }, [chatId.idChat, chatTotalUnreadMessages, dispatch]);
+  }, [chatId.idChat, chatMessages?.chatInfo.id, chatTotalUnreadMessages, dispatch, userProps?.id]);
+
+  useEffect(()=> {
+    const handleMarkAsRead = async (data)=>{
+      console.log(data)
+
+      if(userProps?.id === data?.viewerId){
+        console.log(data)
+      }
+    } 
+
+    socket.on('marked_as_read', handleMarkAsRead)
+
+    return ()=> {
+      socket.off('marked_as_read', handleMarkAsRead)
+    }
+
+  },[userProps?.id])
 
   return (
     <div className="w-full max-w-[1060px] h-screen max-h-[800px] flex flex-col justify-between mx-auto bg-spotify-light-gray text-spotify-white">

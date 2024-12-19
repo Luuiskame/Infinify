@@ -3,13 +3,16 @@ import React from "react";
 import Navbar from "./Navbar/Navbar";
 import Link from "next/link";
 import { FiSearch } from "react-icons/fi";
-import { setNewMessage } from "@/slices/chatSlice";
+import { setNewMessage, setTotalUnreadMessages, sumChatUnreadMessages } from "@/slices/chatSlice";
 import { useAppDispatch } from "@/redux/hooks";
-import { ChatMessage, Chat } from "@/types";
+import { ChatMessage } from "@/types";
 // import { DefaultEventsMap } from "@socket.io/component-emitter";
 
 export interface receivedMessage {
-  Chat: Chat
+  chat: {
+    id: string;
+    last_message_at: string;
+  };
   message: ChatMessage
   recipients: string[]
 }  
@@ -48,9 +51,15 @@ const Header = () => {
         });
       };
   
-      const onReceiveMessage = (data: receivedMessage) => {
+      const onReceiveMessage = async (data: receivedMessage) => {
         console.log("Message received:", data);
         dispatch(setNewMessage(data.message));
+        if(data){
+          dispatch(setTotalUnreadMessages(1))
+        dispatch(sumChatUnreadMessages({
+                chatId: data?.chat?.id as string,
+                numberToSum: 1}))
+        }
       };
   
       // Add listeners

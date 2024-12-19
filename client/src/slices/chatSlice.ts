@@ -44,11 +44,20 @@ const chatSlice = createSlice({
 
       }
     },
+    sumChatUnreadMessages: (state,action: PayloadAction<{chatId: string, numberToSum: number}>)=> {
+      const {chatId, numberToSum} = action.payload
+      const chat = state.user_chats?.find(chat=> chat.chatInfo.id === chatId)
+
+      if(chat){
+      chat.chatInfo.unread_messages +=  numberToSum
+
+      }
+    },
     setTotalUnreadMessages: (state,action: PayloadAction<number>)=>{
-      state.total_unread_messages = action.payload
+      state.total_unread_messages += action.payload
     },
   },
 });
 
-export const { setChat, setNewMessage, substractTotalUnreadMessages, substractChatUnreadMessages, setTotalUnreadMessages } = chatSlice.actions;
+export const { setChat, setNewMessage, substractTotalUnreadMessages, substractChatUnreadMessages, sumChatUnreadMessages, setTotalUnreadMessages } = chatSlice.actions;
 export default chatSlice.reducer;

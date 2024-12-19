@@ -10,6 +10,7 @@ import session from 'express-session'
 import cors from 'cors'
 
 import { sendMessage, validateChatParticipant } from './controllers/chatControllers/senMessage.js'
+import { markMessagesAsRead } from './controllers/chatControllers/markMessageAsRead.js'
 
 dotenv.config()
 
@@ -129,6 +130,14 @@ io.on('connection', (socket)=> {
         error: error.message
       })
     }
+  })
+
+  socket.on('markAsRead', async (info)=> {
+    const {chatId, userId} = info
+    const result = await markMessagesAsRead(info)
+    console.log('read result: ',result)
+
+    io.to(chatId).emit('marked_as_read', result)
   })
 })
 
