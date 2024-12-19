@@ -53,6 +53,7 @@ const Header = () => {
   
       const onReceiveMessage = async (data: receivedMessage) => {
         console.log("Message received:", data);
+        //! setting message in our chat state with its unread messages global and local chat state
         dispatch(setNewMessage(data.message));
         if(data){
           dispatch(setTotalUnreadMessages(1))

@@ -9,11 +9,18 @@ import { substractChatUnreadMessages } from "@/slices/chatSlice";
 
 import { socket } from "@/socket-io/socket";
 import { receivedMessage } from "../Header/Header";
+import { ChatMessage } from "@/types";
 
 interface directChatProps {
   user_id: string;
   profile_photo: string;
   display_name: string;
+}
+
+interface readResponse {
+  message: string
+  updatedMessages: ChatMessage[]
+  viewerId: string
 }
 
 const Chat = () => {
@@ -48,7 +55,7 @@ const Chat = () => {
 
   const messagesEndRef = useRef(null);
 
-  const handleSend = (e) => {
+  const handleSend = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     if (message.trim()) {
       setMessage("");
@@ -87,6 +94,13 @@ const Chat = () => {
     const handleReceiveMessage = (data: receivedMessage) => {
       console.log("Message received:", data);
       dispatch(setNewMessage(data.message));
+
+      if (data.message.sender_id !== userProps?.id) {
+        socket.emit('markAsRead', {
+          chatId: chatId.idChat,
+          userId: userProps?.id
+        });
+      }
     };
 
     socket.on("connect", handleConnect);
@@ -103,10 +117,12 @@ const Chat = () => {
   }, [chatId.idChat, chatMessages?.chatInfo.id, chatTotalUnreadMessages, dispatch, userProps?.id]);
 
   useEffect(()=> {
-    const handleMarkAsRead = async (data)=>{
-      console.log(data)
+    console.log('times executed')
+    const handleMarkAsRead = async (data: readResponse)=>{
 
       if(userProps?.id === data?.viewerId){
+        console.log('message read updated')
+      } else {
         console.log(data)
       }
     } 
