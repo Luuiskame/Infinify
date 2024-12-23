@@ -6,6 +6,13 @@ interface chats {
 	time: string;
 }
 
+import { ChatMessage } from "@/types";
+
+interface ChatMessagesResponse {
+  messages: ChatMessage[]
+}
+
+
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -26,9 +33,15 @@ export const chatsApi = createApi({
         },
       }),
     }),
+    getAllChatMessages: builder.mutation<ChatMessagesResponse, string>({
+      query: (chatId)=> ({
+        url: `chats/messages/${chatId}`,
+        method: "GET",
+      })
+    }),
   }),
 });
 
 export const {
-  useGetPreviewChatsQuery,
+  useGetPreviewChatsQuery,useGetAllChatMessagesMutation
 } = chatsApi;

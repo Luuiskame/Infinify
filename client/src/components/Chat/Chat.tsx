@@ -4,8 +4,8 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 
 import { useAppDispatch } from "@/redux/hooks";
-import { setNewMessage,substractTotalUnreadMessages} from "@/slices/chatSlice";
-import { substractChatUnreadMessages } from "@/slices/chatSlice";
+import { setNewMessage,substractTotalUnreadMessages, substractChatUnreadMessages, setMultipleChatMessages } from "@/slices/chatSlice";
+import { useGetAllChatMessagesMutation } from "@/services/chatsApi";
 
 import { socket } from "@/socket-io/socket";
 import { receivedMessage } from "../Header/Header";
@@ -23,9 +23,16 @@ interface readResponse {
   viewerId: string
 }
 
+interface ChatMessagesResponse {
+  messages: ChatMessage[]
+}
+
 const Chat = () => {
   const dispatch = useAppDispatch();
   const userProps = useAppSelector((state) => state.userReducer.user?.user);
+
+  const chatHasMessages = 1
+  const [getAllChatMessages] = useGetAllChatMessagesMutation();
 
   const [directChatNotUserProps, setDirectChatNotUserProps] = useState<
     directChatProps | undefined
@@ -117,7 +124,7 @@ const Chat = () => {
   }, [chatId.idChat, chatMessages?.chatInfo.id, chatTotalUnreadMessages, dispatch, userProps?.id]);
 
   useEffect(()=> {
-    console.log('times executed')
+    //! we might want to use this function in the future in other places to tell the other user their message was read
     const handleMarkAsRead = async (data: readResponse)=>{
 
       if(userProps?.id === data?.viewerId){
@@ -134,6 +141,24 @@ const Chat = () => {
     }
 
   },[userProps?.id])
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      if (chatHasMessages === 1) {
+        try {
+          const idToString = chatId.idChat.toString()
+          const data: ChatMessagesResponse = await getAllChatMessages(idToString).unwrap();
+          console.log("Fetched messages:", data);
+          dispatch(setMultipleChatMessages(data.messages))
+          
+        } catch (error) {
+          console.error("Error fetching chat messages:", error);
+        }
+      }
+    };
+
+    fetchMessages();
+  }, [chatHasMessages, chatId, getAllChatMessages]);
 
   return (
     <div className="w-full max-w-[1060px] h-screen max-h-[800px] flex flex-col justify-between mx-auto bg-spotify-light-gray text-spotify-white">

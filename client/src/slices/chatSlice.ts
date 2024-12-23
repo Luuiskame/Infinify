@@ -32,6 +32,36 @@ const chatSlice = createSlice({
         }
       }
     },
+    setMultipleChatMessages: (state, action: PayloadAction<ChatMessage[]>) => {
+      const newMessages = action.payload;
+      console.log('redux payload:', newMessages)
+    
+      // Group messages by chat_id
+      const messagesByChatId = newMessages.reduce<Record<string, ChatMessage[]>>((acc, message) => {
+        if (!acc[message.chat_id]) {
+          acc[message.chat_id] = [];
+        }
+        acc[message.chat_id].push(message);
+        return acc;
+      }, {});
+    
+      // Update each chat with its new messages
+      if (state.user_chats) {
+        Object.keys(messagesByChatId).forEach((chatId) => {
+          const chatIndex = state.user_chats?.findIndex(
+            (chat) => chat.chatInfo.id === chatId
+          );
+    
+          if (chatIndex !== -1 && state.user_chats && chatIndex) {
+            // Append new messages to the chat's existing messages
+            state.user_chats[chatIndex].chat_messages.push(
+              ...messagesByChatId[chatId]
+            );
+          }
+        });
+      }
+    },
+    
     substractTotalUnreadMessages: (state,action: PayloadAction<number>)=>{
       state.total_unread_messages += - action.payload
     },
@@ -59,5 +89,5 @@ const chatSlice = createSlice({
   },
 });
 
-export const { setChat, setNewMessage, substractTotalUnreadMessages, substractChatUnreadMessages, sumChatUnreadMessages, setTotalUnreadMessages } = chatSlice.actions;
+export const { setChat, setNewMessage, setMultipleChatMessages,substractTotalUnreadMessages, substractChatUnreadMessages, sumChatUnreadMessages, setTotalUnreadMessages } = chatSlice.actions;
 export default chatSlice.reducer;
