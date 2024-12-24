@@ -34,7 +34,7 @@ const chatSlice = createSlice({
     },
     setMultipleChatMessages: (state, action: PayloadAction<ChatMessage[]>) => {
       const newMessages = action.payload;
-      console.log('redux payload:', newMessages)
+      console.log('redux payload:', newMessages);
     
       // Group messages by chat_id
       const messagesByChatId = newMessages.reduce<Record<string, ChatMessage[]>>((acc, message) => {
@@ -48,12 +48,12 @@ const chatSlice = createSlice({
       // Update each chat with its new messages
       if (state.user_chats) {
         Object.keys(messagesByChatId).forEach((chatId) => {
-          const chatIndex = state.user_chats?.findIndex(
+          const chatIndex = state.user_chats!.findIndex(
             (chat) => chat.chatInfo.id === chatId
           );
     
-          if (chatIndex !== -1 && state.user_chats && chatIndex) {
-            // Append new messages to the chat's existing messages
+          // Removed chatIndex from condition since it can be 0
+          if (chatIndex !== -1 && state.user_chats) {
             state.user_chats[chatIndex].chat_messages.push(
               ...messagesByChatId[chatId]
             );

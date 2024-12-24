@@ -45,6 +45,7 @@ const Chat = () => {
   const chatMessages = chats?.find(
     (chat) => chat.chatInfo.id === chatId.idChat
   );
+  console.log('chats type', chats)
   const chatTotalUnreadMessages = chatMessages?.chatInfo.unread_messages
 
   const [message, setMessage] = useState("");
