@@ -18,7 +18,7 @@ const Page = ({ params }: { params: Params }) => {
 
   return (
     <div className="w-full h-full py-4 px-6">
-       {user && <Chat  user={user} />}
+       {user && <Chat/>}
 
       </div>
   )
