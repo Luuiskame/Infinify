@@ -2,8 +2,11 @@ import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { useGetUserProfileInfoQuery } from '@/services/profileApi'
 import { setUser } from '@/slices/userSlice';
+import { setChat, setTotalUnreadMessages } from '@/slices/chatSlice';
 import { useRouter } from 'next/navigation';
 import Loading from '../Loading/Loading';
+
+import{ Chats} from '../../types'
 
 export default function VerifyInfo() {
   const { data, isLoading, error } = useGetUserProfileInfoQuery({}) 
@@ -20,6 +23,13 @@ export default function VerifyInfo() {
   useEffect(() => {
     if (data && !error) {
       dispatch(setUser(data));
+      const newChats = data.user_chats.map((chat: Chats)=> ({
+        ...chat,
+        chat_messages: [],
+        isFetched: false
+      }))
+      dispatch(setChat(newChats))
+      dispatch(setTotalUnreadMessages(data?.total_unread_messages))
      router.push(`/profile/${data?.user?.spotify_id}`);
     }
   }, [data, error, dispatch, router]);

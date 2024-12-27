@@ -7,6 +7,8 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import Search from "@/components/Search/Search";
 import { CiChat1  } from "react-icons/ci";
 
+import NumberIcon from "@/shared/NumberIcon";
+
 
 const Navbar = () => {
   const data = useAppSelector((state) => state.userReducer.user);
@@ -36,7 +38,8 @@ const Navbar = () => {
           ))}
           {user && (
             <>
-            <Link className="hover:text-primary hover:border-b-[1px] text-white font-bold font-sans text-lg" href={`/messages`}>
+            <Link className="hover:text-primary hover:border-b-[1px] text-white font-bold font-sans text-lg relative" href={`/messages`}>
+            <NumberIcon/>
                <CiChat1 className="h-6 w-6 md:hidden" />
               Messages
             </Link>
@@ -73,6 +76,7 @@ const Navbar = () => {
         {user && (
           <>
           <Link className="flex items-center justify-center hover:text-primary" href={`/messages`}>
+          <NumberIcon/>
                <CiChat1 className="h-6 w-6 md:hidden" />
             </Link>
             <Link href={`/profile/${user.spotify_id}`} className=" items-center hover:text-primary">

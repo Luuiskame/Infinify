@@ -7,31 +7,30 @@ export const getSongOfTheDay = async (req, res) => {
   try {
     const appToken = await getAppToken();
 
-    const playlistResponse = await axios.get(`${baseUrl}search?query=top+global&type=playlist&offset=0&limit=1`, {
+    const playlistId = '0Hm1tCeFv45CJkNeIAtrfF?si=ff5da50493174f21'; // HAS TO BE A USER PLAYLIST
+
+    const playlistResponse = await axios.get(`${baseUrl}playlists/${playlistId}`, {
       headers: {
         Authorization: `Bearer ${appToken}`,
       },
     });
 
-    const playlistId = playlistResponse.data.playlists.items[0]?.id;
+    console.log('Playlist Response:', JSON.stringify(playlistResponse.data, null, 2));
 
-    if (!playlistId) {
-      return res.status(404).json({ error: 'Top Global playlist not found' });
-    }
-
-    const tracksResponse = await axios.get(`${baseUrl}playlists/${playlistId}/tracks`, {
-      headers: {
-        Authorization: `Bearer ${appToken}`,
-      },
-    });
-
-    const tracks = tracksResponse.data.items;
+    // Extract tracks from the response
+    const tracks = playlistResponse.data.tracks?.items || [];
     if (tracks.length === 0) {
+      console.error('No tracks found in the playlist');
       return res.status(404).json({ error: 'No songs found in the playlist' });
     }
 
     const randomIndex = Math.floor(Math.random() * tracks.length);
     const randomSong = tracks[randomIndex].track;
+
+    if (!randomSong) {
+      console.error('Random song is null', tracks[randomIndex]);
+      return res.status(500).json({ error: 'Unable to select a random song' });
+    }
 
     const selectedSong = {
       songName: randomSong.name,
@@ -42,11 +41,11 @@ export const getSongOfTheDay = async (req, res) => {
     };
 
     return res.status(200).json({ songOfTheDay: selectedSong });
-
   } catch (error) {
+    console.error('Error fetching song of the day:', error);
     return res.status(500).json({
       error: 'Error fetching song of the day',
-      errorDetails: error,
+      errorDetails: error.response ? error.response.data : error.message,
     });
   }
 };

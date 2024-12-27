@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 
 // redux
 import { ReduxProvider } from "@/redux/ReduxProvider";
-import Header from "../components/Header/Header";
+import HeaderWrapper from "@/components/Header/HeaderWrapper";
 
 export default function RootLayout({
   children,
@@ -41,7 +41,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} antialiased bg-spotify-dark-gray`}
       >
         <ReduxProvider>
-          <Header />
+          <HeaderWrapper />
           {children}
         </ReduxProvider>
       </body>

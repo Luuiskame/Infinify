@@ -1,7 +1,7 @@
 import { supabase } from '../../db.js'
 import { filteredFavoriteArtists } from '../algorithms/filteredFavoriteArtists.js';
 
-export const registerUserDb = async (userInfo, userTopSongs, userTopArtist) => {
+export const registerUserDb = async (userInfo, userTopSongs, userTopArtist, req) => {
   const favoriteUserGenres = []
   try {
     const {
@@ -73,6 +73,12 @@ export const registerUserDb = async (userInfo, userTopSongs, userTopArtist) => {
     // Insert top artist
     const userId = newUser[0].id;
 
+    // store userId in session
+
+    if(req && req.session){
+      req.session.userId = userId
+    }
+
     const topArtistData = userTopArtist.map(artist => ({
       user_id: userId,
       artist_name: artist.artist_name,
@@ -138,7 +144,7 @@ export const registerUserDb = async (userInfo, userTopSongs, userTopArtist) => {
 };
 
 
-export const verifyUserExist = async (spotify_id) => {
+export const verifyUserExist = async (spotify_id, req) => {
   const { data: existingUserWithDetails, error: selectError } = await supabase
     .from('user')
     .select(`*, user_top_artist (*), user_top_songs (*)`)
@@ -152,24 +158,105 @@ export const verifyUserExist = async (spotify_id) => {
     };
   }
 
-
   if (existingUserWithDetails && existingUserWithDetails.length > 0) {
     console.log('User found and data retrieved');
 
     const user = existingUserWithDetails[0];
     const { user_top_artist, user_top_songs, ...userData } = user;
+    const userId = userData.id;
+
+    // Set userId in the session
+    if (req && req.session) {
+      req.session.userId = userId;
+    }
+
+    // Fetch all chats the user is part of
+    const { data: userChats, error: chatsError } = await supabase
+      .from('chat_participants')
+      .select(`
+        chat_id,
+        user_id,
+        joined_at,
+        is_admin,
+        chats (
+          id,
+          chat_type,
+          chat_name,
+          last_message_at
+        )
+      `)
+      .eq('user_id', userId);
+
+    if (chatsError) {
+      console.error('Error fetching user chats:', chatsError);
+      return {
+        success: false,
+        message: 'Error fetching user chats',
+      };
+    }
+
+    // Format chat data with participants and unread messages
+    const formattedChats = await Promise.all(
+      userChats.map(async (chat) => {
+        const { data: allParticipants, error: participantsError } = await supabase
+          .from('chat_participants')
+          .select(
+            'chat_id, user_id, joined_at, is_admin, user:user_id (id, display_name, profile_photo)'
+          )
+          .eq('chat_id', chat.chat_id);
+
+        const { data: unreadMessages, error: unreadError } = await supabase
+          .from('chat_messages')
+          .select('id')
+          .eq('chat_id', chat.chat_id)
+          .eq('read', false)
+          .neq('sender_id', userId); // Only count messages not sent by the current user
+
+        if (participantsError || unreadError) {
+          console.error('Error fetching chat info:', participantsError || unreadError);
+          return null;
+        }
+
+        const formattedParticipants = allParticipants.map((participant) => ({
+          chat_id: participant.chat_id,
+          user_id: participant.user_id,
+          joined_at: participant.joined_at,
+          is_admin: participant.is_admin,
+          display_name: participant.user?.display_name,
+          profile_photo: participant.user?.profile_photo,
+        }));
+
+        return {
+          chatInfo: {
+            ...chat.chats,
+            unread_messages: unreadMessages?.length || 0,
+          },
+          chat_participants: formattedParticipants,
+        };
+      })
+    );
+
+    const validChats = formattedChats.filter((chat) => chat !== null);
+
+    // Calculate the total number of unread messages
+    const totalUnreadMessages = validChats.reduce(
+      (total, chat) => total + (chat.chatInfo.unread_messages || 0),
+      0
+    );
 
     return {
       success: true,
       user: userData,
-      user_top_artist: user_top_artist, 
-      user_top_songs: user_top_songs 
-    };
-  } else {
-    console.log('User not found in the database, returning success: false');
-    return {
-      success: false,
-      message: 'User not found',
+      user_top_artist,
+      user_top_songs,
+      user_chats: validChats,
+      total_unread_messages: totalUnreadMessages,
     };
   }
+
+  // User not found
+  return {
+    success: false,
+    message: 'User does not exist',
+  };
 };

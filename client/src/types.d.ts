@@ -60,9 +60,26 @@ export interface Userinfo {
   user_top_songs: Song[];
   favorite_genres: string[];
   about: string;
+  
   country: string,
   created_at: string
 
+}
+
+export interface Chats {
+  chatInfo: Chat
+  chat_participants: ChatParticipant[]
+  chat_messages: ChatMessage[] 
+  isFetched: boolean
+}
+
+export interface ChatParticipant {
+  chat_id: string;
+  display_name: string
+  is_admin: boolean;
+  joined_at: string;
+  profile_photo: string;
+  user_id: string
 }
 
 export interface Chat {
@@ -72,6 +89,7 @@ export interface Chat {
   created_at: string
   updated_at: string
   last_message_at: string
+  unread_messages: number
 }
 
 export interface ChatParticipant {
@@ -86,8 +104,11 @@ export interface ChatMessage {
   id: string
   chat_id: string
   sender_id: string
+  profile_photo: string
+  display_name: string
   content: string
   created_at: string
   updated_at: string
   is_edited: boolean
+  read: boolean
 } 

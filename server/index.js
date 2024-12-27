@@ -1,9 +1,9 @@
 import { PORT } from './config.js';
-import app from './src/app.js';
+import {server} from './src/app.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server listening at port: ${PORT}`);
 });
