@@ -67,7 +67,7 @@ const PreviewChat = () => {
             </div>
             <LastMessage
               chatId={chat.chatInfo.id}
-              lastMessage={chat.chat_messages[0]}
+              lastMessage={chat.chat_messages[chat.chat_messages.length -1]}
               notificationsNumber={chat.chatInfo.unread_messages}
             />
           </Link>
