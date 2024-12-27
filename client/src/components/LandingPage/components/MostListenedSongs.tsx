@@ -30,13 +30,13 @@ interface Song {
   album: Album;
 }
 
-
 interface Props {
   artistId: string;
 }
 
 export default function MostListenedSongs({ artistId }: Props) {
-  const { data, error, isLoading } = useGetPopularArtistPopularSongsQuery(artistId);
+  const { data, error, isLoading } =
+    useGetPopularArtistPopularSongsQuery(artistId);
   const songs = data?.tracks?.slice(0, 5); // Limit to 5 songs
 
   if (isLoading) return <p>Loading...</p>;
@@ -54,14 +54,13 @@ export default function MostListenedSongs({ artistId }: Props) {
             className="rounded-lg"
           />
           <div>
-            <h3>{song.name}</h3>
-            {song.album.artists.map((artist) => (
-              <p key={artist.id}>{artist.name}</p>
-            ))}
+            <p>{song.name}</p>
+            <p className="flex text-sm text-[#63707F]">
+              {song.album.artists.map((artist) => artist.name).join(" / ")}
+            </p>
           </div>
         </div>
       ))}
     </div>
   );
 }
-

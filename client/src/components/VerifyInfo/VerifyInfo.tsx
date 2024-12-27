@@ -4,6 +4,7 @@ import { useGetUserProfileInfoQuery } from '@/services/profileApi'
 import { setUser } from '@/slices/userSlice';
 import { setChat, setTotalUnreadMessages } from '@/slices/chatSlice';
 import { useRouter } from 'next/navigation';
+import Loading from '../Loading/Loading';
 
 import{ Chats} from '../../types'
 
@@ -51,7 +52,7 @@ export default function VerifyInfo() {
 
     return (
       <div className='bg-spotify-black'>
-        <h3>hey</h3>
+       <Loading />
       </div>
     )
   }
