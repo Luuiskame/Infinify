@@ -25,6 +25,7 @@ export default function VerifyInfo() {
       const newChats = data.user_chats.map((chat: Chats)=> ({
         ...chat,
         chat_messages: [],
+        isFetched: false
       }))
       dispatch(setChat(newChats))
       dispatch(setTotalUnreadMessages(data?.total_unread_messages))

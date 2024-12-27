@@ -6,9 +6,14 @@ interface chats {
   total_unread_messages: number 
 }
 
+interface setIsFetchedProps {
+  chatId: string
+  isFetched: boolean
+}
+
 const initialState: chats = {
   user_chats: null,
-  total_unread_messages: 0
+  total_unread_messages: 0,
 };
 
 const chatSlice = createSlice({
@@ -17,6 +22,15 @@ const chatSlice = createSlice({
   reducers: {
     setChat: (state, action: PayloadAction<Chats[] | null>) => {
       state.user_chats = action.payload;
+    },
+    setIsFetched: (state, action: PayloadAction<setIsFetchedProps>)=> {
+      if(state.user_chats){
+        const chatIndex = state.user_chats.findIndex(
+          (chatId)=> chatId.chatInfo.id === action.payload.chatId
+        )
+
+        state.user_chats[chatIndex].isFetched = action.payload.isFetched
+      }
     },
     setNewMessage: (state, action: PayloadAction<ChatMessage>) => {
       const newMessage = action.payload;
@@ -89,5 +103,5 @@ const chatSlice = createSlice({
   },
 });
 
-export const { setChat, setNewMessage, setMultipleChatMessages,substractTotalUnreadMessages, substractChatUnreadMessages, sumChatUnreadMessages, setTotalUnreadMessages } = chatSlice.actions;
+export const { setChat, setIsFetched, setNewMessage, setMultipleChatMessages,substractTotalUnreadMessages, substractChatUnreadMessages, sumChatUnreadMessages, setTotalUnreadMessages } = chatSlice.actions;
 export default chatSlice.reducer;

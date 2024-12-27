@@ -4,7 +4,7 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 
 import { useAppDispatch } from "@/redux/hooks";
-import { setNewMessage,substractTotalUnreadMessages, substractChatUnreadMessages, setMultipleChatMessages } from "@/slices/chatSlice";
+import { setNewMessage,substractTotalUnreadMessages, substractChatUnreadMessages, setMultipleChatMessages, setIsFetched } from "@/slices/chatSlice";
 import { useGetAllChatMessagesMutation } from "@/services/chatsApi";
 
 import { socket } from "@/socket-io/socket";
@@ -31,20 +31,22 @@ const Chat = () => {
   const dispatch = useAppDispatch();
   const userProps = useAppSelector((state) => state.userReducer.user?.user);
 
-  const chatHasMessages = 1
+  
   const [getAllChatMessages] = useGetAllChatMessagesMutation();
-
+  
   const [directChatNotUserProps, setDirectChatNotUserProps] = useState<
-    directChatProps | undefined
+  directChatProps | undefined
   >(undefined);
-
+  
   const chatId = useParams();
   console.log("chatid:", chatId.idChat);
-
+  
+  
   const chats = useAppSelector((state) => state.chatsReducer.user_chats);
   const chatMessages = chats?.find(
     (chat) => chat.chatInfo.id === chatId.idChat
   );
+  console.log(chatMessages?.isFetched)
   console.log('chats type', chats)
   const chatTotalUnreadMessages = chatMessages?.chatInfo.unread_messages
 
@@ -82,84 +84,89 @@ const Chat = () => {
     }
   };
 
+  // useEffect(() => {
+  //   console.log('use effect with a lot props', isFetched, chatId)
+
+
+  //   //! dispatching unread messages when component mounts 
+  //   if(chatTotalUnreadMessages && chatTotalUnreadMessages !== 0){
+  //     dispatch(substractChatUnreadMessages({
+  //       chatId: chatId.idChat as string,
+  //       numberToSubstract: chatTotalUnreadMessages}))
+
+  //       dispatch(substractTotalUnreadMessages(chatTotalUnreadMessages))
+  //       socket.emit('markAsRead',{chatId: chatMessages?.chatInfo.id, userId: userProps?.id})
+  //   }
+
+  //   const handleConnect = () => {
+  //     console.log("Socket connected:", socket.id);
+  //     socket.emit("join_room", chatId.idChat);
+  //   };
+
+  //   const handleReceiveMessage = (data: receivedMessage) => {
+  //     console.log("Message received:", data);
+  //     dispatch(setNewMessage(data.message));
+
+  //     if (data.message.sender_id !== userProps?.id) {
+  //       socket.emit('markAsRead', {
+  //         chatId: chatId.idChat,
+  //         userId: userProps?.id
+  //       });
+  //     }
+  //   };
+
+  //   socket.on("connect", handleConnect);
+  //   socket.on("receive_message", handleReceiveMessage);
+
+  //   if (!socket.connected) {
+  //     socket.connect();
+  //   }
+
+  //   return () => {
+  //     socket.off("connect", handleConnect);
+  //     socket.off("receive_message", handleReceiveMessage);
+  //   };
+  // }, [chatMessages?.chatInfo.id, chatTotalUnreadMessages, dispatch, userProps?.id]);
+
+  // useEffect(()=> {
+  //   console.log('use effect with sending read props', isFetched, chatId)
+
+  //   //! we might want to use this function in the future in other places to tell the other user their message was read
+  //   const handleMarkAsRead = async (data: readResponse)=>{
+
+  //     if(userProps?.id === data?.viewerId){
+  //       console.log('message read updated')
+  //     } else {
+  //       console.log(data)
+  //     }
+  //   } 
+
+  //   socket.on('marked_as_read', handleMarkAsRead)
+
+  //   return ()=> {
+  //     socket.off('marked_as_read', handleMarkAsRead)
+  //   }
+
+  // },[userProps?.id])
+
   useEffect(() => {
-
-    //! dispatching unread messages when component mounts 
-    if(chatTotalUnreadMessages && chatTotalUnreadMessages !== 0){
-      dispatch(substractChatUnreadMessages({
-        chatId: chatId.idChat as string,
-        numberToSubstract: chatTotalUnreadMessages}))
-
-        dispatch(substractTotalUnreadMessages(chatTotalUnreadMessages))
-        socket.emit('markAsRead',{chatId: chatMessages?.chatInfo.id, userId: userProps?.id})
-    }
-
-    const handleConnect = () => {
-      console.log("Socket connected:", socket.id);
-      socket.emit("join_room", chatId.idChat);
-    };
-
-    const handleReceiveMessage = (data: receivedMessage) => {
-      console.log("Message received:", data);
-      dispatch(setNewMessage(data.message));
-
-      if (data.message.sender_id !== userProps?.id) {
-        socket.emit('markAsRead', {
-          chatId: chatId.idChat,
-          userId: userProps?.id
-        });
-      }
-    };
-
-    socket.on("connect", handleConnect);
-    socket.on("receive_message", handleReceiveMessage);
-
-    if (!socket.connected) {
-      socket.connect();
-    }
-
-    return () => {
-      socket.off("connect", handleConnect);
-      socket.off("receive_message", handleReceiveMessage);
-    };
-  }, [chatId.idChat, chatMessages?.chatInfo.id, chatTotalUnreadMessages, dispatch, userProps?.id]);
-
-  useEffect(()=> {
-    //! we might want to use this function in the future in other places to tell the other user their message was read
-    const handleMarkAsRead = async (data: readResponse)=>{
-
-      if(userProps?.id === data?.viewerId){
-        console.log('message read updated')
-      } else {
-        console.log(data)
-      }
-    } 
-
-    socket.on('marked_as_read', handleMarkAsRead)
-
-    return ()=> {
-      socket.off('marked_as_read', handleMarkAsRead)
-    }
-
-  },[userProps?.id])
-
-  useEffect(() => {
+    console.log('use effect with fetch and props', chatId)
     const fetchMessages = async () => {
-      if (chatHasMessages === 1) {
+      if (chatMessages?.isFetched === false) {
         try {
           const idToString = chatId.idChat.toString()
           const data: ChatMessagesResponse = await getAllChatMessages(idToString).unwrap();
           console.log("Fetched messages:", data);
-          dispatch(setMultipleChatMessages(data.messages))
-          
+          dispatch(setMultipleChatMessages(data.messages))    
+          dispatch(setIsFetched({chatId: chatId.idChat as string, isFetched: true}))      
         } catch (error) {
           console.error("Error fetching chat messages:", error);
         }
       }
     };
-
     fetchMessages();
-  }, [chatHasMessages, chatId, getAllChatMessages]);
+
+  }, [chatId]);
 
   return (
     <div className="w-full max-w-[1060px] h-screen max-h-[800px] flex flex-col justify-between mx-auto bg-spotify-light-gray text-spotify-white">

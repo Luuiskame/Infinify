@@ -70,6 +70,7 @@ export interface Chats {
   chatInfo: Chat
   chat_participants: ChatParticipant[]
   chat_messages: ChatMessage[] 
+  isFetched: boolean
 }
 
 export interface ChatParticipant {
