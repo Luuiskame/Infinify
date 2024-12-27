@@ -24,10 +24,6 @@ interface readResponse {
   viewerId: string
 }
 
-interface ChatMessagesResponse {
-  messages: ChatMessage[]
-}
-
 const Chat = () => {
   const dispatch = useAppDispatch();
   const userProps = useAppSelector((state) => state.userReducer.user?.user);
@@ -128,6 +124,7 @@ const Chat = () => {
       socket.off("connect", handleConnect);
       socket.off("receive_message", handleReceiveMessage);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatMessages?.chatInfo.id, chatTotalUnreadMessages, dispatch, userProps?.id]);
 
   useEffect(()=> {
@@ -148,7 +145,7 @@ const Chat = () => {
     return ()=> {
       socket.off('marked_as_read', handleMarkAsRead)
     }
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[userProps?.id])
 
   useEffect(() => {
@@ -190,6 +187,7 @@ const Chat = () => {
     return () => {
       controller.abort();
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatId?.idChat, chatMessages?.isFetched]);
 
   return (
