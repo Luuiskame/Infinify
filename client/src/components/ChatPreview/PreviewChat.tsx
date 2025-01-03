@@ -3,8 +3,12 @@ import Image from "next/image";
 import { useAppSelector } from "@/redux/hooks";
 import LastMessage from "./LastMessage";
 import Link from "next/link";
+import useIsMobile from "@/hooks/mobileHook";
 
 const PreviewChat = () => {
+
+  const isMobile = useIsMobile();
+
   const chats = useAppSelector((state) => state.chatsReducer.user_chats);
   const userId = useAppSelector((state) => state.userReducer.user?.user.id);
   const chatsNotifications = useAppSelector(
@@ -22,7 +26,7 @@ const PreviewChat = () => {
       {chats?.map((chat) =>
         chat.chatInfo.chat_type === "direct" ? (
           <Link
-            href={`/chats/${chat.chatInfo.id}`}
+            href={ isMobile ? `/chats/${chat.chatInfo.id}` : `/messages/chats/${chat.chatInfo.id}`}
             key={chat.chatInfo.id}
             className={`flex flex-col gap-2 p-4 rounded-lg bg-spotify-light-gray ${
               chat.chatInfo.unread_messages > 0 ? "bg-red-600" : ""
@@ -45,12 +49,12 @@ const PreviewChat = () => {
                 }
               />
               <div>
-                <p className="text-sm font-semibold">
+                <p className=" text-sm font-semibold">
                   {userId === chat.chat_participants[0].user_id
                     ? chat.chat_participants[1].display_name
                     : chat.chat_participants[0].display_name}
                 </p>
-                <p className="text-xs text-gray-500">
+                <p className=" text-xs text-gray-500">
                   {new Date(chat.chatInfo.last_message_at).toLocaleString(
                     "en-US",
                     {
@@ -65,11 +69,13 @@ const PreviewChat = () => {
                 </p>
               </div>
             </div>
-            <LastMessage
-              chatId={chat.chatInfo.id}
-              lastMessage={chat.chat_messages[chat.chat_messages.length -1]}
-              notificationsNumber={chat.chatInfo.unread_messages}
-            />
+            <div className=" justify-between">
+              <LastMessage
+                chatId={chat.chatInfo.id}
+                lastMessage={chat.chat_messages[chat.chat_messages.length - 1]}
+                notificationsNumber={chat.chatInfo.unread_messages}
+              />
+            </div>
           </Link>
         ) : (
           "chat group not available yet: working on the feature"

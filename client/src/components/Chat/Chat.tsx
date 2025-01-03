@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useAppSelector } from "@/redux/hooks";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
 
 import { useAppDispatch } from "@/redux/hooks";
@@ -11,6 +12,12 @@ import { useGetAllChatMessagesMutation } from "@/services/chatsApi";
 import { socket } from "@/socket-io/socket";
 import { receivedMessage } from "../Header/Header";
 import { ChatMessage } from "@/types";
+
+
+import { IoMdArrowBack } from "react-icons/io";
+import { FaPhoneAlt } from "react-icons/fa";
+import { FcVideoCall } from "react-icons/fc";
+import {ToastContainer, toast} from 'react-toastify';
 
 interface directChatProps {
   user_id: string;
@@ -190,13 +197,24 @@ const Chat = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatId?.idChat, chatMessages?.isFetched]);
 
+
+  //*** Toasts ***
+  const notify = () => toast.info('Proximamente',{
+    position: "top-right",
+    autoClose: 3000,
+    theme: "colored",
+  });
+
+
   return (
     <div className="w-full max-w-[1060px] h-screen max-h-[800px] flex flex-col justify-between mx-auto bg-spotify-light-gray text-spotify-white">
       {/* Header */}
       <div className="flex items-center p-4 bg-spotify-light-gray text-spotify-white border-t border-b border-spotify-green">
-        <button className="p-2 text-spotify-green rounded hover:bg-spotify-black">
-          🔙
-        </button>
+        <Link href="/messages">
+        <div className="flex items-center gap-2 ml-4 cursor-pointer hover:bg-spotify-black p-2 rounded">
+          <IoMdArrowBack className="h-6 w-6" />
+          </div>
+          </Link>
         <div className="flex items-center gap-2 ml-4 cursor-pointer hover:bg-spotify-black p-2 rounded">
           {directChatNotUserProps?.profile_photo ? (
             <Image
@@ -217,9 +235,10 @@ const Chat = () => {
           <span className="text-green-500 ml-2">🟢</span>
         </div>
         <div className="ml-auto flex items-center gap-4">
-          <button className="text-spotify-green hover:scale-110">📞</button>
-          <button className="text-spotify-green hover:scale-110">📹</button>
+          <button onClick={notify} className="text-spotify-green hover:scale-110 text-xl"><FaPhoneAlt /></button>
+          <button onClick={notify} className="text-spotify-green hover:scale-110 text-3xl"><FcVideoCall /></button>
         </div>
+        <ToastContainer />
       </div>
 
       {/* Chat Messages */}
