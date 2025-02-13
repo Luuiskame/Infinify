@@ -215,13 +215,7 @@ const Chat = () => {
       theme: "colored",
     });
 
-  // Agrupa los mensajes por fecha
-  const groupedMessages = chatMessages?.chat_messages.reduce((acc, msg) => {
-    const messageDate = new Date(msg.created_at).toDateString();
-    if (!acc[messageDate]) acc[messageDate] = [];
-    acc[messageDate].push(msg);
-    return acc;
-  }, {} as Record<string, ChatMessage[]>);
+
 
   return (
     <div className="w-[100%] max-w-[1060px] h-screen  flex flex-col text-spotify-white">
