@@ -17,7 +17,7 @@ const Page = ({ params }: { params: Params }) => {
    console.log(idChat)
 
   return (
-    <div className="w-full h-full py-4 px-6">
+    <div className="w-full h-full flex items-center justify-center">
        {user && <Chat/>}
 
       </div>
