@@ -1,11 +1,19 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import { useAppSelector } from "@/redux/hooks";
+import { useAppSelector, useAppDispatch } from "@/redux/hooks";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-
-import { useAppDispatch } from "@/redux/hooks";
+import { socket } from "@/socket-io/socket";
+import { receivedMessage } from "../Header/Header";
+import { ChatMessage } from "@/types";
+import { ToastContainer, toast } from "react-toastify";
+import {
+  ArrowLeftIcon,
+  PaperAirplaneIcon,
+  PhoneIcon,
+  VideoCameraIcon,
+} from "@heroicons/react/24/solid";
 import {
   setNewMessage,
   substractTotalUnreadMessages,
@@ -14,13 +22,6 @@ import {
   setIsFetched,
 } from "@/slices/chatSlice";
 import { useGetAllChatMessagesMutation } from "@/services/chatsApi";
-
-import { socket } from "@/socket-io/socket";
-import { receivedMessage } from "../Header/Header";
-import { ChatMessage } from "@/types";
-
-import { ToastContainer, toast } from "react-toastify";
-import { ArrowLeftIcon, PaperAirplaneIcon, PhoneIcon, VideoCameraIcon } from "@heroicons/react/24/solid";
 
 interface directChatProps {
   user_id: string;
@@ -37,45 +38,35 @@ interface readResponse {
 const Chat = () => {
   const dispatch = useAppDispatch();
   const userProps = useAppSelector((state) => state.userReducer.user?.user);
-
   const [getAllChatMessages] = useGetAllChatMessagesMutation();
   const [isFetching, setIsFetching] = useState(false);
-
   const [directChatNotUserProps, setDirectChatNotUserProps] = useState<
     directChatProps | undefined
   >(undefined);
-
   const chatId = useParams();
-  console.log("chatid:", chatId.idChat);
-
   const chats = useAppSelector((state) => state.chatsReducer.user_chats);
   const chatMessages = chats?.find(
     (chat) => chat.chatInfo.id === chatId.idChat
   );
-  console.log(chatMessages?.isFetched);
-  console.log("chats type", chats);
-  const chatTotalUnreadMessages = chatMessages?.chatInfo.unread_messages;
 
+  console.log("chatMessages", chatMessages?.chat_messages);
+
+  const chatTotalUnreadMessages = chatMessages?.chatInfo.unread_messages;
   const [message, setMessage] = useState("");
+  const messagesEndRef = useRef(null);
 
   useEffect(() => {
     if (chatMessages?.chatInfo.chat_type === "direct") {
       const notUserProps = chatMessages.chat_participants.find(
         (user) => userProps?.id !== user.user_id
       );
-
       setDirectChatNotUserProps(notUserProps);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chatId]);
+  }, [chatId, chatMessages, userProps]);
 
-  const messagesEndRef = useRef(null);
-
-  const handleSend = (e: { preventDefault: () => void }) => {
+  const handleSend = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (message.trim()) {
-      setMessage("");
-
       const messageInfo = {
         chatId: chatId.idChat,
         senderId: userProps?.id,
@@ -83,17 +74,17 @@ const Chat = () => {
       };
 
       if (socket.connected) {
+        console.log("messageInfo", messageInfo);
         socket.emit("send_message", messageInfo);
       } else {
         console.error("Socket is not connected");
       }
+
+      setMessage("");
     }
   };
 
   useEffect(() => {
-    console.log("use effect with a lot props", chatId);
-
-    //! dispatching unread messages when component mounts
     if (chatTotalUnreadMessages && chatTotalUnreadMessages !== 0) {
       dispatch(
         substractChatUnreadMessages({
@@ -101,7 +92,6 @@ const Chat = () => {
           numberToSubstract: chatTotalUnreadMessages,
         })
       );
-
       dispatch(substractTotalUnreadMessages(chatTotalUnreadMessages));
       socket.emit("markAsRead", {
         chatId: chatMessages?.chatInfo.id,
@@ -137,18 +127,15 @@ const Chat = () => {
       socket.off("connect", handleConnect);
       socket.off("receive_message", handleReceiveMessage);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     chatMessages?.chatInfo.id,
     chatTotalUnreadMessages,
     dispatch,
     userProps?.id,
+    chatId.idChat,
   ]);
 
   useEffect(() => {
-    console.log("use effect with sending read props", chatId);
-
-    //! we might want to use this function in the future in other places to tell the other user their message was read
     const handleMarkAsRead = async (data: readResponse) => {
       if (userProps?.id === data?.viewerId) {
         console.log("message read updated");
@@ -162,15 +149,12 @@ const Chat = () => {
     return () => {
       socket.off("marked_as_read", handleMarkAsRead);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userProps?.id]);
 
   useEffect(() => {
-    //! if isFetched changed in other part of the app, this is gonna cause
     const controller = new AbortController();
 
     const fetchMessages = async () => {
-      // Guard against multiple fetches
       if (isFetching || chatMessages?.isFetched) {
         return;
       }
@@ -185,7 +169,6 @@ const Chat = () => {
 
         const data = await getAllChatMessages(idToString).unwrap();
 
-        // Check if the component is still mounted and the chat hasn't been fetched
         if (!controller.signal.aborted && !chatMessages?.isFetched) {
           dispatch(setMultipleChatMessages(data.messages));
           dispatch(setIsFetched({ chatId: idToString, isFetched: true }));
@@ -204,10 +187,14 @@ const Chat = () => {
     return () => {
       controller.abort();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chatId?.idChat, chatMessages?.isFetched]);
+  }, [
+    chatId?.idChat,
+    chatMessages?.isFetched,
+    isFetching,
+    getAllChatMessages,
+    dispatch,
+  ]);
 
-  //*** Toasts ***
   const notify = () =>
     toast.info("Proximamente", {
       position: "top-right",
@@ -216,11 +203,15 @@ const Chat = () => {
     });
 
 
+    //eliminar mensajes duplicados
+    const uniqueChatMessages = chatMessages?.chat_messages.filter((message, index, self) =>
+      index === self.findIndex((m) => m.id === message.id)
+    );
+
 
   return (
-    <div className="w-[100%] max-w-[1060px] h-screen  flex flex-col text-spotify-white">
-      {/* Header */}
-      <div className="flex items-center  bg-spotify-dark-gray text-spotify-white border-t border-b border-spotify-green p-1">
+    <div className="w-[100%] max-w-[1060px] h-screen flex flex-col text-spotify-white">
+      <div className="flex items-center bg-spotify-dark-gray text-spotify-white border-t border-b border-spotify-green p-1">
         <Link href="/messages">
           <div className="flex items-center gap-2 ml-4 cursor-pointer hover:bg-spotify-black p-2 rounded">
             <ArrowLeftIcon className="h-6 w-6 text-spotify-green" />
@@ -247,11 +238,11 @@ const Chat = () => {
             onClick={notify}
             className="text-spotify-green hover:scale-110 text-lg md:text-2xl"
           >
-            <PhoneIcon  className="text-spotify-green w-6 h-6" />
+            <PhoneIcon className="text-spotify-green w-6 h-6" />
           </button>
           <button
             onClick={notify}
-            className="text-spotify-green hover:scale-110 text-lg md:text-2xl "
+            className="text-spotify-green hover:scale-110 text-lg md:text-2xl"
           >
             <VideoCameraIcon className="text-spotify-green w-6 h-6" />
           </button>
@@ -259,9 +250,8 @@ const Chat = () => {
         <ToastContainer />
       </div>
 
-      {/* Chat Messages */}
-      <div className="flex-grow overflow-y-scroll p-2  chatMiddlePartContainer">
-        {chatMessages?.chat_messages.map((msg, idx) => (
+      <div className="flex-grow overflow-y-scroll p-2 chatMiddlePartContainer">
+        {uniqueChatMessages?.map((msg, idx) => (
           <div
             key={idx}
             className={`flex items-start gap-3 mb-4 ${
@@ -302,22 +292,26 @@ const Chat = () => {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Message Input */}
       <form
         onSubmit={handleSend}
-        className="flex items-center p-2 bg-spotify-dark-gray rounded-lg "
+        className="flex  items-center p-4 bg-spotify-dark-gray rounded-lg m-4"
       >
-        <button className="text-spotify-green hover:scale-110 mr-2">➕</button>
+        <button
+          type="button"
+          className="text-spotify-green hover:scale-110 mb-2 sm:mb-0 sm:mr-2"
+        >
+          ➕
+        </button>
         <input
           type="text"
           placeholder="Send a message..."
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          className="flex-grow p-2 rounded-lg bg-spotify-light-gray text-spotify-white outline-none placeholder-gray-400"
+          className="flex-grow p-2 rounded-lg bg-spotify-light-gray text-spotify-white outline-none placeholder-gray-400 mb-2 sm:mb-0"
         />
         <button
           type="submit"
-          className="ml-2 bg-spotify-green text-spotify-black px-4 py-2 rounded-lg hover:bg-spotify-black hover:text-spotify-green transition-transform"
+          className="ml-0 sm:ml-2 bg-spotify-green text-spotify-black px-4 py-2 rounded-lg hover:bg-spotify-black hover:text-spotify-green transition-transform"
         >
           <PaperAirplaneIcon className="text-black w-6 h-6" />
         </button>
