@@ -7,6 +7,10 @@ const URL = "http://localhost:3001/"
 export const socket = io(URL, {
     autoConnect: false,
     withCredentials: true,
+    reconnection: true,
+    reconnectionAttempts: Infinity,
+    reconnectionDelay: 1000,
+    reconnectionDelayMax: 5000,
     auth: {
         serverOffset: 0,
         chatId: 0,
