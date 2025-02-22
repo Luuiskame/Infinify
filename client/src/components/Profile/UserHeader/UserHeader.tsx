@@ -46,18 +46,18 @@ const UserHeader = ({ isOwnProfile, user }: Props) => {
         </a>
         {!isOwnProfile && (
           <div className="flex flex-col gap-3 max-w[300px]">
-          <button
+          {/* <button
             type="button"
             className="bg-spotify-green text-white px-4 py-1 rounded-lg hover:bg-spotify-green/40 text-center font-sans font-bold text-lg"
           >
             Agregar amigo
-          </button>
+          </button> */}
           <Link href={`/chats/${idChat}`} >
           <button
             type="button"
             className="bg-spotify-green text-white px-4 py-1 rounded-lg hover:bg-spotify-green/40 text-center font-sans font-bold text-lg"
           >
-            Enviar mensaje
+            Send message
           </button>
           </Link>
           <CompatibilityBar favGenres={user?.favorite_genres} favArtists={user?.user_top_artist} favSongs={user?.user_top_songs}/>

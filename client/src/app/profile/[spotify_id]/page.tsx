@@ -67,7 +67,7 @@ export default function Page({ params }: { params: Params }) {
   };
 
   if (loading) {
-    return <p>Cargando datos...</p>; 
+    return <p>loading data...</p>; 
   }
 
   return (

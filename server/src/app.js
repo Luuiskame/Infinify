@@ -119,7 +119,7 @@ io.on('connection', (socket)=> {
         io.to(chatId).emit('receive_notification', {
           chatId,
           messageId: messageData.message.id,
-          senderId: socket.userId
+          senderId
         })
       })
 
