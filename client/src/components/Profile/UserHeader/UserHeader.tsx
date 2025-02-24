@@ -8,7 +8,7 @@ import { useAppSelector } from "@/redux/hooks";
 
 // shared components
 import LoginBtn from "@/shared/LoginBtn";
-import Link from "next/link";
+import SendMessage from "./SendMessage";
 
 type Props = {
   isOwnProfile: boolean;
@@ -18,8 +18,6 @@ type Props = {
 const UserHeader = ({ isOwnProfile, user }: Props) => {
 
   const isLocalUser = useAppSelector(state=> state.userReducer?.user)
-
-  const idChat = user?.id
   
 
   return (
@@ -52,14 +50,7 @@ const UserHeader = ({ isOwnProfile, user }: Props) => {
           >
             Agregar amigo
           </button> */}
-          <Link href={`/chats/${idChat}`} >
-          <button
-            type="button"
-            className="bg-spotify-green text-white px-4 py-1 rounded-lg hover:bg-spotify-green/40 text-center font-sans font-bold text-lg"
-          >
-            Send message
-          </button>
-          </Link>
+          <SendMessage localUser={isLocalUser?.user.id as string} profileUser={user?.id as string}/>
           <CompatibilityBar favGenres={user?.favorite_genres} favArtists={user?.user_top_artist} favSongs={user?.user_top_songs}/>
           </div>
           

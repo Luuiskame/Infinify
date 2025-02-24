@@ -190,7 +190,6 @@ const Chat = () => {
   }, [
     chatId?.idChat,
     chatMessages?.isFetched,
-    isFetching,
 ]);
 
 
