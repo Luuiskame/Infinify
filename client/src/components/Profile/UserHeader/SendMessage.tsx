@@ -15,6 +15,10 @@ export default function SendMessage(chatInfo: chatUsersInfo) {
     const router = useRouter()
     const [createOrFindChat,{isLoading, isError, data}] = useCreateOrFindChatMutation()
 
+    //! function to look for the avalaible chat before doing the req to our backend
+    
+    
+
     const trigger = async ()=> {
         const chatPayload = {
             participantsIds: [chatInfo.localUser, chatInfo.profileUser],
@@ -22,9 +26,15 @@ export default function SendMessage(chatInfo: chatUsersInfo) {
         }
         const result = await createOrFindChat(chatPayload).unwrap()
         console.log(result)
+
+        const completedProperties = {
+            ...result,
+            chat_messages: [],
+            isFetched: false
+        }
         
         if(result?.chatInfo.id){
-            dispatch(setOneChat(result))
+            dispatch(setOneChat(completedProperties))
             router.push(`/chats/${result.chatInfo.id}`)
         }
 
