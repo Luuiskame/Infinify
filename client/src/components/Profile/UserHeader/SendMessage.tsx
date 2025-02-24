@@ -25,7 +25,7 @@ export default function SendMessage(chatInfo: chatUsersInfo) {
         
         if(result?.chatInfo.id){
             dispatch(setOneChat(result))
-            router.push(`chats/${result.chatInfo.id}`)
+            router.push(`/chats/${result.chatInfo.id}`)
         }
 
     }
