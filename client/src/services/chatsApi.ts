@@ -6,11 +6,13 @@ interface chats {
 	time: string;
 }
 
-import { ChatMessage } from "@/types";
+import { ChatMessage, Chats } from "@/types";
 
 interface ChatMessagesResponse {
   messages: ChatMessage[]
 }
+
+
 
 
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
@@ -39,9 +41,17 @@ export const chatsApi = createApi({
         method: "GET",
       })
     }),
+    createOrFindChat: builder.mutation<Chats, {participantsIds: string[], chatType: string}>({
+      query: (chatInfo)=> ({
+        url: `/chats`,
+        method: "POST",
+        body: chatInfo
+      })
+    })
+
   }),
 });
 
 export const {
-  useGetPreviewChatsQuery,useGetAllChatMessagesMutation
+  useGetPreviewChatsQuery,useGetAllChatMessagesMutation,useCreateOrFindChatMutation
 } = chatsApi;

@@ -64,40 +64,40 @@ const wrap = middleware => (socket, next) => middleware(socket.request, {}, next
 
 io.use(wrap(sessionMiddleware))
 
-io.use((socket, next)=> {
-  const session = socket.request.session
+// io.use((socket, next)=> {
+//   const session = socket.request.session
 
-  if(session && session.userId){
-    socket.userId = session.userId
-    next()
-  } else {
-    next(new Error('Unathorized, no userId found in socket'))
-  }
-})
+//   if(session && session.userId){
+//     socket.userId = session.userId
+//     next()
+//   } else {
+//     next(new Error('Unathorized, no userId found in socket'))
+//   }
+// })
 
 io.on('connection', (socket)=> {
-  console.log(`user connected: ${socket.userId}`)
+  console.log(`user with socket id ${socket.id} connected`)
 
   socket.on('disconnected', ()=> {
-    console.log(`user disconnected: ${socket.userId}`)
+    console.log(`user disconnected, socket id: ${socket.id}`)
   })
 
   socket.on('join_room', (chatId)=> {
     socket.join(chatId)
-    console.log(`user ${socket.userId} joined to chat ${chatId}`)
+    console.log(`user ${socket.id} joined to chat ${chatId}`)
   })
 
   socket.on('send_message', async (messageInfo)=> {
     try {
       console.log(messageInfo)
       // Validate the message data
-      const { chatId, content } = messageInfo
+      const { chatId, content, senderId } = messageInfo
       if (!chatId || !content) {
         throw new Error('Missing required message information')
       }
 
       // Validate that the sender is a participant in the chat
-      const isParticipant = await validateChatParticipant(chatId, socket.userId)
+      const isParticipant = await validateChatParticipant(chatId, senderId)
       if (!isParticipant) {
         throw new Error('User is not a participant in this chat')
       }
@@ -105,7 +105,7 @@ io.on('connection', (socket)=> {
       // Send the message using our controller
       const messageData = await sendMessage({
         chatId,
-        senderId: socket.userId,
+        senderId,
         content
       })
 
@@ -119,7 +119,7 @@ io.on('connection', (socket)=> {
         io.to(chatId).emit('receive_notification', {
           chatId,
           messageId: messageData.message.id,
-          senderId: socket.userId
+          senderId
         })
       })
 

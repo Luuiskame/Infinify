@@ -5,112 +5,112 @@ export const createChats = async (req, res) => {
 
   try {
     // Input validation
-    if (!Array.isArray(participantsIds) || participantsIds.length < 2) {
-      return res.status(400).json({
-        error: 'At least two participants are required',
-      });
+    if (!Array.isArray(participantsIds) || participantsIds.length !== 2) {
+      return res.status(400).json({ error: 'Direct chats must have exactly 2 participants' });
     }
 
-    if (!['direct', 'group'].includes(chatType)) {
-      return res.status(400).json({
-        error: 'Invalid chat type. Must be either "direct" or "group"',
-      });
+    if (chatType !== 'direct') {
+      return res.status(400).json({ error: 'This function only supports direct chats' });
     }
 
-    // For direct chats, ensure exactly 2 participants and no chat name
-    if (chatType === 'direct') {
-      if (participantsIds.length !== 2) {
-        return res.status(400).json({
-          error: 'Direct chats must have exactly 2 participants',
-        });
+    // Check if a direct chat already exists between these two users
+    const { data: existingChats, error: existingChatsError } = await supabase
+      .from('chat_participants')
+      .select('chat_id')
+      .eq('user_id', participantsIds[0]);
+
+    if (existingChatsError) throw existingChatsError;
+
+    const chatIds = existingChats.map(chat => chat.chat_id);
+
+    const { data: commonChats, error: commonChatsError } = await supabase
+      .from('chat_participants')
+      .select('chat_id')
+      .eq('user_id', participantsIds[1])
+      .in('chat_id', chatIds);
+
+    if (commonChatsError) throw commonChatsError;
+
+    // If common chats exist, verify they are direct chats
+    if (commonChats.length > 0) {
+      const { data: directChat, error: directChatError } = await supabase
+        .from('chats')
+        .select('id')
+        .eq('chat_type', 'direct')
+        .in('id', commonChats.map(chat => chat.chat_id))
+        .single();
+
+      if (directChatError && directChatError.code !== 'PGRST116') {
+        throw directChatError;
       }
-      chatName = null;
+
+      if (directChat) {
+        // If chat exists, fetch and return it
+        return res.status(200).json(await fetchChatById(directChat.id));
+      }
     }
 
-    // For group chats, ensure chat name is provided
-    if (chatType === 'group' && !chatName?.trim()) {
-      return res.status(400).json({
-        error: 'Group chats require a name',
-      });
-    }
-
-    // Check if all participants exist in the auth.users table
-    const { data: users, error: usersError } = await supabase
-      .from('user')
-      .select('id')
-      .in('id', participantsIds);
-
-    if (usersError) {
-      throw usersError;
-    }
-
-    if (users.length !== participantsIds.length) {
-      return res.status(400).json({
-        error: 'One or more participants do not exist in the system',
-      });
-    }
-
-    // Start a transaction
+    // If chat doesn't exist, create a new one
     const { data: chat, error: chatError } = await supabase
       .from('chats')
-      .insert([
-        {
-          chat_type: chatType,
-          chat_name: chatName,
-        },
-      ])
+      .insert([{ chat_type: 'direct', chat_name: null }])
       .select()
       .single();
 
-    if (chatError) {
-      throw chatError;
-    }
-
-    // Prepare participants data
-    const participantsData = participantsIds.map((userId, index) => ({
-      chat_id: chat.id,
-      user_id: userId,
-      is_admin: chatType === 'group' && index === 0
-    }));
+    if (chatError) throw chatError;
 
     // Insert participants
+    const participantsData = participantsIds.map(userId => ({
+      chat_id: chat.id,
+      user_id: userId,
+      is_admin: false,
+    }));
+
     const { error: participantsError } = await supabase
       .from('chat_participants')
       .insert(participantsData);
 
-    if (participantsError) {
-      // If adding participants fails, the chat will be automatically deleted due to ON DELETE CASCADE
-      throw participantsError;
-    }
+    if (participantsError) throw participantsError;
 
-    // Fetch complete chat data with participants
-    const { data: completeChat, error: fetchError } = await supabase
-      .from('chats')
-      .select(`
-        *,
-        chat_participants (
-          user_id,
-          is_admin,
-          joined_at
-        )
-      `)
-      .eq('id', chat.id)
-      .single();
-
-    if (fetchError) {
-      throw fetchError;
-    }
-
-    // Send success response
-    res.status(201).json({
-      data: completeChat,
-    });
-
+    // Fetch and return the chat details
+    res.status(201).json(await fetchChatById(chat.id));
   } catch (error) {
-    console.error('Error creating chat:', error);
+    console.error('Error finding or creating chat:', error);
     res.status(500).json({
-      error: 'Failed to create chat',
+      error: 'Failed to find or create chat',
       details: error.message,
     });
   }
+};
+
+// Helper function to fetch chat details
+const fetchChatById = async (chatId) => {
+  const { data: participants, error: fetchError } = await supabase
+    .from('chat_participants')
+    .select(`
+      chat_id,
+      user_id,
+      is_admin,
+      joined_at,
+      user: user_id (display_name, profile_photo)
+    `)
+    .eq('chat_id', chatId);
+
+  if (fetchError) throw fetchError;
+
+  return {
+    chatInfo: {
+      id: chatId,
+      chat_type: 'direct',
+      chat_name: null,
+    },
+    chat_participants: participants.map(participant => ({
+      chat_id: participant.chat_id,
+      user_id: participant.user_id,
+      is_admin: participant.is_admin,
+      joined_at: participant.joined_at,
+      display_name: participant.user.display_name,
+      profile_photo: participant.user.profile_photo,
+    })),
+  };
 };

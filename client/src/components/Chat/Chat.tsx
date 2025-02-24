@@ -7,7 +7,6 @@ import Image from "next/image";
 import { socket } from "@/socket-io/socket";
 import { receivedMessage } from "../Header/Header";
 import { ChatMessage } from "@/types";
-import { ToastContainer, toast } from "react-toastify";
 import {
   ArrowLeftIcon,
   PaperAirplaneIcon,
@@ -187,26 +186,12 @@ const Chat = () => {
     return () => {
       controller.abort();
     };
+    
   }, [
     chatId?.idChat,
     chatMessages?.isFetched,
-    isFetching,
-    getAllChatMessages,
-    dispatch,
-  ]);
+]);
 
-  const notify = () =>
-    toast.info("Proximamente", {
-      position: "top-right",
-      autoClose: 3000,
-      theme: "colored",
-    });
-
-
-    //eliminar mensajes duplicados
-    const uniqueChatMessages = chatMessages?.chat_messages.filter((message, index, self) =>
-      index === self.findIndex((m) => m.id === message.id)
-    );
 
 
   return (
@@ -235,23 +220,20 @@ const Chat = () => {
         </div>
         <div className="ml-auto flex items-center gap-4 p-4">
           <button
-            onClick={notify}
             className="text-spotify-green hover:scale-110 text-lg md:text-2xl"
           >
             <PhoneIcon className="text-spotify-green w-6 h-6" />
           </button>
           <button
-            onClick={notify}
             className="text-spotify-green hover:scale-110 text-lg md:text-2xl"
           >
             <VideoCameraIcon className="text-spotify-green w-6 h-6" />
           </button>
         </div>
-        <ToastContainer />
       </div>
 
       <div className="flex-grow overflow-y-scroll p-2 chatMiddlePartContainer">
-        {uniqueChatMessages?.map((msg, idx) => (
+        {chatMessages?.chat_messages?.map((msg, idx) => (
           <div
             key={idx}
             className={`flex items-start gap-3 mb-4 ${

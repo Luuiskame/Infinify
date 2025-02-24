@@ -23,6 +23,15 @@ const chatSlice = createSlice({
     setChat: (state, action: PayloadAction<Chats[] | null>) => {
       state.user_chats = action.payload;
     },
+    setOneChat: (state, action: PayloadAction<Chats>) => {
+      console.log(action.payload)
+
+      if(!state.user_chats){
+        state.user_chats = [action.payload]
+      } else {
+        state.user_chats = [...state.user_chats, action.payload]
+      }
+    },
     setIsFetched: (state, action: PayloadAction<setIsFetchedProps>)=> {
       console.log('redux set fetched is dispatched')
       if(state.user_chats){
@@ -104,5 +113,5 @@ const chatSlice = createSlice({
   },
 });
 
-export const { setChat, setIsFetched, setNewMessage, setMultipleChatMessages,substractTotalUnreadMessages, substractChatUnreadMessages, sumChatUnreadMessages, setTotalUnreadMessages } = chatSlice.actions;
+export const { setChat, setOneChat, setIsFetched, setNewMessage, setMultipleChatMessages,substractTotalUnreadMessages, substractChatUnreadMessages, sumChatUnreadMessages, setTotalUnreadMessages } = chatSlice.actions;
 export default chatSlice.reducer;
