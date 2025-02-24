@@ -6,31 +6,13 @@ interface chats {
 	time: string;
 }
 
-import { ChatMessage } from "@/types";
+import { ChatMessage, Chats } from "@/types";
 
 interface ChatMessagesResponse {
   messages: ChatMessage[]
 }
 
-interface ChatParticipant {
-  user_id: string;
-  is_admin: boolean;
-  joined_at: string;
-}
 
-interface ChatData {
-  id: string;
-  created_at: string;
-  chat_type: "direct" | "group";
-  updated_at: string | null;
-  chat_name: string | null;
-  last_message_at: string | null;
-  chat_participants: ChatParticipant[];
-}
-
-interface ChatResponse {
-  data: ChatData;
-}
 
 
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
@@ -59,7 +41,7 @@ export const chatsApi = createApi({
         method: "GET",
       })
     }),
-    createOrFindChat: builder.mutation<ChatResponse, {participantsIds: string[], chatType: string}>({
+    createOrFindChat: builder.mutation<Chats, {participantsIds: string[], chatType: string}>({
       query: (chatInfo)=> ({
         url: `/chats`,
         method: "POST",

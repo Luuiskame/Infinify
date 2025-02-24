@@ -1,6 +1,8 @@
 import React from 'react'
 import { useCreateOrFindChatMutation } from '@/services/chatsApi'
 import { useRouter } from 'next/navigation'
+import { setOneChat } from '@/slices/chatSlice'
+import { useAppDispatch } from '@/redux/hooks'
 
 interface chatUsersInfo {
     localUser: string
@@ -9,6 +11,7 @@ interface chatUsersInfo {
 
 
 export default function SendMessage(chatInfo: chatUsersInfo) {
+    const dispatch = useAppDispatch()
     const router = useRouter()
     const [createOrFindChat,{isLoading, isError, data}] = useCreateOrFindChatMutation()
 
@@ -18,9 +21,11 @@ export default function SendMessage(chatInfo: chatUsersInfo) {
             chatType: "direct"
         }
         const result = await createOrFindChat(chatPayload).unwrap()
+        console.log(result)
         
-        if(result.data.id){
-            router.push(`chats/${result.data.id}`)
+        if(result?.chatInfo.id){
+            dispatch(setOneChat(result))
+            router.push(`chats/${result.chatInfo.id}`)
         }
 
     }

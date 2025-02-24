@@ -6,104 +6,90 @@ export const createChats = async (req, res) => {
   try {
     // Input validation
     if (!Array.isArray(participantsIds) || participantsIds.length < 2) {
-      return res.status(400).json({
-        error: 'At least two participants are required',
-      });
+      return res.status(400).json({ error: 'At least two participants are required' });
     }
 
     if (!['direct', 'group'].includes(chatType)) {
-      return res.status(400).json({
-        error: 'Invalid chat type. Must be either "direct" or "group"',
-      });
+      return res.status(400).json({ error: 'Invalid chat type. Must be either "direct" or "group"' });
     }
 
-    // For direct chats, ensure exactly 2 participants and no chat name
     if (chatType === 'direct') {
       if (participantsIds.length !== 2) {
-        return res.status(400).json({
-          error: 'Direct chats must have exactly 2 participants',
-        });
+        return res.status(400).json({ error: 'Direct chats must have exactly 2 participants' });
       }
       chatName = null;
     }
 
-    // For group chats, ensure chat name is provided
     if (chatType === 'group' && !chatName?.trim()) {
-      return res.status(400).json({
-        error: 'Group chats require a name',
-      });
+      return res.status(400).json({ error: 'Group chats require a name' });
     }
 
-    // Check if all participants exist in the auth.users table
+    // Check if all participants exist
     const { data: users, error: usersError } = await supabase
       .from('user')
       .select('id')
       .in('id', participantsIds);
 
-    if (usersError) {
-      throw usersError;
-    }
+    if (usersError) throw usersError;
 
     if (users.length !== participantsIds.length) {
-      return res.status(400).json({
-        error: 'One or more participants do not exist in the system',
-      });
+      return res.status(400).json({ error: 'One or more participants do not exist in the system' });
     }
 
-    // Start a transaction
+    // Create chat
     const { data: chat, error: chatError } = await supabase
       .from('chats')
-      .insert([
-        {
-          chat_type: chatType,
-          chat_name: chatName,
-        },
-      ])
+      .insert([{ chat_type: chatType, chat_name: chatName }])
       .select()
       .single();
 
-    if (chatError) {
-      throw chatError;
-    }
+    if (chatError) throw chatError;
 
-    // Prepare participants data
+    // Insert participants
     const participantsData = participantsIds.map((userId, index) => ({
       chat_id: chat.id,
       user_id: userId,
       is_admin: chatType === 'group' && index === 0
     }));
 
-    // Insert participants
     const { error: participantsError } = await supabase
       .from('chat_participants')
       .insert(participantsData);
 
-    if (participantsError) {
-      // If adding participants fails, the chat will be automatically deleted due to ON DELETE CASCADE
-      throw participantsError;
-    }
+    if (participantsError) throw participantsError;
 
-    // Fetch complete chat data with participants
-    const { data: completeChat, error: fetchError } = await supabase
-      .from('chats')
+    // Fetch chat data including participant details
+    const { data: participants, error: fetchError } = await supabase
+      .from('chat_participants')
       .select(`
-        *,
-        chat_participants (
-          user_id,
-          is_admin,
-          joined_at
-        )
+        chat_id,
+        user_id,
+        is_admin,
+        joined_at,
+        user: user_id (display_name, profile_photo)
       `)
-      .eq('id', chat.id)
-      .single();
+      .eq('chat_id', chat.id);
 
-    if (fetchError) {
-      throw fetchError;
-    }
+    if (fetchError) throw fetchError;
 
-    // Send success response
+    // Reshape the response to match ChatParticipant interface
+    const formattedParticipants = participants.map(participant => ({
+      chat_id: participant.chat_id,
+      user_id: participant.user_id,
+      is_admin: participant.is_admin,
+      joined_at: participant.joined_at,
+      display_name: participant.user.display_name,
+      profile_photo: participant.user.profile_photo
+    }));
+
+    // Send response in the required format
     res.status(201).json({
-      data: completeChat,
+      chatInfo: {
+        id: chat.id,
+      chat_type: chat.chat_type,
+      chat_name: chat.chat_name,
+      },
+      chat_participants: formattedParticipants
     });
 
   } catch (error) {
