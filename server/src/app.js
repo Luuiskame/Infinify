@@ -75,31 +75,50 @@ io.use(wrap(sessionMiddleware))
 //   }
 // })
 
-io.on('connection', (socket)=> {
-  console.log(`user with socket id ${socket.id} connected`)
 
-  socket.on('disconnected', ()=> {
-    console.log(`user disconnected, socket id: ${socket.id}`)
-  })
+const onlineUsers = new Map(); // userId -> socketId
 
-  socket.on('join_room', (chatId)=> {
-    socket.join(chatId)
-    console.log(`user ${socket.id} joined to chat ${chatId}`)
-  })
+io.on('connection', (socket) => {
+  console.log(`user with socket id ${socket.id} connected`);
+  
+  // Add user tracking
+  socket.on('user_online', (userId) => {
+    if (userId) {
+      onlineUsers.set(userId, socket.id);
+      console.log(`User ${userId} is online with socket ${socket.id}`);
+    }
+  });
 
-  socket.on('send_message', async (messageInfo)=> {
+  socket.on('disconnect', () => {
+    // Remove from online users
+    for (const [userId, socketId] of onlineUsers.entries()) {
+      if (socketId === socket.id) {
+        onlineUsers.delete(userId);
+        console.log(`User ${userId} disconnected`);
+        break;
+      }
+    }
+    console.log(`user disconnected, socket id: ${socket.id}`);
+  });
+
+  socket.on('join_room', (chatId) => {
+    socket.join(chatId);
+    console.log(`user ${socket.id} joined to chat ${chatId}`);
+  });
+
+  socket.on('send_message', async (messageInfo) => {
     try {
-      console.log(messageInfo)
+      console.log(messageInfo);
       // Validate the message data
-      const { chatId, content, senderId } = messageInfo
+      const { chatId, content, senderId } = messageInfo;
       if (!chatId || !content) {
-        throw new Error('Missing required message information')
+        throw new Error('Missing required message information');
       }
 
       // Validate that the sender is a participant in the chat
-      const isParticipant = await validateChatParticipant(chatId, senderId)
+      const isParticipant = await validateChatParticipant(chatId, senderId);
       if (!isParticipant) {
-        throw new Error('User is not a participant in this chat')
+        throw new Error('User is not a participant in this chat');
       }
 
       // Send the message using our controller
@@ -107,39 +126,38 @@ io.on('connection', (socket)=> {
         chatId,
         senderId,
         content
-      })
+      });
 
-      console.log(messageData)
+      console.log(messageData);
 
       // Emit the message to all participants in the chat room
-      io.to(chatId).emit('receive_message', messageData)
+      io.to(chatId).emit('receive_message', messageData);
 
       // Send notifications to other participants
       messageData.recipients.forEach(recipientId => {
-        io.to(chatId).emit('receive_notification', {
-          chatId,
-          messageId: messageData.message.id,
-          senderId
-        })
-      })
+        const recipientSocketId = onlineUsers.get(recipientId);
+        if (recipientSocketId) {
+          io.to(recipientSocketId).emit('new_chat_notification', messageData);
+        }
+      });
 
     } catch (error) {
-      console.error('Error sending message:', error)
+      console.error('Error sending message:', error);
       // Emit error back to sender only
       socket.emit('message_error', {
         error: error.message
-      })
+      });
     }
-  })
+  });
 
-  socket.on('markAsRead', async (info)=> {
-    const {chatId, userId} = info
-    const result = await markMessagesAsRead(info)
-    console.log('read result: ',result)
+  socket.on('markAsRead', async (info) => {
+    const {chatId, userId} = info;
+    const result = await markMessagesAsRead(info);
+    console.log('read result: ', result);
 
-    io.to(chatId).emit('marked_as_read', result)
-  })
-})
+    io.to(chatId).emit('marked_as_read', result);
+  });
+});
 
 
 export {app, server, io}

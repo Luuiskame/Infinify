@@ -35,6 +35,7 @@ const Header = () => {
     if (!socket.connected) {
       socket.connect();
     }
+    
 
     return () => {
       if (socket.connected) {
@@ -49,6 +50,10 @@ const Header = () => {
 
     const onConnect = () => {
       console.log("Socket connected:", socket.id);
+    console.log("Emitting user_online with userId:", userId);
+
+      socket.emit('user_online', userId);
+
       // Unirse a las salas con los chats actualizados
       chatsRef.current?.forEach((chat) => {
         socket.emit("join_room", chat.chatInfo.id);
@@ -68,6 +73,32 @@ const Header = () => {
       socket.off("disconnect", onDisconnect);
     };
   }, [userId]);
+
+  React.useEffect(() => {
+    const onNewChatNotification = (data: receivedMessage) => {
+      console.log("New chat notification received:", data);
+      
+      // Update UI with notification
+      dispatch(setNewMessage(data.message));
+      dispatch(setTotalUnreadMessages(1));
+      dispatch(
+        sumChatUnreadMessages({
+          chatId: data.chat.id,
+          numberToSum: 1,
+        })
+      );
+      
+      // Automatically join the chat room to receive future messages
+      socket.emit("join_room", data.chat.id);
+      console.log(`Auto-joining new chat room: ${data.chat.id}`);
+    };
+  
+    socket.on("new_chat_notification", onNewChatNotification);
+  
+    return () => {
+      socket.off("new_chat_notification", onNewChatNotification);
+    };
+  }, [dispatch, userId]);
 
   // Manejar mensajes entrantes
   React.useEffect(() => {
