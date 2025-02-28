@@ -128,7 +128,6 @@ const Chat = () => {
     };
   }, [
     chatMessages?.chatInfo.id,
-    chatTotalUnreadMessages,
     dispatch,
     userProps?.id,
     chatId.idChat,

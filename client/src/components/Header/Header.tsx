@@ -8,10 +8,12 @@ import {
   setNewMessage,
   setTotalUnreadMessages,
   sumChatUnreadMessages,
+  setOneChat,
 } from "@/slices/chatSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { ChatMessage } from "@/types";
 import { socket } from "@/socket-io/socket";
+import { useCreateOrFindChatMutation } from "@/services/chatsApi";
 
 export interface receivedMessage {
   chat: {
@@ -24,8 +26,40 @@ export interface receivedMessage {
 
 const Header = () => {
   const dispatch = useAppDispatch();
-  const userId = useAppSelector((state) => state.userReducer.user?.user.id);
-  const chats = useAppSelector((state) => state.chatsReducer.user_chats);
+  const userId = useAppSelector((state) => state.userReducer?.user?.user.id);
+  const chats = useAppSelector((state) => state.chatsReducer?.user_chats);
+  const [createOrFindChat, {isLoading, isError}] = useCreateOrFindChatMutation();
+
+  // chat finder
+  const localChatFinder = (chatId: string) => {
+    console.log('chat finder is triggered', chatId)
+    const chatFound = chats?.find(chat => chat.chatInfo.id === chatId);
+
+    if (chatFound?.chatInfo.id) {
+      console.log('chat on local already exist:', chatFound.chatInfo.id)
+      return chatFound.chatInfo.id;
+    } else {
+      return undefined
+    }
+  };
+
+  // chat founder fn from db
+  const dbChatFinder = async (chatInfo: { participantsIds: string[]; chatType: string }) => {
+    console.log('chat db finder is triggered', chatInfo)
+    const result = await createOrFindChat(chatInfo).unwrap();
+    console.log(result);
+
+    if(result.chatInfo.id){
+      const completedProperties = {
+        ...result,
+        chat_messages: [],
+        isFetched: false
+    }
+      dispatch(setOneChat(completedProperties));
+    } else {
+      console.log('something unexpected happened when dispatching one chat at chatFounder')
+    }
+  }
 
   // Manejar conexión/desconexión del socket
   useEffect(() => {
@@ -48,6 +82,7 @@ const Header = () => {
 
     const onConnect = () => {
       console.log("Socket connected:", socket.id);
+      socket.emit("user_online", userId);
       // Unirse a las salas con los chats actualizados
       chats?.forEach((chat) => {
         socket.emit("join_room", chat.chatInfo.id);
@@ -90,15 +125,37 @@ const Header = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    console.log("Chats state updated:", chats);
+    const onNewChatNotification = async (data: receivedMessage) => {
+      console.log("New chat notification:", data);
 
-    const onNewChatNotification = (chatId: string) => {
-      console.log("New chat notification:", chatId);
-      dispatch(setTotalUnreadMessages(1));
+      const chatAlreadyExist = localChatFinder(data.chat.id);
+      
+      if(chatAlreadyExist === undefined && userId){
+        const chatPayload = {
+          participantsIds: [userId, data.message.sender_id],
+          chatType: "direct"
+        }
+        
+        await dbChatFinder(chatPayload)
+        // Update UI with notification
+       dispatch(setNewMessage(data.message));
+       dispatch(setTotalUnreadMessages(1));
+       dispatch(
+         sumChatUnreadMessages({
+           chatId: data.chat.id,
+           numberToSum: 1,
+          })
+        );
+      };
+
     };
 
     socket.on("new_chat_notification", onNewChatNotification);
-  }, []);
+
+    return () => {
+      socket.off("new_chat_notification", onNewChatNotification);
+    };
+  }, [dispatch, userId, chats, localChatFinder, dbChatFinder]);
 
   return (
     <div className="bg-spotify-dark-gray px-8 py-6 flex justify-between gap-4">
