@@ -9,6 +9,7 @@ import cookieParser from 'cookie-parser'
 import session from 'express-session'
 import cors from 'cors'
 
+import { createChats } from './controllers/chatControllers/createChats.js'
 import { sendMessage, validateChatParticipant } from './controllers/chatControllers/senMessage.js'
 import { markMessagesAsRead } from './controllers/chatControllers/markMessageAsRead.js'
 
@@ -133,18 +134,34 @@ io.on('connection', (socket) => {
       // Emit the message to all participants in the chat room
       io.to(chatId).emit('receive_message', messageData);
 
-      // Send notifications to other participants
-      messageData.recipients.forEach(recipientId => {
-        const recipientSocketId = onlineUsers.get(recipientId);
-        if (recipientSocketId) {
-          io.to(recipientSocketId).emit('new_chat_notification', messageData);
-        }
-      });
 
     } catch (error) {
       console.error('Error sending message:', error);
       // Emit error back to sender only
       socket.emit('message_error', {
+        error: error.message
+      });
+    }
+  });
+
+  socket.on('new_chat', async (data) => {
+    try {
+      const { participantsIds, chatType, chatName } = data;
+      const result = await createChats(participantsIds, chatType, chatName);
+      console.log(result)
+      
+            
+      // Si quieres notificar al otro usuario
+      result.json.chat_participants.forEach(participant => {
+        // Skip notification to the creator of the chat (optional)
+          const recipientSocketId = onlineUsers.get(participant.user_id);
+          if (recipientSocketId) {
+            io.to(recipientSocketId).emit('new_chat_notification', result.json);
+          }
+      });
+    } catch (error) {
+      console.error('Error creating new chat:', error);
+      socket.emit('chat_error', {
         error: error.message
       });
     }

@@ -1,65 +1,74 @@
-import React from 'react'
-import { useCreateOrFindChatMutation } from '@/services/chatsApi'
-import { useRouter } from 'next/navigation'
-import { setOneChat } from '@/slices/chatSlice'
-import { useAppDispatch } from '@/redux/hooks'
-import { useAppSelector } from '@/redux/hooks'
+import React, { useState } from "react";
+import { useAppSelector } from "@/redux/hooks";
+import { socket } from "@/socket-io/socket";
+import {useRouter} from "next/navigation";
+
 interface chatUsersInfo {
-    localUser: string
-    profileUser: string
+  localUser: string;
+  profileUser: string;
 }
 
-
 export default function SendMessage(chatInfo: chatUsersInfo) {
-    const dispatch = useAppDispatch()
-    const router = useRouter()
-    const chats = useAppSelector((state)=> state.chatsReducer.user_chats)
-    const [createOrFindChat,{isLoading, isError, data}] = useCreateOrFindChatMutation()
+  const router = useRouter()
+  const chats = useAppSelector((state) => state.chatsReducer.user_chats);
+  const [isLoading, setIsLoading] = useState(false);
 
-    //! function to look for the avalaible chat before doing the req to our backend
-    
-    const chatFinder = (chatId: string) => {
-      const chatFound = chats?.find(chat=> chat.chatInfo.id === chatId)
+  // Función para verificar si ya existe un chat directo entre ambos usuarios
+  const findExistingDirectChat = () => {
+    if (!chats || chats.length === 0) return null;
 
-      if(chatFound?.chatInfo.id){
-        return chatFound.chatInfo.id
-      }
+    // Buscar un chat directo que tenga a ambos usuarios como participantes
+    const existingChat = chats.find((chat) => {
+      // Verificar que sea un chat directo
+      if (chat.chatInfo.chat_type !== "direct") return false;
+
+      // Verificar que ambos usuarios están en los participantes
+      const participants = chat.chat_participants || [];
+      const hasLocalUser = participants.some(
+        (p) => p.user_id === chatInfo.localUser
+      );
+      const hasProfileUser = participants.some(
+        (p) => p.user_id === chatInfo.profileUser
+      );
+
+      return hasLocalUser && hasProfileUser;
+    });
+
+    return existingChat ? existingChat.chatInfo.id : null;
+  };
+
+  const trigger = () => {
+    setIsLoading(true);
+
+    // Primero verificar si ya existe un chat local entre ambos usuarios
+    const existingChatId = findExistingDirectChat();
+
+    if (existingChatId) {
+        router.push(`/chats/${existingChatId}`)
+      setIsLoading(false);
+      return;
     }
 
-    const trigger = async ()=> {
-        const chatPayload = {
-            participantsIds: [chatInfo.localUser, chatInfo.profileUser],
-            chatType: "direct"
-        }
-        const result = await createOrFindChat(chatPayload).unwrap()
-        console.log(result)
+    // Si no existe localmente, enviar datos para crear un nuevo chat
+    const chatPayload = {
+      participantsIds: [chatInfo.localUser, chatInfo.profileUser],
+      chatType: "direct",
+    };
 
-        if(result.chatInfo.id){
-          const localChatExistAlready = chatFinder(result.chatInfo.id)
+    console.log("Creating new chat with payload:", chatPayload);
 
-          if(localChatExistAlready !== undefined){
-            router.push(`/chats/${localChatExistAlready}`)
-          } else {
-            const completedProperties = {
-              ...result,
-              chat_messages: [],
-              isFetched: false
-          }
-            dispatch(setOneChat(completedProperties))
-            router.push(`/chats/${result.chatInfo.id}`)
-            
-          }
-        }
-        
+    // Emitir evento para crear chat a través del socket - no manejamos la respuesta aquí
+    socket.emit("new_chat", chatPayload);
+    setIsLoading(false);
+  };
 
-    }
   return (
     <button
-            onClick={trigger}
-            type="button"
-            className="bg-spotify-green text-white px-4 py-1 rounded-lg hover:bg-spotify-green/40 text-center font-sans font-bold text-lg"
-          >
-            {isLoading ? 'loading': 'Send Message'}
-          </button>
-  )
+      onClick={trigger}
+      type="button"
+      className="bg-spotify-green text-white px-4 py-1 rounded-lg hover:bg-spotify-green/40 text-center font-sans font-bold text-lg"
+    >
+      {isLoading ? "loading" : "Send Message"}
+    </button>
+  );
 }
