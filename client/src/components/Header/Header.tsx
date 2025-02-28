@@ -1,12 +1,22 @@
 "use client";
-import React from "react";
+
+import React, { useEffect } from "react";
 import Navbar from "./Navbar/Navbar";
 import Link from "next/link";
 import { FiSearch } from "react-icons/fi";
-import { setNewMessage, setTotalUnreadMessages, sumChatUnreadMessages } from "@/slices/chatSlice";
+import {
+  setNewMessage,
+  setTotalUnreadMessages,
+  sumChatUnreadMessages,
+  setOneChat,
+} from "@/slices/chatSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { ChatMessage } from "@/types";
 import { socket } from "@/socket-io/socket";
+import { useRouter } from "next/navigation";
+import { useCreateOrFindChatMutation } from "@/services/chatsApi";
+
+import { Chats } from "@/types";
 
 export interface receivedMessage {
   chat: {
@@ -18,18 +28,14 @@ export interface receivedMessage {
 }
 
 const Header = () => {
+  const router = useRouter();
   const dispatch = useAppDispatch();
-  const userId = useAppSelector(state => state.userReducer.user?.user.id);
-  const chats = useAppSelector(state => state.userReducer.user?.user_chats);
-  const chatsRef = React.useRef(chats);
+  const userId = useAppSelector((state) => state.userReducer?.user?.user.id);
+  const chats = useAppSelector((state) => state.chatsReducer?.user_chats);
 
-  // Mantener referencia actualizada de los chats
-  React.useEffect(() => {
-    chatsRef.current = chats;
-  }, [chats]);
 
   // Manejar conexión/desconexión del socket
-  React.useEffect(() => {
+  useEffect(() => {
     if (!userId) return;
 
     if (!socket.connected) {
@@ -44,13 +50,14 @@ const Header = () => {
   }, [userId]);
 
   // Configurar listeners permanentes
-  React.useEffect(() => {
+  useEffect(() => {
     if (!userId) return;
 
     const onConnect = () => {
       console.log("Socket connected:", socket.id);
+      socket.emit("user_online", userId);
       // Unirse a las salas con los chats actualizados
-      chatsRef.current?.forEach((chat) => {
+      chats?.forEach((chat) => {
         socket.emit("join_room", chat.chatInfo.id);
         console.log(`Joining room: ${chat.chatInfo.id}`);
       });
@@ -67,10 +74,10 @@ const Header = () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
     };
-  }, [userId]);
+  }, [userId, chats]);
 
   // Manejar mensajes entrantes
-  React.useEffect(() => {
+  useEffect(() => {
     const onReceiveMessage = (data: receivedMessage) => {
       console.log("Message received:", data);
       dispatch(setNewMessage(data.message));
@@ -89,6 +96,25 @@ const Header = () => {
       socket.off("receive_message", onReceiveMessage);
     };
   }, [dispatch]);
+
+  useEffect(() => {
+    const onNewChatNotification = async (data: Chats) => {
+      console.log("New chat notification:", data);
+        
+        dispatch(setOneChat(data));
+
+        if(data.chat_participants[1].user_id !== userId){
+          router.push(`/chats/${data.chatInfo.id}`);
+        }
+
+    };
+
+    socket.on("new_chat_notification", onNewChatNotification);
+
+    return () => {
+      socket.off("new_chat_notification", onNewChatNotification);
+    };
+  }, [dispatch, userId, chats,]);
 
   return (
     <div className="bg-spotify-dark-gray px-8 py-6 flex justify-between gap-4">
