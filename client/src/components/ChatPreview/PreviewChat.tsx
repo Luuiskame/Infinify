@@ -4,6 +4,7 @@ import { useAppSelector } from "@/redux/hooks";
 import LastMessage from "./LastMessage";
 import Link from "next/link";
 import useIsMobile from "@/hooks/mobileHook";
+import { useEffect } from "react";
 
 const PreviewChat = () => {
 
@@ -18,10 +19,14 @@ const PreviewChat = () => {
   console.log("total unread notis", chatsNotifications);
   console.log("user chats with messages", chats);
 
+  useEffect(() => {
+    console.log("Chats state updated:", chats);
+  }, [chats]);
+
   return (
     <div className="flex flex-col gap-4 w-[90%] mx-auto md:mx-0 md:p-3 max-w-[700px]">
       <h2 className="font-extrabold text-2xl md:text-3xl text-center md:text-left">
-        Chat Preview
+        Chat Pe
       </h2>
       {chats?.map((chat) =>
         chat.chatInfo.chat_type === "direct" ? (
@@ -54,7 +59,7 @@ const PreviewChat = () => {
                     ? chat.chat_participants[1].display_name
                     : chat.chat_participants[0].display_name}
                 </p>
-                <p className=" text-xs text-gray-500">
+                {/* <p className=" text-xs text-gray-500">
                   {new Date(chat.chatInfo.last_message_at).toLocaleString(
                     "en-US",
                     {
@@ -66,7 +71,7 @@ const PreviewChat = () => {
                       hour12: true,
                     }
                   )}
-                </p>
+                </p> */}
               </div>
             </div>
             <div className=" justify-between">
