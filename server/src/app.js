@@ -151,7 +151,6 @@ io.on('connection', (socket) => {
       console.log(result)
       
             
-      // Si quieres notificar al otro usuario
       result.json.chat_participants.forEach(participant => {
         // Skip notification to the creator of the chat (optional)
           const recipientSocketId = onlineUsers.get(participant.user_id);

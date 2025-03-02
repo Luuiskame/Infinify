@@ -40,7 +40,6 @@ export default function SendMessage(chatInfo: chatUsersInfo) {
   const trigger = () => {
     setIsLoading(true);
 
-    // Primero verificar si ya existe un chat local entre ambos usuarios
     const existingChatId = findExistingDirectChat();
 
     if (existingChatId) {
@@ -49,7 +48,6 @@ export default function SendMessage(chatInfo: chatUsersInfo) {
       return;
     }
 
-    // Si no existe localmente, enviar datos para crear un nuevo chat
     const chatPayload = {
       participantsIds: [chatInfo.localUser, chatInfo.profileUser],
       chatType: "direct",
@@ -57,7 +55,6 @@ export default function SendMessage(chatInfo: chatUsersInfo) {
 
     console.log("Creating new chat with payload:", chatPayload);
 
-    // Emitir evento para crear chat a través del socket - no manejamos la respuesta aquí
     socket.emit("new_chat", chatPayload);
     setIsLoading(false);
   };
