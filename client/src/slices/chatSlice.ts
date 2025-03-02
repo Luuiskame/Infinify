@@ -86,16 +86,17 @@ const chatSlice = createSlice({
       }
     },
     
-    substractTotalUnreadMessages: (state,action: PayloadAction<number>)=>{
-      state.total_unread_messages += - action.payload
+    substractTotalUnreadMessages: (state, action: PayloadAction<number>) => {
+      const newTotal = state.total_unread_messages - action.payload;
+      state.total_unread_messages = newTotal < 0 ? 0 : newTotal;
     },
-    substractChatUnreadMessages: (state,action: PayloadAction<{chatId: string, numberToSubstract: number}>)=> {
-      const {chatId, numberToSubstract} = action.payload
-      const chat = state.user_chats?.find(chat=> chat.chatInfo.id === chatId)
+    substractChatUnreadMessages: (state, action: PayloadAction<{ chatId: string, numberToSubstract: number }>) => {
+      const { chatId, numberToSubstract } = action.payload;
+      const chat = state.user_chats?.find(chat => chat.chatInfo.id === chatId);
 
-      if(chat){
-      chat.chatInfo.unread_messages += - numberToSubstract
-
+      if (chat) {
+        const newUnreadMessages = chat.chatInfo.unread_messages - numberToSubstract;
+        chat.chatInfo.unread_messages = newUnreadMessages < 0 ? 0 : newUnreadMessages;
       }
     },
     sumChatUnreadMessages: (state,action: PayloadAction<{chatId: string, numberToSum: number}>)=> {

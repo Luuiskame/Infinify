@@ -102,6 +102,8 @@ const Header = () => {
       console.log("New chat notification:", data);
         
         dispatch(setOneChat(data));
+        socket.emit("join_room", data.chatInfo.id);
+        console.log(`Joining new chat room: ${data.chatInfo.id}`);
 
         if(data.chat_participants[1].user_id !== userId){
           router.push(`/chats/${data.chatInfo.id}`);
