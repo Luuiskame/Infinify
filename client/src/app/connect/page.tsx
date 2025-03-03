@@ -98,14 +98,14 @@ export default function Page() {
         />
   
         {/* Skeleton para las tarjetas de usuario (ConnectCard) */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 max-w-[450px] w-[100%]">
           {[...Array(3)].map((_, index) => (
             <div key={index} className="flex items-center gap-4 p-4 bg-spotify-light-gray rounded-lg">
               <Skeleton circle height={64} width={64} baseColor="#121212" highlightColor="#222" />
               <div className="flex flex-col gap-2 flex-1">
-                <Skeleton height={20} width={150} baseColor="#121212" highlightColor="#222" />
-                <Skeleton height={16} width={200} baseColor="#121212" highlightColor="#222" />
-                <Skeleton height={16} width={250} baseColor="#121212" highlightColor="#222" />
+                <Skeleton height={20} width={170} baseColor="#121212" highlightColor="#222" />
+                <Skeleton height={16} width={170} baseColor="#121212" highlightColor="#222" />
+                <Skeleton height={16} width={170} baseColor="#121212" highlightColor="#222" />
               </div>
             </div>
           ))}
@@ -115,9 +115,10 @@ export default function Page() {
   }
 
   return (
-    <div className="bg-spotify-dark-gray w-[90%] mx-auto md:w-[100%] md:ml-5 h-[100dvh] flex flex-col gap-[1rem]">
+    <div className="bg-spotify-dark-gray w-[90%] mx-auto md:w-[100%] md:ml-5 h-[100dvh] flex flex-col gap-[1rem] ">
       <ConnectHeader fetchFilter={fetchFilter} activeButton={activeButton} />
       <h2 className='text-center md:text-start mt-5 text-[1.8rem] font-extrabold'>{message}</h2>
+
       {data.map((user) => (
         <ConnectCard
           key={user.display_name}
