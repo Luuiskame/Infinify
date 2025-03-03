@@ -19,6 +19,10 @@ const PreviewChat = () => {
   console.log("total unread notis", chatsNotifications);
   console.log("user chats with messages", chats);
 
+  const chatsWithMessages = chats?.filter(
+    (chat) => chat.chat_messages.length > 0 && chat.chatInfo.chat_type === "direct"
+  );
+
   useEffect(() => {
     console.log("Chats state updated:", chats);
   }, [chats]);
@@ -26,7 +30,8 @@ const PreviewChat = () => {
   return (
     <div className="flex flex-col gap-4 w-[90%] mx-auto md:mx-0 md:p-3 max-w-[700px]">
       <h2 className="font-extrabold text-2xl md:text-3xl text-center md:text-left">
-        Chat Pe
+        {chatsWithMessages?.length > 0
+          ? "Chats with messages" : 'You dont have any chats yet'}
       </h2>
       {chats?.map((chat) =>
         chat.chatInfo.chat_type === "direct" ? (
