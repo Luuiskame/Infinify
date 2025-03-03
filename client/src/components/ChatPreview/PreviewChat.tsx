@@ -5,6 +5,7 @@ import LastMessage from "./LastMessage";
 import Link from "next/link";
 import useIsMobile from "@/hooks/mobileHook";
 import { useEffect, useMemo } from "react";
+import { UserPlusIcon } from "@heroicons/react/24/outline";
 
 const PreviewChat = () => {
 
@@ -20,7 +21,7 @@ const PreviewChat = () => {
   console.log("user chats with messages", chats);
 
   const chatWithMessages = useMemo(()=> {
-    const filteredMessages = chats?.filter((chat)=> chat.chat_messages.length > 0 && chat.chatInfo.chat_type === "direct")
+    const filteredMessages = (chats ?? [])?.filter((chat)=> chat.chat_messages.length > 0 && chat.chatInfo.chat_type === "direct")
     return filteredMessages
   },[chats])
 
@@ -31,7 +32,19 @@ const PreviewChat = () => {
   return (
     <div className="flex flex-col gap-4 w-[90%] mx-auto md:mx-0 md:p-3 max-w-[700px]">
       <h2 className="font-extrabold text-2xl md:text-3xl text-center md:text-left">
-        {chatWithMessages && chatWithMessages.length > 0 ? "Chats" : "No chats yet"}
+        {chatWithMessages && chatWithMessages.length > 0 ? "Chats" : (
+          <>
+          <p className="text-center text-lg">You are a lonely person without messages 😢</p>
+          <Link 
+            href={`/connect`} 
+            className="mt-9 bg-spotify-green text-black rounded-full font-bold flex items-center gap-2 justify-center mx-auto px-8 py-3 whitespace-nowrap hover:scale-105 transition-transform duration-300 animate-pulse hover:animate-none hover:shadow-lg"
+          >
+            <UserPlusIcon className="w-6 h-6" />
+            Rescue Your Social Life
+          </Link>
+          <p className="text-center text-sm mt-2 text-gray-500 italic">Your music taste is too good to not be shared!</p>
+        </>
+        )}
       </h2>
       {chatWithMessages?.map((chat) =>
         chat.chatInfo.chat_type === "direct" ? (
@@ -42,6 +55,7 @@ const PreviewChat = () => {
               chat.chatInfo.unread_messages > 0 ? "bg-red-600" : ""
             }`}
           >
+
             <div className="flex gap-2 items-center">
               <Image
                 src={
