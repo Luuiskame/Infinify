@@ -1,12 +1,8 @@
-import {
-  useGetGenreOftheDayQuery,
-} from "@/services/spotifyApi";
+import { useGetGenreOftheDayQuery } from "@/services/spotifyApi";
 import Image from "next/image";
 import React from "react";
-
-//types
-// import { Song } from "@/types";
-
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 interface Song {
   id: string;
@@ -18,12 +14,38 @@ interface Song {
 const GenereOfTheDay = () => {
   const { data, error, isLoading } = useGetGenreOftheDayQuery({});
 
-  if (isLoading) {
-    return <div>Loading...</div>;
+  if (error) {
+    return <div className="text-center text-red-500">Error loading data</div>;
   }
 
-  if (error) {
-    return <div>Error</div>;
+  if (isLoading) {
+    return (
+      <div className="flex flex-col gap-6" >
+        {/* Skeleton para el título y descripción del género */}
+        <div className="flex flex-col gap-4">
+          <Skeleton height={20} width={150} baseColor="#121212" highlightColor="#222" />
+          <Skeleton height={24} width={200} baseColor="#121212" highlightColor="#222" />
+        </div>
+
+        {/* Skeleton para la lista de canciones */}
+        {[...Array(3)].map((_, index) => (
+          <div key={index} className="flex items-center gap-4">
+            <Skeleton circle height={64} width={64} />
+            <div className="flex flex-col gap-2">
+              <Skeleton height={16} width={200} baseColor="#121212" highlightColor="#222" />
+              <Skeleton height={14} width={150} baseColor="#121212" highlightColor="#222" />
+            </div>
+          </div>
+        ))}
+
+        {/* Skeleton para la sección de información del género */}
+        <div className="mt-8 flex flex-col items-center gap-4">
+          <Skeleton height={300} width={300} className="rounded-lg" baseColor="#121212" highlightColor="#222" />
+          <Skeleton height={20} width={250} baseColor="#121212" highlightColor="#222" />
+          <Skeleton height={60} width={300} baseColor="#121212" highlightColor="#222" />
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -86,4 +108,3 @@ const GenereOfTheDay = () => {
 };
 
 export default GenereOfTheDay;
-

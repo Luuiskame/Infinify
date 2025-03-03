@@ -8,6 +8,8 @@ import { useAppSelector } from "@/redux/hooks";
 import { searchUsersById } from "@/supabase/searchUsers";
 import { Userinfo } from "@/types";
 import UserTopGenres from "@/components/Profile/UserTopGenres/UserTopGenres";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 
 type Params = {
@@ -67,7 +69,35 @@ export default function Page({ params }: { params: Params }) {
   };
 
   if (loading) {
-    return <p>loading data...</p>; 
+    return (
+      <div className="bg-spotify-dark-gray h-screen">
+        {/* Skeleton para el encabezado */}
+        <div className="p-10">
+          <div className="flex items-center gap-4">
+            <Skeleton circle height={100} width={100} baseColor="#121212" highlightColor="#222"/>
+            <div className="flex flex-col gap-2">
+              <Skeleton height={24} width={200} baseColor="#121212" highlightColor="#222"/>
+              <Skeleton height={16} width={150} baseColor="#121212" highlightColor="#222"/>
+            </div>
+          </div>
+        </div>
+
+        {/* Skeleton para la barra de navegación */}
+        <div className="flex justify-start bg-spotify-light-gray px-10">
+          <Skeleton height={40} width={100} className="mr-4" baseColor="#121212" highlightColor="#222"/>
+          <Skeleton height={40} width={100} baseColor="#121212" highlightColor="#222"/>
+        </div>
+
+        {/* Skeleton para el contenido de la pestaña activa */}
+        <div className="py-2 px-10 mt-6 bg-spotify-dark-gray w-full">
+          <div className="flex flex-col md:flex-row gap-4">
+            <Skeleton height={300} width="100%" baseColor="#121212" highlightColor="#222"/>
+            <Skeleton height={300} width="100%" baseColor="#121212" highlightColor="#222"/>
+            <Skeleton height={300} width="100%" baseColor="#121212" highlightColor="#222"/>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
