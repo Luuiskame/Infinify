@@ -4,7 +4,7 @@ import { useAppSelector } from "@/redux/hooks";
 import LastMessage from "./LastMessage";
 import Link from "next/link";
 import useIsMobile from "@/hooks/mobileHook";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 const PreviewChat = () => {
 
@@ -19,9 +19,10 @@ const PreviewChat = () => {
   console.log("total unread notis", chatsNotifications);
   console.log("user chats with messages", chats);
 
-  const chatsWithMessages = chats?.filter(
-    (chat) => chat.chat_messages.length > 0 && chat.chatInfo.chat_type === "direct"
-  );
+  const chatWithMessages = useMemo(()=> {
+    const filteredMessages = chats?.filter((chat)=> chat.chat_messages.length > 0 && chat.chatInfo.chat_type === "direct")
+    return filteredMessages
+  },[chats])
 
   useEffect(() => {
     console.log("Chats state updated:", chats);
@@ -30,10 +31,9 @@ const PreviewChat = () => {
   return (
     <div className="flex flex-col gap-4 w-[90%] mx-auto md:mx-0 md:p-3 max-w-[700px]">
       <h2 className="font-extrabold text-2xl md:text-3xl text-center md:text-left">
-        {chatsWithMessages?.length > 0
-          ? "Chats with messages" : 'You dont have any chats yet'}
+        {chatWithMessages && chatWithMessages.length > 0 ? "Chats" : "No chats yet"}
       </h2>
-      {chats?.map((chat) =>
+      {chatWithMessages?.map((chat) =>
         chat.chatInfo.chat_type === "direct" ? (
           <Link
             href={ isMobile ? `/chats/${chat.chatInfo.id}` : `/messages/chats/${chat.chatInfo.id}`}
