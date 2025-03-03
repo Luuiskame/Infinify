@@ -7,7 +7,8 @@ import { getRecentUsers } from '@/supabase/getRecentUsers';
 import { Artist, Song } from '@/types';
 
 import { useAppSelector } from "@/redux/hooks"
-
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 interface UserResponse {
   favorite_genres: string[];
@@ -75,8 +76,42 @@ export default function Page() {
     }
   };
 
-  if(loading){
-    return <p className='text-[#fff]'>Loading...</p> // Fixed typo in "Loading"
+  if (loading) {
+    return (
+      <section className="bg-spotify-dark-gray w-[90%] mx-auto md:w-[100%] md:ml-5 h-[100dvh] flex flex-col gap-[1rem]">
+        {/* Skeleton para el encabezado (ConnectHeader) */}
+        <div className="flex justify-between items-center p-4">
+          <Skeleton height={40} width={200} baseColor="#121212" highlightColor="#222" />
+          <div className="flex gap-2">
+            <Skeleton height={40} width={100} baseColor="#121212" highlightColor="#222" />
+            <Skeleton height={40} width={100} baseColor="#121212" highlightColor="#222" />
+          </div>
+        </div>
+  
+        {/* Skeleton para el título (h2) */}
+        <Skeleton
+          height={32}
+          width={300}
+          className="mx-auto md:mx-0 mt-5"
+          baseColor="#121212"
+          highlightColor="#222"
+        />
+  
+        {/* Skeleton para las tarjetas de usuario (ConnectCard) */}
+        <div className="flex flex-col gap-4">
+          {[...Array(3)].map((_, index) => (
+            <div key={index} className="flex items-center gap-4 p-4 bg-spotify-light-gray rounded-lg">
+              <Skeleton circle height={64} width={64} baseColor="#121212" highlightColor="#222" />
+              <div className="flex flex-col gap-2 flex-1">
+                <Skeleton height={20} width={150} baseColor="#121212" highlightColor="#222" />
+                <Skeleton height={16} width={200} baseColor="#121212" highlightColor="#222" />
+                <Skeleton height={16} width={250} baseColor="#121212" highlightColor="#222" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    );
   }
 
   return (
