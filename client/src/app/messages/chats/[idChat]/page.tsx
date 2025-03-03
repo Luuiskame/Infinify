@@ -19,7 +19,6 @@ const Page = ({ params }: { params: Params }) => {
   return (
     <div className="w-full h-full flex items-center justify-center">
        {user && <Chat/>}
-
       </div>
   )
 }

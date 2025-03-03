@@ -49,7 +49,7 @@ const PreviewChat = () => {
       {chatWithMessages?.map((chat) =>
         chat.chatInfo.chat_type === "direct" ? (
           <Link
-            href={ isMobile ? `/chats/${chat.chatInfo.id}` : `/messages/chats/${chat.chatInfo.id}`}
+            href={`/chats/${chat.chatInfo.id}`}
             key={chat.chatInfo.id}
             className={`flex flex-col gap-2 p-4 rounded-lg bg-spotify-light-gray ${
               chat.chatInfo.unread_messages > 0 ? "bg-red-600" : ""
