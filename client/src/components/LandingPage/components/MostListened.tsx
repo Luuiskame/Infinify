@@ -1,6 +1,8 @@
 import React from "react";
 import { useGetPopularArtistsQuery } from "@/services/spotifyApi";
 import MostListenedSongs from "./MostListenedSongs";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 import Image from "next/image";
 import { Artist } from "@/types";
@@ -20,9 +22,17 @@ export default function MostListened() {
 
     console.log({mostPopularArtist})
 
-  if (isLoading)
-    return <p className="text-center text-spotify-white">Loading...</p>;
+ 
   if (error) return <p className="text-center text-red-500">Error</p>;
+
+  if (isLoading) {
+    <article className="md:w-[50%] flex flex-col items-center">
+      <Skeleton height={420} width={520} className="rounded-lg" baseColor="#121212" highlightColor="#222" />
+      <Skeleton height={20} width={200} className="mb-4" baseColor="#121212" highlightColor="#222" />
+      <Skeleton height={16} width={150} baseColor="#121212" highlightColor="#222" />
+      <Skeleton height={16} width={100} baseColor="#121212" highlightColor="#222" />
+    </article>
+  }
 
   return (
     <article className="md:w-[50%] flex flex-col items-center">
