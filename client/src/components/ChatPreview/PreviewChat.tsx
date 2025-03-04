@@ -8,6 +8,8 @@ import { UserPlusIcon } from "@heroicons/react/24/outline";
 // Import Skeleton directly - not as a dynamic component
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { setLastMessageAt } from "@/slices/chatSlice";
+import { useAppDispatch } from "@/redux/hooks";
 
 // Define the chat skeleton component outside the main component
 const ChatSkeleton = () => (
@@ -44,6 +46,7 @@ const EmptyState = () => (
 
 const PreviewChat = () => {
   const [loading, setLoading] = useState(true);
+  const dispatch = useAppDispatch();
 
   const chats = useAppSelector((state) => state.chatsReducer?.user_chats);
   const userId = useAppSelector((state) => state.userReducer?.user?.user.id);
@@ -57,12 +60,28 @@ const PreviewChat = () => {
   }, [chats]);
 
   useEffect(() => {
+    const chatsWithoutLastMessageAt = (chats ?? []).filter(
+      (chat) => !chat.chatInfo.last_message_at
+    );
+  
+    chatsWithoutLastMessageAt.forEach((chat) => {
+      const lastMessage = chat.chat_messages[chat.chat_messages.length - 1];
+      if (lastMessage) {
+        dispatch(setLastMessageAt({
+          chatId: chat.chatInfo.id, 
+          lastMessageAt: lastMessage.created_at
+        }));
+      }
+    });
+  }, [chats, dispatch]);
+
+  useEffect(() => {
     console.log("Chats state updated:", chats);
     // Set loading to false when chats data is available
     if (chats) {
       setLoading(false);
     }
-  }, [chats, chatWithMessages]);
+  }, [chats]);
 
   return (
     <div className="flex flex-col gap-4 w-[90%] mx-auto md:mx-0 md:p-3 max-w-[700px]">

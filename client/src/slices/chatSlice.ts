@@ -32,6 +32,16 @@ const chatSlice = createSlice({
         state.user_chats = [...state.user_chats, action.payload]
       }
     },
+    setLastMessageAt: (state,action: PayloadAction<{chatId: string, lastMessageAt: string}>)=>{
+      if(state.user_chats){
+        const chatIndex = state.user_chats.findIndex(
+          (chatId)=> chatId.chatInfo.id === action.payload.chatId
+        )
+        
+        state.user_chats[chatIndex].chatInfo.last_message_at = action.payload.lastMessageAt
+        console.log('last message set at redux')
+      }
+    },
     setIsFetched: (state, action: PayloadAction<setIsFetchedProps>)=> {
       console.log('redux set fetched is dispatched')
       if(state.user_chats){
@@ -114,5 +124,5 @@ const chatSlice = createSlice({
   },
 });
 
-export const { setChat, setOneChat, setIsFetched, setNewMessage, setMultipleChatMessages,substractTotalUnreadMessages, substractChatUnreadMessages, sumChatUnreadMessages, setTotalUnreadMessages } = chatSlice.actions;
+export const { setChat, setOneChat, setLastMessageAt,setIsFetched, setNewMessage, setMultipleChatMessages,substractTotalUnreadMessages, substractChatUnreadMessages, sumChatUnreadMessages, setTotalUnreadMessages } = chatSlice.actions;
 export default chatSlice.reducer;

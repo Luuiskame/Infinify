@@ -14,7 +14,6 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { ChatMessage } from "@/types";
 import { socket } from "@/socket-io/socket";
 import { useRouter } from "next/navigation";
-import { useCreateOrFindChatMutation } from "@/services/chatsApi";
 
 import { Chats } from "@/types";
 
