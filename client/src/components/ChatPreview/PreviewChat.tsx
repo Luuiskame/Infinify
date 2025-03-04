@@ -51,7 +51,7 @@ const PreviewChat = () => {
   const chatWithMessages = useMemo(() => {
     const filteredMessages = (chats ?? [])?.filter(
       (chat) =>
-        chat.chat_messages.length > 0 && chat.chatInfo.chat_type === "direct"
+        chat.chatInfo.last_message_at && chat.chatInfo.chat_type === "direct"
     );
     return filteredMessages;
   }, [chats]);
@@ -69,7 +69,7 @@ const PreviewChat = () => {
       <h2 className="font-extrabold text-2xl md:text-3xl text-center md:text-left">
         {loading ? (
           <Skeleton width={150} height={36} />
-        ) : chatWithMessages && chatWithMessages.length > 0 ? (
+        ) : chatWithMessages  ? (
           "Chats"
         ) : (
           <EmptyState />
