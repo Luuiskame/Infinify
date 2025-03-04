@@ -234,7 +234,7 @@ const Chat = () => {
         </div>
       </div>
 
-      <div className="flex-grow overflow-y-scroll p-2 chatMiddlePartContainer">
+      <div className="flex-grow overflow-y-scroll p-2 w-[90%] mx-auto chatMiddlePartContainer">
         {chatMessages?.chat_messages?.map((msg, idx) => (
           <div
             key={idx}

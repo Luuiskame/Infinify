@@ -62,14 +62,14 @@ const PreviewChat = () => {
     if (chats) {
       setLoading(false);
     }
-  }, [chats]);
+  }, [chats, chatWithMessages]);
 
   return (
     <div className="flex flex-col gap-4 w-[90%] mx-auto md:mx-0 md:p-3 max-w-[700px]">
       <h2 className="font-extrabold text-2xl md:text-3xl text-center md:text-left">
         {loading ? (
           <Skeleton width={150} height={36} />
-        ) : chatWithMessages  ? (
+        ) : chatWithMessages.length > 0  ? (
           "Chats"
         ) : (
           <EmptyState />
@@ -87,7 +87,7 @@ const PreviewChat = () => {
 
       {/* Loaded state with chats */}
       {!loading &&
-        chatWithMessages?.map((chat) =>
+         chatWithMessages?.map((chat) =>
           chat.chatInfo.chat_type === "direct" ? (
             <Link
               href={`/chats/${chat.chatInfo.id}`}
