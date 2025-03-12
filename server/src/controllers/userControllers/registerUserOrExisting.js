@@ -44,6 +44,7 @@ export const registerUserDb = async (userInfo, userTopSongs, userTopArtist, req)
     console.log('genres filtereeeeed: ',favoriteUserGenres)
     const filteredFav = filteredFavoriteArtists(favoriteUserGenres,5)
     console.log('genres filtered successfully',filteredFav)
+    console.log('userInfo:', userInfo);
     const { data: newUser, error: newUserError } = await supabase
       .from('user')
       .insert([
@@ -74,7 +75,6 @@ export const registerUserDb = async (userInfo, userTopSongs, userTopArtist, req)
     const userId = newUser[0].id;
 
     // store userId in session
-
     if(req && req.session){
       req.session.userId = userId
     }
@@ -123,15 +123,96 @@ export const registerUserDb = async (userInfo, userTopSongs, userTopArtist, req)
       };
     }
 
+    // Fetch all chats the user is part of (for a new user this will likely be empty)
+    const { data: userChats, error: chatsError } = await supabase
+      .from('chat_participants')
+      .select(`
+        chat_id,
+        user_id,
+        joined_at,
+        is_admin,
+        chats (
+          id,
+          chat_type,
+          chat_name,
+          last_message_at
+        )
+      `)
+      .eq('user_id', userId);
 
-    console.log('user created succesfully and returned')
+    if (chatsError) {
+      console.error('Error fetching user chats:', chatsError);
+      return {
+        success: true,
+        user: {
+          ...newUser[0]
+        },
+        user_top_artist: userTopArtist,
+        user_top_songs: userTopSongs,
+        user_chats: [],
+        total_unread_messages: 0
+      };
+    }
+
+    // Format chat data with participants and unread messages
+    const formattedChats = await Promise.all(
+      userChats.map(async (chat) => {
+        const { data: allParticipants, error: participantsError } = await supabase
+          .from('chat_participants')
+          .select(
+            'chat_id, user_id, joined_at, is_admin, user:user_id (id, display_name, profile_photo)'
+          )
+          .eq('chat_id', chat.chat_id);
+
+        const { data: unreadMessages, error: unreadError } = await supabase
+          .from('chat_messages')
+          .select('id')
+          .eq('chat_id', chat.chat_id)
+          .eq('read', false)
+          .neq('sender_id', userId); // Only count messages not sent by the current user
+
+        if (participantsError || unreadError) {
+          console.error('Error fetching chat info:', participantsError || unreadError);
+          return null;
+        }
+
+        const formattedParticipants = allParticipants.map((participant) => ({
+          chat_id: participant.chat_id,
+          user_id: participant.user_id,
+          joined_at: participant.joined_at,
+          is_admin: participant.is_admin,
+          display_name: participant.user?.display_name,
+          profile_photo: participant.user?.profile_photo,
+        }));
+
+        return {
+          chatInfo: {
+            ...chat.chats,
+            unread_messages: unreadMessages?.length || 0,
+          },
+          chat_participants: formattedParticipants,
+        };
+      })
+    );
+
+    const validChats = formattedChats.filter((chat) => chat !== null);
+
+    // Calculate the total number of unread messages
+    const totalUnreadMessages = validChats.reduce(
+      (total, chat) => total + (chat.chatInfo.unread_messages || 0),
+      0
+    );
+
+    console.log('user created successfully and returned')
     return {
       success: true,
       user: {
         ...newUser[0]
       },
       user_top_artist: userTopArtist,
-      user_top_songs: userTopSongs
+      user_top_songs: userTopSongs,
+      user_chats: validChats,
+      total_unread_messages: totalUnreadMessages
     };
 
   } catch (error) {
@@ -142,7 +223,6 @@ export const registerUserDb = async (userInfo, userTopSongs, userTopArtist, req)
     };
   }
 };
-
 
 export const verifyUserExist = async (spotify_id, req) => {
   const { data: existingUserWithDetails, error: selectError } = await supabase

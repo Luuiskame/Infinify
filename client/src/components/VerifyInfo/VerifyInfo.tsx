@@ -23,7 +23,7 @@ export default function VerifyInfo() {
   useEffect(() => {
     if (data && !error) {
       dispatch(setUser(data));
-      const newChats = data.user_chats.map((chat: Chats)=> ({
+      const newChats = data?.user_chats.map((chat: Chats)=> ({
         ...chat,
         chat_messages: [],
         isFetched: false
