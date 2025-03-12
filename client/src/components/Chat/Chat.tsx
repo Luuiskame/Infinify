@@ -84,19 +84,6 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    if (chatTotalUnreadMessages && chatTotalUnreadMessages !== 0) {
-      dispatch(
-        substractChatUnreadMessages({
-          chatId: chatId.idChat as string,
-          numberToSubstract: chatTotalUnreadMessages,
-        })
-      );
-      dispatch(substractTotalUnreadMessages(chatTotalUnreadMessages));
-      socket.emit("markAsRead", {
-        chatId: chatMessages?.chatInfo.id,
-        userId: userProps?.id,
-      });
-    }
 
     const handleConnect = () => {
       console.log("Socket connected:", socket.id);
@@ -132,6 +119,22 @@ const Chat = () => {
     userProps?.id,
     chatId.idChat,
   ]);
+
+  useEffect(() => {
+    if (chatTotalUnreadMessages && chatTotalUnreadMessages > 0) {
+      dispatch(
+        substractChatUnreadMessages({
+          chatId: chatId.idChat as string,
+          numberToSubstract: chatTotalUnreadMessages,
+        })
+      );
+      dispatch(substractTotalUnreadMessages(chatTotalUnreadMessages));
+      socket.emit("markAsRead", {
+        chatId: chatMessages?.chatInfo.id,
+        userId: userProps?.id,
+      });
+    }
+  }, [chatTotalUnreadMessages, chatId.idChat, userProps?.id, dispatch]);
 
   useEffect(() => {
     const handleMarkAsRead = async (data: readResponse) => {
@@ -231,7 +234,7 @@ const Chat = () => {
         </div>
       </div>
 
-      <div className="flex-grow overflow-y-scroll p-2 chatMiddlePartContainer">
+      <div className="flex-grow overflow-y-scroll p-2 w-[90%] mx-auto chatMiddlePartContainer">
         {chatMessages?.chat_messages?.map((msg, idx) => (
           <div
             key={idx}

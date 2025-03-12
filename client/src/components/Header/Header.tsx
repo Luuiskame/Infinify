@@ -14,7 +14,6 @@ import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { ChatMessage } from "@/types";
 import { socket } from "@/socket-io/socket";
 import { useRouter } from "next/navigation";
-import { useCreateOrFindChatMutation } from "@/services/chatsApi";
 
 import { Chats } from "@/types";
 
@@ -102,6 +101,8 @@ const Header = () => {
       console.log("New chat notification:", data);
         
         dispatch(setOneChat(data));
+        socket.emit("join_room", data.chatInfo.id);
+        console.log(`Joining new chat room: ${data.chatInfo.id}`);
 
         if(data.chat_participants[1].user_id !== userId){
           router.push(`/chats/${data.chatInfo.id}`);
