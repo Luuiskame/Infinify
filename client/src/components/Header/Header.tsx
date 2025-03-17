@@ -115,6 +115,7 @@ const Header = () => {
     return () => {
       socket.off("new_chat_notification", onNewChatNotification);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, userId, chats,]);
 
   return (
