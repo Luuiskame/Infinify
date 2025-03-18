@@ -67,7 +67,6 @@ export interface Userinfo {
 }
 
 export interface Chats {
-  recipients: any;
   chatInfo: Chat
   chat_participants: ChatParticipant[]
   chat_messages: ChatMessage[] 

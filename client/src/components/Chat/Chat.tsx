@@ -134,6 +134,7 @@ const Chat = () => {
         userId: userProps?.id,
       });
     }
+    //eslint-disable-next-line
   }, [chatTotalUnreadMessages, chatId.idChat, userProps?.id, dispatch]);
 
   useEffect(() => {
@@ -150,6 +151,7 @@ const Chat = () => {
     return () => {
       socket.off("marked_as_read", handleMarkAsRead);
     };
+    //eslint-disable-next-line
   }, [userProps?.id]);
 
   useEffect(() => {
@@ -189,7 +191,9 @@ const Chat = () => {
       controller.abort();
     };
     
-  }, [
+  }, 
+  //eslint-disable-next-line
+  [
     chatId?.idChat,
     chatMessages?.isFetched,
 ]);
