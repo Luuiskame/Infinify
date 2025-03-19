@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "start:ws": "node ws-server.js",
+    "vercel-build": "echo 'Building for vercel'"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",
