@@ -20,31 +20,79 @@ const GenereOfTheDay = () => {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col gap-6" >
+      <>
         {/* Skeleton para el título y descripción del género */}
-        <div className="flex flex-col gap-4">
-          <Skeleton height={20} width={150} baseColor="#121212" highlightColor="#222" />
-          <Skeleton height={24} width={200} baseColor="#121212" highlightColor="#222" />
-        </div>
-
-        {/* Skeleton para la lista de canciones */}
-        {[...Array(3)].map((_, index) => (
-          <div key={index} className="flex items-center gap-4">
-            <Skeleton circle height={64} width={64} />
-            <div className="flex flex-col gap-2">
-              <Skeleton height={16} width={200} baseColor="#121212" highlightColor="#222" />
-              <Skeleton height={14} width={150} baseColor="#121212" highlightColor="#222" />
-            </div>
+        <div className="flex flex-col gap-6 w-[100%] md:w[50%]">
+          <div className="flex flex-col gap-4">
+            <Skeleton
+              height={20}
+              width={150}
+              baseColor="#121212"
+              highlightColor="#222"
+            />
+            <Skeleton
+              height={24}
+              width={200}
+              baseColor="#121212"
+              highlightColor="#222"
+            />
           </div>
-        ))}
+
+          {/* Skeleton para la lista de canciones */}
+          <div className="flex flex-col gap-6">
+            {[...Array(3)].map((_, index) => (
+              <div key={index} className="flex items-center gap-4">
+                <Skeleton
+                  circle
+                  height={64}
+                  width={64}
+                  baseColor="#121212"
+                  highlightColor="#222"
+                />
+                <div className="flex flex-col gap-2">
+                  <Skeleton
+                    height={16}
+                    width={200}
+                    baseColor="#121212"
+                    highlightColor="#222"
+                  />
+                  <Skeleton
+                    height={14}
+                    width={150}
+                    baseColor="#121212"
+                    highlightColor="#222"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
 
         {/* Skeleton para la sección de información del género */}
-        <div className="mt-8 flex flex-col items-center gap-4">
-          <Skeleton height={300} width={300} className="rounded-lg" baseColor="#121212" highlightColor="#222" />
-          <Skeleton height={20} width={250} baseColor="#121212" highlightColor="#222" />
-          <Skeleton height={60} width={300} baseColor="#121212" highlightColor="#222" />
+        <div className="mt-[2rem] w-[100%] items-center justify-center flex">
+          <div className="flex flex-col items-center justify-center max-w-[400px] text-center">
+            <Skeleton
+              height={300}
+              width={300}
+              className="rounded-lg"
+              baseColor="#121212"
+              highlightColor="#222"
+            />
+            <Skeleton
+              height={20}
+              width={250}
+              baseColor="#121212"
+              highlightColor="#222"
+            />
+            <Skeleton
+              height={60}
+              width={300}
+              baseColor="#121212"
+              highlightColor="#222"
+            />
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
@@ -62,7 +110,7 @@ const GenereOfTheDay = () => {
         {data?.songs?.map((song: Song) => (
           <div
             key={song.id}
-            className="relative flex flex-col items-start rounded-lg shadow-md mt-6"
+            className="relative flex flex-col items-start rounded-lg mt-6"
           >
             <div className="flex justify-center items-center">
               <Image
