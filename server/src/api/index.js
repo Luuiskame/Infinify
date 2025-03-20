@@ -1,4 +1,4 @@
-import { app } from '../src/app.js';
+import { app } from '../app';
 import serverless from 'serverless-http';
 
 // this is used for vercel serverless deploy
