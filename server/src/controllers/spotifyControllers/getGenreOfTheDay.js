@@ -1,6 +1,16 @@
 import axios from 'axios';
 import { getAppToken } from "../authControllers/getAppToken.js";
-import genresJsonInfo from '../../genres.json' assert {type: 'json'};
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Load the genres JSON file
+const genresJsonInfo = JSON.parse(
+  fs.readFileSync(path.join(__dirname, '../../genres.json'), 'utf8')
+);
 
 const baseUrl = 'https://api.spotify.com/v1/';
 
@@ -10,6 +20,7 @@ const baseUrl = 'https://api.spotify.com/v1/';
  * @param {Object} res - Express response object
  * @returns {Promise<Object>} Object containing 5 songs from a genre
  */
+
 export const getGenreOfTheDay = async (req, res) => {
   const fullResponse = {
     genreName: '',
