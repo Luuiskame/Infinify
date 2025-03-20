@@ -55,7 +55,7 @@ export default function LandingPage() {
         <PopularSongNow />
       </section> */}
 
-      <section className="bg-spotify-light-gray mt-4 mb-4 rounded-lg w-full p-6">
+      <section className="bg-spotify-light-gray mt-4 mb-24 md:mb-5 rounded-lg w-full p-6">
         <RecentlyJoined />
       </section>
     </main>
