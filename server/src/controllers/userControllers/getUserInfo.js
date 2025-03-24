@@ -5,17 +5,8 @@ import { registerUserDb, verifyUserExist } from "./registerUserOrExisting.js";
 
 
 export const getUserInfo = async (req, res) => {
-  const { access_token, refresh_token, expires_in, token_timestamp } =
-    req.session;
-
-  // Log session data for debugging
-  console.log("Session data:", req.session);
-
-  if (!access_token) {
-    return res
-      .status(401)
-      .json({ message: "No access token found in session" });
-  }
+  const access_token = req.cookies.spotify_access_token;
+  const refresh_token = req.cookies.spotify_refresh_token;
 
   try {
     const response = await axios.get("https://api.spotify.com/v1/me", {

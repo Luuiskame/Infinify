@@ -40,25 +40,17 @@ export const getUserToken = async (req, res) => {
     try {
       const response = await axios(authOptions);
       const { access_token, refresh_token, expires_in } = response.data;
-      console.log('Access Token:', access_token);
+      const token_timestamp = Date.now();
+      
+      // Set tokens as secure, httpOnly cookies
+      res.setHeader('Set-Cookie', [
+        `spotify_access_token=${access_token}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=${expires_in}`,
+        `spotify_refresh_token=${refresh_token}; HttpOnly; Secure; SameSite=Strict; Path=/;`,
+        `token_timestamp=${token_timestamp}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=${expires_in}`
+      ]);
 
-      // Store tokens in session
-      req.session.access_token = access_token;
-      req.session.refresh_token = refresh_token;
-      req.session.expires_in = expires_in;
-      req.session.token_timestamp = Date.now();
-
-      console.log('Session before saving:', req.session); // Log the session object
-
-      // Manually save the session after modifying it
-      req.session.save((err) => {
-        if (err) {
-          console.error("Session save error:", err);
-          return res.status(500).send("Error saving session");
-        }
-        console.log('Session saved successfully');
-        res.redirect(redirectToCheckInfoPage);
-      });
+      console.log('Tokens successfully obtained and set as cookies');
+      res.redirect(redirectToCheckInfoPage);
     } catch (error) {
       console.log('Error exchanging code for tokens:', error);
       res.status(500).send("Error exchanging code for tokens");
