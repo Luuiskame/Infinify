@@ -24,7 +24,7 @@ app.use('/infinify', routes);
 
 // Add healthcheck endpoint for better debugging
 app.get('/healthcheck', (req, res) => {
-  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+  res.status(200).json({ status: 'healthcheck ok', timestamp: new Date().toISOString() });
 });
 
 export { app };
