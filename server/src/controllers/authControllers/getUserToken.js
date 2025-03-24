@@ -39,9 +39,18 @@ export const getUserToken = async (req, res) => {
 
     try {
       const response = await axios(authOptions);
-      console.log(response)
+      const { access_token, refresh_token, expires_in } = response.data;
+      const token_timestamp = Date.now();
+      
+      // Set tokens as secure, httpOnly cookies
+      res.setHeader('Set-Cookie', [
+        `spotify_access_token=${access_token}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=${expires_in}`,
+        `spotify_refresh_token=${refresh_token}; HttpOnly; Secure; SameSite=Strict; Path=/;`,
+        `token_timestamp=${token_timestamp}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=${expires_in}`
+      ]);
 
-        res.redirect(redirectToCheckInfoPage);
+      console.log('Tokens successfully obtained and set as cookies');
+      res.redirect(redirectToCheckInfoPage);
     } catch (error) {
       console.log('Error exchanging code for tokens:', error);
       res.status(500).send("Error exchanging code for tokens");
