@@ -43,11 +43,12 @@ export const getUserToken = async (req, res) => {
       const token_timestamp = Date.now();
       
       // Set tokens as secure, httpOnly cookies
-      res.setHeader('Set-Cookie', [
-        `spotify_access_token=${access_token}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=${expires_in}`,
-        `spotify_refresh_token=${refresh_token}; HttpOnly; Secure; SameSite=Strict; Path=/;`,
-        `token_timestamp=${token_timestamp}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=${expires_in}`
+      res.setHeader("Set-Cookie", [
+        `spotify_access_token=${access_token}; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=${expires_in}`,
+        `spotify_refresh_token=${refresh_token}; HttpOnly; Secure; SameSite=None; Path=/;`,
+        `token_timestamp=${token_timestamp}; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=${expires_in}`
       ]);
+      
 
       console.log('Tokens successfully obtained and set as cookies');
       res.redirect(redirectToCheckInfoPage);
