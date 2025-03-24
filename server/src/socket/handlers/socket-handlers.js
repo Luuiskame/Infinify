@@ -1,17 +1,13 @@
-import { sessionMiddleware } from '../../app.js';
 import { sendMessage, validateChatParticipant } from '../../controllers/chatControllers/senMessage.js';
 import { createChats } from '../../controllers/chatControllers/createChats.js';
 import { markMessagesAsRead } from '../../controllers/chatControllers/markMessageAsRead.js';
 
 // Wrap session middleware for Socket.IO
-const wrap = (middleware) => (socket, next) =>
-  middleware(socket.request, {}, next);
 
 export function setupSocketHandlers(io) {
   const onlineUsers = new Map(); // userId -> socketId
   
   // Apply session middleware
-  io.use(wrap(sessionMiddleware));
 
   io.on("connection", (socket) => {
     console.log(`User connected with socket id: ${socket.id}`);

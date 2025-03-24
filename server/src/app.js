@@ -1,10 +1,10 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
-import session from 'express-session';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import routes from './routes/index.js';
 
+// Load env variables once during initialization
 dotenv.config();
 
 const app = express();
@@ -17,20 +17,14 @@ app.use(cors({
   credentials: true,
 }));
 
-const sessionMiddleware = session({
-  secret: process.env.SESSION_SECRET || 'your-secret-key',
-  resave: true,
-  saveUninitialized: true,
-  cookie: {
-    secure: process.env.NODE_ENV === 'production', // only true in production
-    httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000,
-  },
-});
+// Remove session middleware completely since it's not needed
 
-app.use(sessionMiddleware);
-
-// Setup your API routes
+// Setup API routes
 app.use('/infinify', routes);
 
-export { app, sessionMiddleware };
+// Add healthcheck endpoint for better debugging
+app.get('/healthcheck', (req, res) => {
+  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+export { app };
