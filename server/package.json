@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node local-dev.js",
     "dev": "nodemon local-dev.js",
-    "start:ws": "node ws-server.js",
+    "start:ws": "node src/ws-server.js",
     "vercel-build": "echo 'Building for vercel'"
   },
   "dependencies": {

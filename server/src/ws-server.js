@@ -1,4 +1,4 @@
-import { app } from './src/app.js';
+import { app } from './app.js';
 import http from 'http';
 import { Server } from 'socket.io';
 import dotenv from 'dotenv';
@@ -9,10 +9,20 @@ dotenv.config();
 // Create HTTP server
 const server = http.createServer(app);
 
-// Initialize Socket.IO with this server
+// In ws-server.js
+const allowedWsOrigins = process.env.ALLOWED_WS_ORIGINS 
+  ? process.env.ALLOWED_WS_ORIGINS.split(',') 
+  : ['http://localhost:3000', 'https://infinify-v1.vercel.app'];
+
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    origin: (origin, callback) => {
+      if (!origin || allowedWsOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
   },
   connectionStateRecovery: {
@@ -20,6 +30,7 @@ const io = new Server(server, {
     skipMiddlewares: true,
   },
 });
+
 
 // Set up all socket handlers
 setupSocketHandlers(io);

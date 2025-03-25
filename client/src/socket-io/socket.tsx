@@ -1,6 +1,6 @@
 import io from 'socket.io-client';
 
-const URL = process.env.NEXT_PUBLIC_WS_SERVER_URL
+const URL = process.env.NEXT_PUBLIC_WS_SERVER_URL // this endpoint goes to our backend in local and to railway dev in production
 
 export const socket = io(URL, {
   autoConnect: false,
