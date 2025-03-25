@@ -63,7 +63,6 @@ const PageContent = () => {
         setResults([]);
         return;
       }
-
       setIsLoading(true);
       try {
         const users = await searchUsers(searchTerm);
@@ -90,12 +89,17 @@ const PageContent = () => {
   }, [searchTerm, dispatch, param]);
 
   // Sincronizar con parámetros de URL
-  useEffect(() => {
-    if (queryParam && queryParam !== searchTerm) {
-      setSearchTerm(queryParam);
+useEffect(() => {
+  if (queryParam && !searchTerm) {
+    if (queryParam !== searchTerm) {
+      setSearchTerm('');
+      router.replace('/search');
     }
-  }, [queryParam, searchTerm]);
+  }
+}, [queryParam, searchTerm, router]);
 
+
+  //metodo para buscar usuarios
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchTerm.trim()) {
@@ -104,11 +108,12 @@ const PageContent = () => {
     }
   };
 
+
+  //metodo para seleccionar un historial de búsqueda
   const handleHistoryClick = (term: string) => {
     setSearchTerm(term);
     setShowHistory(false);
     router.push(`/search?q=${encodeURIComponent(term)}`);
-    setSearchTerm("");
   };
 
   return (
