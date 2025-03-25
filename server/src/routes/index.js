@@ -56,7 +56,7 @@ routes.get('/top-global-songs', topGlobalSongs)
 routes.get('/song-of-the-day', getSongOfTheDay)
 
 // users profile info
-routes.get('/get-profile', getUserInfo)
+routes.post('/get-profile', getUserInfo)
 routes.get('/get-user-refresh-token', getNewUsertoken)
 
 //chats

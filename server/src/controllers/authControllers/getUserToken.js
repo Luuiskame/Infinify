@@ -51,7 +51,8 @@ export const getUserToken = async (req, res) => {
       
 
       console.log('Tokens successfully obtained and set as cookies');
-      res.redirect(redirectToCheckInfoPage);
+      const redirectUrl = `${redirectToCheckInfoPage}#access_token=${access_token}&refresh_token=${refresh_token}&expires_in=${expires_in}`;
+      res.redirect(redirectUrl);
     } catch (error) {
       console.log('Error exchanging code for tokens:', error);
       res.status(500).send("Error exchanging code for tokens");
