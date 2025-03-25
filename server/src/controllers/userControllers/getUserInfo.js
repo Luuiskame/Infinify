@@ -5,16 +5,25 @@ import { registerUserDb, verifyUserExist } from "./registerUserOrExisting.js";
 
 
 export const getUserInfo = async (req, res) => {
-  const { access_token, refresh_token, expires_in, token_timestamp } =
-    req.session;
+  // Log all cookies for debugging
+  console.log('All Cookies:', req.cookies);
+  
+  // Explicitly log the access token cookie
+  console.log('Spotify Access Token Cookie:', req.cookies.spotify_access_token);
 
-  // Log session data for debugging
-  console.log("Session data:", req.session);
+  const access_token = req.body.token;
+  const refresh_token = req.body.refresh_token;
 
+  console.log('Access Token:', access_token);
+  console.log('Refresh Token:', refresh_token);
+
+  // Additional checks
   if (!access_token) {
-    return res
-      .status(401)
-      .json({ message: "No access token found in session" });
+    console.warn('Access token from cookies is undefined or empty');
+    return res.status(401).json({ 
+      error: "No access token found", 
+      details: "Token might be blocked due to browser privacy settings" 
+    });
   }
 
   try {

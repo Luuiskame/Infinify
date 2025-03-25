@@ -21,7 +21,7 @@ const Navbar = () => {
   }, [dispatch]);
 
   return (
-    <div className="lex justify-between items-center px-6 relative">
+    <div className="flex justify-between items-center px-6 relative">
       <nav className=" px-6 py-3 text-white">
         <div className="md:flex hidden items-center gap-5">
           <div className="flex items-center justify-center">

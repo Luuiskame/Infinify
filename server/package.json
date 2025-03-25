@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node local-dev.js",
     "dev": "nodemon local-dev.js",
-    "start:ws": "node ws-server.js",
+    "start:ws": "node src/ws-server.js",
     "vercel-build": "echo 'Building for vercel'"
   },
   "dependencies": {
@@ -16,7 +16,6 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
-    "serverless-http": "^3.2.0",
     "socket.io": "^4.8.1"
   },
   "devDependencies": {
