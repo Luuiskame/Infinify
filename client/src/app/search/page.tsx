@@ -26,9 +26,10 @@ const PageContent = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const router = useRouter();
-  const param = useSearchParams();
-  const queryParam = param.get("q");
+  const searchParams = useSearchParams();
+  const queryParam = searchParams.get("q");
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const isInitialMount = useRef(true);
 
   const dispatch = useAppDispatch();
   const history = useAppSelector((state) => state.searchHistory.searchHistory);
@@ -58,19 +59,17 @@ const PageContent = () => {
 
   // Efecto principal para manejar búsquedas
   useEffect(() => {
-    const executeSearch = async () => {
+    const search = async () => {
       if (!searchTerm.trim()) {
         setResults([]);
         return;
       }
+
       setIsLoading(true);
       try {
         const users = await searchUsers(searchTerm);
         setResults(users);
-
-        if (!param.get("q")) {
-          dispatch(addSearchHistory(searchTerm));
-        }
+        dispatch(addSearchHistory(searchTerm));
       } catch (error) {
         console.error("Search error:", error);
         setResults([]);
@@ -79,27 +78,20 @@ const PageContent = () => {
       }
     };
 
-    const timer = setTimeout(() => {
-      if (searchTerm) {
-        executeSearch();
-      }
-    }, 500);
-
+    const timer = setTimeout(search, 500);
     return () => clearTimeout(timer);
-  }, [searchTerm, dispatch, param]);
+  }, [searchTerm, dispatch]);
 
   // Sincronizar con parámetros de URL
-useEffect(() => {
-  if (queryParam && !searchTerm) {
-    if (queryParam !== searchTerm) {
-      setSearchTerm('');
-      router.replace('/search');
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      if (queryParam) {
+        setSearchTerm(queryParam);
+      }
     }
-  }
-}, [queryParam, searchTerm, router]);
+  }, [queryParam]);
 
-
-  //metodo para buscar usuarios
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchTerm.trim()) {
@@ -108,12 +100,16 @@ useEffect(() => {
     }
   };
 
-
-  //metodo para seleccionar un historial de búsqueda
   const handleHistoryClick = (term: string) => {
     setSearchTerm(term);
     setShowHistory(false);
     router.push(`/search?q=${encodeURIComponent(term)}`);
+  };
+
+  const handleClearSearch = () => {
+    setSearchTerm("");
+    router.push("/search");
+    searchInputRef.current?.focus();
   };
 
   return (
@@ -139,21 +135,13 @@ useEffect(() => {
               className="rounded-full px-6 py-3 w-full bg-spotify-light-gray border-2 border-[#63707F] text-white focus:outline-none focus:border-spotify-green"
             />
             <button
-              type="submit"
-              disabled={!searchTerm.trim()}
+              type={searchTerm.trim() ? "button" : "submit"}
               className={`absolute right-3 top-1/2 transform -translate-y-1/2 p-1 rounded-full ${
                 searchTerm.trim()
                   ? "bg-spotify-green text-black hover:bg-spotify-green-dark"
                   : "bg-gray-500 cursor-not-allowed"
               }`}
-              onClick={(e) => {
-                if (searchTerm.trim()) {
-                  e.preventDefault();
-                  setSearchTerm("");
-                  router.push(`/search`);
-                  searchInputRef.current?.focus();
-                }
-              }}
+              onClick={searchTerm.trim() ? handleClearSearch : undefined}
             >
               {isLoading ? (
                 <Loading />
@@ -193,10 +181,6 @@ useEffect(() => {
                         if ((e.target as HTMLElement).closest("button")) {
                           return;
                         }
-                        console.log(
-                          "Término del historial seleccionado:",
-                          term
-                        );
                         handleHistoryClick(term);
                       }}
                     >
