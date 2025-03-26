@@ -11,6 +11,7 @@ import { chatsApi } from "@/services/chatsApi";
 // slices
 import userSlice from "../slices/userSlice";
 import chatSlice from "../slices/chatSlice";
+import  searchHistorySlice  from "../slices/searchHistorySlice";
 
 // Persist configuration for chatSlice
 const chatPersistConfig = {
@@ -23,6 +24,7 @@ const persistedChatReducer = persistReducer(chatPersistConfig, chatSlice);
 
 const store = configureStore({
   reducer: {
+    searchHistory: searchHistorySlice,
     userReducer: userSlice,
     chatsReducer: persistedChatReducer, // Use the persisted reducer for chats
     [spotifyApi.reducerPath]: spotifyApi.reducer,

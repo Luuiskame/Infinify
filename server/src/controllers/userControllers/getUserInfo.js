@@ -11,15 +11,15 @@ export const getUserInfo = async (req, res) => {
   // Explicitly log the access token cookie
   console.log('Spotify Access Token Cookie:', req.cookies.spotify_access_token);
 
-  const access_token = req.cookies.spotify_access_token;
-  const refresh_token = req.cookies.spotify_refresh_token;
+  const access_token = req.body.token;
+  const refresh_token = req.body.refresh_token;
 
   console.log('Access Token:', access_token);
   console.log('Refresh Token:', refresh_token);
 
   // Additional checks
   if (!access_token) {
-    console.warn('Access token is undefined or empty');
+    console.warn('Access token from cookies is undefined or empty');
     return res.status(401).json({ 
       error: "No access token found", 
       details: "Token might be blocked due to browser privacy settings" 

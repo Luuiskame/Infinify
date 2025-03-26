@@ -3,7 +3,7 @@
 import React, { useEffect } from "react";
 import Navbar from "./Navbar/Navbar";
 import Link from "next/link";
-import { FiSearch } from "react-icons/fi";
+import { MagnifyingGlassIcon as OutlineMagnifyingGlassIcon } from "@heroicons/react/24/outline"; // Outline version
 import {
   setNewMessage,
   setTotalUnreadMessages,
@@ -119,19 +119,17 @@ const Header = () => {
   }, [dispatch, userId, chats,]);
 
   return (
-    <div className="bg-spotify-dark-gray px-8 py-6 flex justify-between gap-4">
+    <header className="bg-spotify-dark-gray px-8 py-6 flex justify-between">
       <div className="flex justify-between gap-24 w-[180%] md:w-[10%]">
         <Link href={`/`}>
           <h2 className="text-2xl font-bold text-spotify-green">Infinify</h2>
         </Link>
-        <Link href={`/search`} className="">
-          <span className="absolute flex text-3xl text-white items-end justify-end md:hidden w-32">
-            <FiSearch />
-          </span>
+        <Link href={`/search`} className="md:hidden">
+            <OutlineMagnifyingGlassIcon className="h-10 w-12 text-spotify-white"/>
         </Link>
       </div>
       <Navbar />
-    </div>
+    </header>
   );
 };
 
