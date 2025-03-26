@@ -58,7 +58,7 @@ export default function VerifyInfo() {
     return (
       <div className="flex items-center justify-center h-screen bg-spotify-black text-white">
         <div className="text-center p-6 bg-spotify-light-gray rounded-lg">
-          <h2 className="text-2xl font-bold mb-4">Error de conexión</h2>
+          <h2 className="text-2xl font-bold mb-4">Conexion Error</h2>
           <p>{"status" in error ? error.status : error.message}</p>
           <button
             onClick={() => window.location.reload()}
@@ -109,10 +109,10 @@ export default function VerifyInfo() {
           className="text-center mb-8"
         >
           <h1 className="text-2xl md:text-3xl font-bold mb-2">
-            Preparando tu experiencia
+            Kiss my ass while we are
           </h1>
-          <p className="text-spotify-light-gray">
-            Estamos cargando tus datos...
+          <p className="text-2xl md:text-3xl font-bold mb-2">
+            Loadig your data...
           </p>
         </motion.div>
       )}
@@ -150,7 +150,7 @@ export default function VerifyInfo() {
         transition={{ delay: 1, duration: 0.5 }}
         className="text-xs text-spotify-light-gray mt-12"
       >
-        Conectando con Spotify...
+        Conecting to spotify...
       </motion.p>
     </div>
   );

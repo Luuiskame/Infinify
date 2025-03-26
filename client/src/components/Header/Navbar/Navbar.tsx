@@ -37,9 +37,7 @@ const Navbar = () => {
     <div className="flex justify-between items-center px-6 relative">
       <nav className="px-6 py-3 text-white">
         <div className="md:flex hidden items-center gap-5">
-          <div className="flex items-center justify-center">
             <Search />
-          </div>
           {links.map(({ id, name, url }) => (
             <Link
               href={url}
@@ -140,7 +138,7 @@ const Navbar = () => {
               <span className={`text-xs mt-1 ${
                 isMessagesActive ? "text-spotify-green" : "text-white"
               }`}>
-                Mensajes
+                Messages
               </span>
             </Link>
             <div className="relative">
