@@ -119,7 +119,7 @@ const Header = () => {
   }, [dispatch, userId, chats,]);
 
   return (
-    <div className="bg-spotify-dark-gray px-8 py-6 flex justify-between">
+    <header className="bg-spotify-dark-gray px-8 py-6 flex justify-between">
       <div className="flex justify-between gap-24 w-[180%] md:w-[10%]">
         <Link href={`/`}>
           <h2 className="text-2xl font-bold text-spotify-green">Infinify</h2>
@@ -128,10 +128,8 @@ const Header = () => {
             <OutlineMagnifyingGlassIcon className="h-10 w-12 text-spotify-white"/>
         </Link>
       </div>
-      <div className="sr-only md:not-sr-only">
       <Navbar />
-      </div>
-    </div>
+    </header>
   );
 };
 
