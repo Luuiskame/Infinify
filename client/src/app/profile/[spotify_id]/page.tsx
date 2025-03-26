@@ -10,7 +10,7 @@ import { Userinfo } from "@/types";
 import UserTopGenres from "@/components/Profile/UserTopGenres/UserTopGenres";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-
+import Setting from "@/components/Profile/Setting/Setting";
 
 type Params = {
   spotify_id: string;
@@ -25,7 +25,6 @@ export default function Page({ params }: { params: Params }) {
 
   const data = useAppSelector((state) => state.userReducer.user);
   const currentUser = data?.user;
-  
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -38,7 +37,7 @@ export default function Page({ params }: { params: Params }) {
         });
       } else {
         const users = await searchUsersById(spotify_id);
-        console.log("users", users)
+        console.log("users", users);
         if (users.length > 0) {
           setUserData(users[0]);
         } else {
@@ -63,6 +62,8 @@ export default function Page({ params }: { params: Params }) {
         );
       case "about":
         return <AboutMe isOwnProfile={isOwnProfile} user={userData} />;
+        case "settings":
+          return <Setting />;
       default:
         return null;
     }
@@ -74,26 +75,68 @@ export default function Page({ params }: { params: Params }) {
         {/* Skeleton para el encabezado */}
         <div className="p-10">
           <div className="flex items-center gap-4">
-            <Skeleton circle height={100} width={100} baseColor="#121212" highlightColor="#222"/>
+            <Skeleton
+              circle
+              height={100}
+              width={100}
+              baseColor="#121212"
+              highlightColor="#222"
+            />
             <div className="flex flex-col gap-2">
-              <Skeleton height={24} width={200} baseColor="#121212" highlightColor="#222"/>
-              <Skeleton height={16} width={150} baseColor="#121212" highlightColor="#222"/>
+              <Skeleton
+                height={24}
+                width={200}
+                baseColor="#121212"
+                highlightColor="#222"
+              />
+              <Skeleton
+                height={16}
+                width={150}
+                baseColor="#121212"
+                highlightColor="#222"
+              />
             </div>
           </div>
         </div>
 
         {/* Skeleton para la barra de navegación */}
         <div className="flex justify-start bg-spotify-light-gray px-10">
-          <Skeleton height={40} width={100} className="mr-4" baseColor="#121212" highlightColor="#222"/>
-          <Skeleton height={40} width={100} baseColor="#121212" highlightColor="#222"/>
+          <Skeleton
+            height={40}
+            width={100}
+            className="mr-4"
+            baseColor="#121212"
+            highlightColor="#222"
+          />
+          <Skeleton
+            height={40}
+            width={100}
+            baseColor="#121212"
+            highlightColor="#222"
+          />
         </div>
 
         {/* Skeleton para el contenido de la pestaña activa */}
         <div className="py-2 px-10 mt-6 bg-spotify-dark-gray w-full">
           <div className="flex flex-col md:flex-row gap-4">
-            <Skeleton height={300} width="100%" baseColor="#121212" highlightColor="#222"/>
-            <Skeleton height={300} width="100%" baseColor="#121212" highlightColor="#222"/>
-            <Skeleton height={300} width="100%" baseColor="#121212" highlightColor="#222"/>
+            <Skeleton
+              height={300}
+              width="100%"
+              baseColor="#121212"
+              highlightColor="#222"
+            />
+            <Skeleton
+              height={300}
+              width="100%"
+              baseColor="#121212"
+              highlightColor="#222"
+            />
+            <Skeleton
+              height={300}
+              width="100%"
+              baseColor="#121212"
+              highlightColor="#222"
+            />
           </div>
         </div>
       </div>
@@ -112,7 +155,7 @@ export default function Page({ params }: { params: Params }) {
         <button
           className={`px-4 py-2 font-sans font-bold ${
             activeTab === "Info"
-              ? "border-b-8 border-spotify-green text-white "
+              ? "border-b-4 border-spotify-green text-white "
               : "text-gray-300 "
           }`}
           onClick={() => setActiveTab("Info")}
@@ -122,13 +165,25 @@ export default function Page({ params }: { params: Params }) {
         <button
           className={`px-4 py-2 font-sans font-bold ${
             activeTab === "about"
-              ? "text-white border-b-8 border-spotify-green"
+              ? "text-white border-b-4 border-spotify-green"
               : "text-gray-300"
           }`}
           onClick={() => setActiveTab("about")}
         >
           {isOwnProfile ? `About Me` : `About ${userData?.display_name}`}
         </button>
+        {isOwnProfile && (
+          <button
+            className={`px-4 py-2 font-sans font-bold ${
+              activeTab === "settings"
+                ? "text-white border-b-4 border-spotify-green"
+                : "text-gray-300"
+            }`}
+            onClick={() => setActiveTab("settings")}
+          >
+            Settings
+          </button>
+        )}
       </div>
 
       {/* Contenido de la pestaña activa */}
