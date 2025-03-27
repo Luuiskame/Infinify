@@ -1,5 +1,4 @@
 import { Userinfo } from "@/types";
-import { div } from "framer-motion/client";
 import { useState } from "react";
 import React from "react";
 
@@ -19,7 +18,7 @@ const UserTopGenres = ({ user }: Props) => {
 
 
   return (
-    <div className="mb-20 w-[100%] md:w-[50%]">
+    <div className="mb-20 w-[100%] lg:w-[50%]">
       <h2 className="text-3xl font-bold text-white font-sans text-center">
         Favorite Genres
       </h2>

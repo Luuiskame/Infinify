@@ -20,7 +20,7 @@ const UserTopSongs = ({user}: Props) => {
   };
 
   return (
-    <div className="w-[100%] md:w-[50%]">
+    <div className="w-[100%] lg:w-[50%]">
       <h2 className="text-3xl text-white font-bold font-sans">Top Songs</h2>
       <div className="bg-spotify-light-gray mt-4 rounded-lg mb-10">
         <div>

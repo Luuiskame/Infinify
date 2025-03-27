@@ -11,6 +11,7 @@ import UserTopGenres from "@/components/Profile/UserTopGenres/UserTopGenres";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Setting from "@/components/Profile/Setting/Setting";
+import TermSelector from "@/components/Profile/TermSeletor";
 
 type Params = {
   spotify_id: string;
@@ -54,10 +55,14 @@ export default function Page({ params }: { params: Params }) {
     switch (activeTab) {
       case "Info":
         return (
-          <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex flex-col gap-4">
+            <TermSelector />
+          <div className="flex flex-col lg:flex-row gap-4">
             <UserTopArtist user={userData} />
             <UserTopSong user={userData} />
             <UserTopGenres user={userData} />
+          </div>
+        
           </div>
         );
       case "about":
