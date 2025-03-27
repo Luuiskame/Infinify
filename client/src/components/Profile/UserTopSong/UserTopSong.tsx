@@ -5,13 +5,13 @@ import { useState } from "react";
 
 type Props = {
   user: Userinfo | null
-  timeRange: string
+  songToDisplay: Song[] | []
 };
 
-const UserTopSongs = ({user}: Props) => {
+const UserTopSongs = ({user, songToDisplay}: Props) => {
   const [showAll, setShowAll] = useState(false);
   
-  const topSongs = user?.user_top_songs;
+  const topSongs = songToDisplay
   
   // Slice first 10 songs if not showing all
   const displayedSongs = showAll ? topSongs : topSongs?.slice(0, 10);

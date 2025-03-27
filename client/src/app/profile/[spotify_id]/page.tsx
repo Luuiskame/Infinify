@@ -12,6 +12,8 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Setting from "@/components/Profile/Setting/Setting";
 
+import { Artist, Song, } from "@/types";
+
 type Params = {
   spotify_id: string;
 };
@@ -26,6 +28,10 @@ export default function Page({ params }: { params: Params }) {
   const [loading, setLoading] = useState(true);
   const [timeRange, setTimeRange] = useState<TimeRange>("long_term");
 
+  const [artistToDisplay, setArtistToDisplay] = useState<Artist[]>([]);
+  const [songToDisplay, setSongToDisplay] = useState<Song[] | []>([]);
+  const [genreToDisplay, setGenreToDisplay] = useState<string[]>([]);
+
   const data = useAppSelector((state) => state.userReducer.user);
   const currentUser = data?.user;
 
@@ -33,6 +39,10 @@ export default function Page({ params }: { params: Params }) {
     const fetchUserData = async () => {
       if (currentUser?.spotify_id === spotify_id) {
         setIsOwnProfile(true);
+        console.log("currentUser", currentUser);
+        setArtistToDisplay(data?.user_top_artist ?? []);
+        setSongToDisplay(data?.user_top_songs ?? []);
+        setGenreToDisplay(currentUser?.favorite_genres ?? []);
         setUserData({
           ...currentUser,
           user_top_artist: data?.user_top_artist ?? [],
@@ -43,6 +53,9 @@ export default function Page({ params }: { params: Params }) {
         console.log("users", users);
         if (users.length > 0) {
           setUserData(users[0]);
+          setArtistToDisplay(users[0]?.user_top_artist ?? []);
+        setSongToDisplay(users[0]?.user_top_songs ?? []);
+        setGenreToDisplay(users[0]?.favorite_genres ?? []);
         } else {
           console.error("No se encontró el usuario");
         }
@@ -82,9 +95,9 @@ export default function Page({ params }: { params: Params }) {
               <option value="short_term">Last 4 Weeks</option>
             </select>
             <div className="flex flex-col lg:flex-row gap-4">
-              <UserTopArtist user={userData} timeRange={timeRange}/>
-              <UserTopSong user={userData} timeRange={timeRange}/>
-              <UserTopGenres user={userData} timeRange={timeRange}/>
+              <UserTopArtist user={userData} artistToDisplay={artistToDisplay}/>
+              <UserTopSong user={userData} songToDisplay={songToDisplay}/>
+              <UserTopGenres user={userData} genreToDisplay={genreToDisplay}/>
             </div>
           </div>
         );

@@ -1,14 +1,14 @@
-import { Artist, Userinfo } from "@/types";
+import { Artist, Userinfo, UserTopArtistList } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
 type Props = {
   user: Userinfo | null;
-  timeRange: string
+  artistToDisplay: Artist[] | []
 };
 
-const UserTopArtist = ({ user }: Props) => {
+const UserTopArtist = ({ user, artistToDisplay }: Props) => {
   const [showAll, setShowAll] = useState(false);
   const topArtist = user?.user_top_artist;
 

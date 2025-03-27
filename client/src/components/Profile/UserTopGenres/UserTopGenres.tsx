@@ -1,15 +1,15 @@
-import { Userinfo } from "@/types";
+import { Userinfo, userTopGenres } from "@/types";
 import { useState } from "react";
 import React from "react";
 
 type Props = {
   user: Userinfo | null;
-  timeRange: string
+  genreToDisplay: string[] | []
 };
 
-const UserTopGenres = ({ user }: Props) => {
+const UserTopGenres = ({ user, genreToDisplay }: Props) => {
   const [showAll, setShowAll] = useState(false);
-  const topGenres = user?.favorite_genres;
+  const topGenres = genreToDisplay
 
   const displayedGenres = showAll ? topGenres : topGenres?.slice(0, 10);
 

@@ -47,6 +47,10 @@ interface UserTopSongs {
   previous: string | null;
 }
 
+interface userTopGenres {
+  favorite_genres: string[];
+}
+
 export interface Userinfo {
   spotify_id: string;
   id: string;
