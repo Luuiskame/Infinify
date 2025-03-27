@@ -42,7 +42,7 @@ export const registerUserDb = async (userInfo, userTopSongs, userTopArtist, req)
 
     // Insert new user
     console.log('genres filtereeeeed: ',favoriteUserGenres)
-    const filteredFav = filteredFavoriteArtists(favoriteUserGenres,5)
+    const filteredFav = filteredFavoriteArtists(favoriteUserGenres,20)
     console.log('genres filtered successfully',filteredFav)
     console.log('userInfo:', userInfo);
     const { data: newUser, error: newUserError } = await supabase

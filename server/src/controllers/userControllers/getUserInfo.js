@@ -79,14 +79,11 @@ export const getUserInfo = async (req, res) => {
   }
 };
 
-const getTopUserSongsOrTracks = async (access_token, type, limit = 10) => {
+const getTopUserSongsOrTracks = async (access_token, type, timeRange = 'long_term', limit = 50) => {
   try {
-    const response = await axios.get(`https://api.spotify.com/v1/me/top/${type}`, {
+    const response = await axios.get(`https://api.spotify.com/v1/me/top/${type}?time_range=${timeRange}&limit=${limit}`, {
       headers: {
         Authorization: `Bearer ${access_token}`,
-      },
-      params: {
-        limit, // Add the limit parameter to the request
       },
     });
 
