@@ -5,6 +5,7 @@ import { useState } from "react";
 
 type Props = {
   user: Userinfo | null;
+  timeRange: string
 };
 
 const UserTopArtist = ({ user }: Props) => {

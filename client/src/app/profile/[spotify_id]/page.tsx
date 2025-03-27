@@ -11,11 +11,12 @@ import UserTopGenres from "@/components/Profile/UserTopGenres/UserTopGenres";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Setting from "@/components/Profile/Setting/Setting";
-import TermSelector from "@/components/Profile/TermSeletor";
 
 type Params = {
   spotify_id: string;
 };
+
+type TimeRange = "short_term" | "medium_term" | "long_term";
 
 export default function Page({ params }: { params: Params }) {
   const { spotify_id } = params;
@@ -23,6 +24,7 @@ export default function Page({ params }: { params: Params }) {
   const [isOwnProfile, setIsOwnProfile] = useState(false);
   const [activeTab, setActiveTab] = useState("Info");
   const [loading, setLoading] = useState(true);
+  const [timeRange, setTimeRange] = useState<TimeRange>("long_term");
 
   const data = useAppSelector((state) => state.userReducer.user);
   const currentUser = data?.user;
@@ -51,24 +53,45 @@ export default function Page({ params }: { params: Params }) {
     fetchUserData();
   }, [spotify_id, currentUser, data]);
 
+  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const range = event.target.value as TimeRange;
+    setTimeRange(range);
+  };
+
   const renderSection = () => {
     switch (activeTab) {
       case "Info":
         return (
           <div className="flex flex-col gap-4">
-            <TermSelector />
-          <div className="flex flex-col lg:flex-row gap-4">
-            <UserTopArtist user={userData} />
-            <UserTopSong user={userData} />
-            <UserTopGenres user={userData} />
-          </div>
-        
+            <select
+              onChange={handleChange}
+              className="
+        bg-spotify-light-gray 
+        text-white 
+        p-2
+        self-center
+        rounded-md 
+        border-none 
+        outline-none 
+        focus:ring-2 
+        focus:ring-spotify-green
+      "
+            >
+              <option value="long_term">All Time</option>
+              <option value="medium_term">Last 6 Months</option>
+              <option value="short_term">Last 4 Weeks</option>
+            </select>
+            <div className="flex flex-col lg:flex-row gap-4">
+              <UserTopArtist user={userData} timeRange={timeRange}/>
+              <UserTopSong user={userData} timeRange={timeRange}/>
+              <UserTopGenres user={userData} timeRange={timeRange}/>
+            </div>
           </div>
         );
       case "about":
         return <AboutMe isOwnProfile={isOwnProfile} user={userData} />;
-        case "settings":
-          return <Setting />;
+      case "settings":
+        return <Setting />;
       default:
         return null;
     }

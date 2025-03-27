@@ -4,6 +4,7 @@ import React from "react";
 
 type Props = {
   user: Userinfo | null;
+  timeRange: string
 };
 
 const UserTopGenres = ({ user }: Props) => {
