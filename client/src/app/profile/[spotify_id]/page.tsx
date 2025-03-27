@@ -66,6 +66,30 @@ export default function Page({ params }: { params: Params }) {
     fetchUserData();
   }, [spotify_id, currentUser, data]);
 
+  useEffect(()=> {
+    switch (timeRange) {
+      case "short_term":
+        setArtistToDisplay([]);
+        setSongToDisplay([]);
+        setGenreToDisplay([]);
+        break;
+      case "medium_term":
+        setArtistToDisplay([]);
+        setSongToDisplay([]);
+        setGenreToDisplay([]);
+        break;
+      case "long_term":
+        setArtistToDisplay(userData?.user_top_artist ?? []);
+        setSongToDisplay(userData?.user_top_songs ?? []);
+        setGenreToDisplay(userData?.favorite_genres ?? []);
+        break;
+      default:
+        break;
+    }
+
+
+  },[timeRange])
+
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const range = event.target.value as TimeRange;
     setTimeRange(range);

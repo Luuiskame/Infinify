@@ -10,7 +10,7 @@ type Props = {
 
 const UserTopArtist = ({ user, artistToDisplay }: Props) => {
   const [showAll, setShowAll] = useState(false);
-  const topArtist = user?.user_top_artist;
+  const topArtist = artistToDisplay
 
   // Slice first 10 artists if not showing all
   const displayedArtists = showAll ? topArtist : topArtist?.slice(0, 10);
