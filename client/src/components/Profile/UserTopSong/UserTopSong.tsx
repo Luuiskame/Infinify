@@ -1,24 +1,30 @@
-
 import { Song, Userinfo } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
-
+import { useState } from "react";
 
 type Props = {
   user: Userinfo | null
 };
 
 const UserTopSongs = ({user}: Props) => {
+  const [showAll, setShowAll] = useState(false);
+  
+  const topSongs = user?.user_top_songs;
+  
+  // Slice first 10 songs if not showing all
+  const displayedSongs = showAll ? topSongs : topSongs?.slice(0, 10);
 
-  
-  const topSongs = user?.user_top_songs
-  
+  const toggleShowMore = () => {
+    setShowAll(!showAll);
+  };
+
   return (
     <div className="w-[100%] md:w-[50%]">
       <h2 className="text-3xl text-white font-bold font-sans">Top Songs</h2>
       <div className="bg-spotify-light-gray mt-4 rounded-lg mb-10">
         <div>
-        <div className="relative flex justify-center items-center p-10">
+          <div className="relative flex justify-center items-center p-10">
             <Image
               src={
                 topSongs?.[1]?.song_image ||
@@ -51,10 +57,8 @@ const UserTopSongs = ({user}: Props) => {
             />
           </div>
 
-
-          {topSongs && topSongs.length > 0 ? (
-            // Mapeamos las canciones del usuario
-            topSongs.map((song: Song, index: number) => (
+          {displayedSongs && displayedSongs.length > 0 ? (
+            displayedSongs.map((song: Song, index: number) => (
               <div key={song.song_id} className="flex items-center gap-3 p-4 rounded-lg">
                 <p className="text-[#63707F] font-sans font-bold text-lg">{index + 1} </p>
                 {song.song_image ? (
@@ -73,7 +77,18 @@ const UserTopSongs = ({user}: Props) => {
               </div>
             ))
           ) : (
-            <p>No highlight songs avalaible for this user</p>
+            <p>No highlight songs available for this user</p>
+          )}
+
+          {topSongs && topSongs.length > 10 && (
+            <div className="text-center py-4">
+              <button 
+                onClick={toggleShowMore}
+                className="text-spotify-green hover:underline"
+              >
+                {showAll ? "Show Less" : `See All ${topSongs.length} Songs`}
+              </button>
+            </div>
           )}
         </div>
       </div>

@@ -1,16 +1,25 @@
 import { Artist, Userinfo } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
 type Props = {
   user: Userinfo | null;
 };
 
 const UserTopArtist = ({ user }: Props) => {
+  const [showAll, setShowAll] = useState(false);
   const topArtist = user?.user_top_artist;
 
+  // Slice first 10 artists if not showing all
+  const displayedArtists = showAll ? topArtist : topArtist?.slice(0, 10);
+
+  const toggleShowMore = () => {
+    setShowAll(!showAll);
+  };
+
   return (
-    <div className=" w-[100%] md:w-[50%]">
+    <div className="w-[100%] md:w-[50%]">
       <h2 className="text-3xl text-white font-bold font-sans">Top Artist</h2>
       <div className="bg-spotify-light-gray mt-4 rounded-lg mb-10">
         <div>
@@ -47,8 +56,8 @@ const UserTopArtist = ({ user }: Props) => {
             />
           </div>
 
-          {topArtist && topArtist && topArtist.length > 0 ? (
-            topArtist.map((artist: Artist, index: number) => (
+          {displayedArtists && displayedArtists.length > 0 ? (
+            displayedArtists.map((artist: Artist, index: number) => (
               <div
                 key={artist?.artist_id}
                 className="flex items-center gap-3 p-4 rounded-lg"
@@ -62,7 +71,7 @@ const UserTopArtist = ({ user }: Props) => {
                     height={50}
                     src={artist?.artist_photo}
                     alt={artist?.artist_name}
-                    className="rounded-full object-fill  border-white"
+                    className="rounded-full object-fill border-white"
                   />
                 ) : null}
                 <Link href={artist?.artist_uri}>
@@ -73,7 +82,18 @@ const UserTopArtist = ({ user }: Props) => {
               </div>
             ))
           ) : (
-            <p>No highlight Artist avalaible for this user.</p>
+            <p>No highlight Artists available for this user.</p>
+          )}
+
+          {topArtist && topArtist.length > 10 && (
+            <div className="text-center py-4">
+              <button 
+                onClick={toggleShowMore}
+                className="text-spotify-green hover:underline"
+              >
+                {showAll ? "Show Less" : `See All ${topArtist.length} Artists`}
+              </button>
+            </div>
           )}
         </div>
       </div>
