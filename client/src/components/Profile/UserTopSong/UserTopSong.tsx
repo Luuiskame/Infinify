@@ -4,11 +4,10 @@ import Link from "next/link";
 import { useState } from "react";
 
 type Props = {
-  user: Userinfo | null
   songToDisplay: Song[] | []
 };
 
-const UserTopSongs = ({user, songToDisplay}: Props) => {
+const UserTopSongs = ({songToDisplay}: Props) => {
   const [showAll, setShowAll] = useState(false);
   console.log(songToDisplay)
   

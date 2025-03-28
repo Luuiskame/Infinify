@@ -3,11 +3,10 @@ import { useState } from "react";
 import React from "react";
 
 type Props = {
-  user: Userinfo | null;
   genreToDisplay: string[] | []
 };
 
-const UserTopGenres = ({ user, genreToDisplay }: Props) => {
+const UserTopGenres = ({ genreToDisplay }: Props) => {
   const [showAll, setShowAll] = useState(false);
   const topGenres = genreToDisplay
 
