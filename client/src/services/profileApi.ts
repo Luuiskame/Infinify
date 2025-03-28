@@ -22,7 +22,14 @@ export const profileApi = createApi({
         };
       }
     }),
+    getUserTopDataWithRange: builder.query({
+      query: (timeRange: string)=> ({
+        url: `get-user-range-info/${timeRange}`,
+        method: 'GET',
+      }),
+      keepUnusedDataFor: 60 * 60 * 24
+    })
   }),
 });
 
-export const { useGetUserProfileInfoQuery } = profileApi;
+export const { useGetUserProfileInfoQuery, useGetUserTopDataWithRangeQuery } = profileApi;

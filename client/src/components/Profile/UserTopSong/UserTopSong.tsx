@@ -10,6 +10,7 @@ type Props = {
 
 const UserTopSongs = ({user, songToDisplay}: Props) => {
   const [showAll, setShowAll] = useState(false);
+  console.log(songToDisplay)
   
   const topSongs = songToDisplay
   

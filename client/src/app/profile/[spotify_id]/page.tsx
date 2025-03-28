@@ -18,11 +18,12 @@ type Params = {
   spotify_id: string;
 };
 
+
 type TimeRange = "short_term" | "medium_term" | "long_term";
 
 export default function Page({ params }: { params: Params }) {
   const { spotify_id } = params;
-  const [userData, setUserData] = useState<Userinfo | null>(null);
+  const [userData, setUserData] = useState<Userinfo| null>(null);
   const [isOwnProfile, setIsOwnProfile] = useState(false);
   const [activeTab, setActiveTab] = useState("Info");
   const [loading, setLoading] = useState(true);
@@ -34,28 +35,23 @@ export default function Page({ params }: { params: Params }) {
 
   const data = useAppSelector((state) => state.userReducer.user);
   const currentUser = data?.user;
+  console.log(data)
 
+  // Fetch user data and set profile status
   useEffect(() => {
     const fetchUserData = async () => {
+      setLoading(true);
       if (currentUser?.spotify_id === spotify_id) {
         setIsOwnProfile(true);
-        console.log("currentUser", currentUser);
-        setArtistToDisplay(data?.user_top_artist ?? []);
-        setSongToDisplay(data?.user_top_songs ?? []);
-        setGenreToDisplay(currentUser?.favorite_genres ?? []);
-        setUserData({
-          ...currentUser,
-          user_top_artist: data?.user_top_artist ?? [],
-          user_top_songs: data?.user_top_songs ?? [],
-        });
+        setUserData(currentUser)
       } else {
         const users = await searchUsersById(spotify_id);
-        console.log("users", users);
         if (users.length > 0) {
+          console.log(users[0])
           setUserData(users[0]);
-          setArtistToDisplay(users[0]?.user_top_artist ?? []);
-        setSongToDisplay(users[0]?.user_top_songs ?? []);
-        setGenreToDisplay(users[0]?.favorite_genres ?? []);
+          setArtistToDisplay(users[0].user_top_artist ?? []);
+          setSongToDisplay(users[0].user_top_songs ?? []);
+          setGenreToDisplay(users[0].favorite_genres ?? []);
         } else {
           console.error("No se encontró el usuario");
         }
@@ -64,31 +60,33 @@ export default function Page({ params }: { params: Params }) {
     };
 
     fetchUserData();
-  }, [spotify_id, currentUser, data]);
+  }, [spotify_id, currentUser]);
 
-  useEffect(()=> {
-    switch (timeRange) {
-      case "short_term":
-        setArtistToDisplay([]);
-        setSongToDisplay([]);
-        setGenreToDisplay([]);
-        break;
-      case "medium_term":
-        setArtistToDisplay([]);
-        setSongToDisplay([]);
-        setGenreToDisplay([]);
-        break;
-      case "long_term":
-        setArtistToDisplay(userData?.user_top_artist ?? []);
-        setSongToDisplay(userData?.user_top_songs ?? []);
-        setGenreToDisplay(userData?.favorite_genres ?? []);
-        break;
-      default:
-        break;
+  // Update display data based on timeRange and profile user
+  useEffect(() => {
+   
+    if (isOwnProfile && data) {
+      switch (timeRange) {
+        case "short_term":
+          setArtistToDisplay(data.user_top_artist_short ?? []);
+          setSongToDisplay(data.user_top_songs_short ?? []);
+          setGenreToDisplay(data?.user.favorite_genres ?? []);
+          break;
+        case "medium_term":
+          setArtistToDisplay(data.user_top_artist_medium ?? []);
+          setSongToDisplay(data.user_top_songs_medium ?? []);
+          setGenreToDisplay(data.user.favorite_genres ?? []);
+          break;
+        case "long_term":
+          setArtistToDisplay(data.user_top_artist_long ?? []);
+          setSongToDisplay(data.user_top_songs_long ?? []);
+          setGenreToDisplay(data.user.favorite_genres ?? []);
+          break;
+        default:
+          break;
+      }
     }
-
-
-  },[timeRange])
+  }, [timeRange, isOwnProfile, data, userData]);
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const range = event.target.value as TimeRange;
@@ -101,6 +99,7 @@ export default function Page({ params }: { params: Params }) {
         return (
           <div className="flex flex-col gap-4">
             <select
+            value={timeRange}
               onChange={handleChange}
               className="
         bg-spotify-light-gray 
