@@ -15,6 +15,7 @@ import { getNewUsertoken } from '../controllers/authControllers/getNewUserToken.
 
 import { createChats } from '../controllers/chatControllers/createChats.js';
 import { getChatMessages } from '../controllers/chatControllers/getChatMessages.js';
+import { getUserRangeData } from '../controllers/userControllers/getUserRangeData.js';
 
 const clientId = process.env.SPOTIFY_CLIENT_ID;
 const redirectUri = process.env.SPOTIFY_REDIRECT_URI; 
@@ -58,7 +59,7 @@ routes.get('/song-of-the-day', getSongOfTheDay)
 // users profile info
 routes.post('/get-profile', getUserInfo)
 routes.get('/get-user-refresh-token', getNewUsertoken)
-routes.get('/get-user-range-info/:range', getUserInfo)
+routes.get('/get-user-range-info/:range', getUserRangeData)
 
 //chats
 routes.post('/chats', createChats)

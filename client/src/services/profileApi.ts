@@ -23,8 +23,8 @@ export const profileApi = createApi({
       }
     }),
     getUserTopDataWithRange: builder.query({
-      query: (timeRange: string)=> ({
-        url: `get-user-range-info/${timeRange}`,
+      query: ({ timeRange, userId }: { timeRange: string; userId: string }) => ({
+        url: `get-user-range-info/${timeRange}?userId=${userId}`,
         method: 'GET',
       }),
       keepUnusedDataFor: 60 * 60 * 24
