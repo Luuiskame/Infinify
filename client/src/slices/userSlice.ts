@@ -4,8 +4,13 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 // Define the User interface
 export interface User {
   user : Userinfo;
-  user_top_artist: Artist[];
-  user_top_songs: Song[];
+  user_top_artist_long: Artist[];
+  user_top_artist_medium: Artist[];
+  user_top_artist_short: Artist[];
+
+  user_top_songs_long: Song[];
+  user_top_songs_medium: Song[];
+  user_top_songs_short: Song[];
   user_chats: Chats[] | []
 
 }

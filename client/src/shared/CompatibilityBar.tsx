@@ -65,7 +65,7 @@ export default function CompatibilityBar({ favGenres = [], favArtists = [], favS
       gap: '12px'
     }}>
       <p style={getCompatibilityText(compatibilityNumber)}>
-        compatibility {compatibilityNumber >= 8 ? '✨' : ''}
+        Compatibility {compatibilityNumber >= 8 ? '✨' : ''}
       </p>
       
       <div style={{

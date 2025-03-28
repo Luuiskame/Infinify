@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import { Artist, Song } from '@/types';
 
 export async function searchUsers(searchTerm: string) {
 
@@ -28,14 +29,22 @@ export const searchUsersById = async (userId: string) => {
     `)
     .eq('spotify_id', userId);
 
-
-
-
   if (error) {
     console.error("Error buscando usuario:", error.message);
     return [];
   }
 
-  return data;
+  if (!data || data.length === 0) {
+    console.warn("No se encontró el usuario");
+    return [];
+  }
 
-}
+  // Filter related tables to only include items with range = 'long'
+  const filteredData = data.map(user => ({
+    ...user,
+    user_top_artist: user.user_top_artist?.filter((artist: Artist) => artist.range === 'long') || [],
+    user_top_songs: user.user_top_songs?.filter((song: Song) => song.range === 'long') || [],
+  }));
+
+  return filteredData;
+};

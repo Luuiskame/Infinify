@@ -4,6 +4,7 @@ export interface Artist {
     artist_photo:string;
     artist_uri: string 
     popularity: number;
+    range: string;
 }
 
 
@@ -14,6 +15,7 @@ export interface Song {
   song_image: string;
   song_name: string;
   song_uri: string;
+  range: string;
 }
 
 export interface Playlist {
@@ -47,6 +49,10 @@ interface UserTopSongs {
   previous: string | null;
 }
 
+interface userTopGenres {
+  favorite_genres: string[];
+}
+
 export interface Userinfo {
   spotify_id: string;
   id: string;
@@ -56,8 +62,13 @@ export interface Userinfo {
   followers: number;
   uri: string;
   profile_photo: string;
-  user_top_artist: Artist[];
-  user_top_songs: Song[];
+  user_top_artist_long: Artist[];
+    user_top_artist_medium: Artist[];
+    user_top_artist_short: Artist[];
+  
+    user_top_songs_long: Song[];
+    user_top_songs_medium: Song[];
+    user_top_songs_short: Song[];
   favorite_genres: string[];
   about: string;
   

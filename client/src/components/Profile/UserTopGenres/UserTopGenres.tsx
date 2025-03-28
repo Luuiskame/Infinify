@@ -1,21 +1,29 @@
-import { Userinfo } from "@/types";
+import { Userinfo, userTopGenres } from "@/types";
+import { useState } from "react";
 import React from "react";
 
 type Props = {
-  user: Userinfo | null;
+  genreToDisplay: string[] | []
 };
 
-const UserTopGenres = ({ user }: Props) => {
-  const topGenres = user?.favorite_genres;
+const UserTopGenres = ({ genreToDisplay }: Props) => {
+  const [showAll, setShowAll] = useState(false);
+  const topGenres = genreToDisplay
+
+  const displayedGenres = showAll ? topGenres : topGenres?.slice(0, 10);
+
+  const toggleShowMore = () => {
+    setShowAll(!showAll);
+  }
 
 
   return (
-    <div className="mb-20 w-[100%] md:w-[50%]">
+    <div className="mb-20 w-[100%] lg:w-[50%]">
       <h2 className="text-3xl font-bold text-white font-sans text-center">
         Favorite Genres
       </h2>
       <div className="bg-spotify-light-gray mt-4 rounded-lg mb-10">
-        {topGenres?.map((genre: string, index: number) => (
+        {displayedGenres?.map((genre: string, index: number) => (
           <div
             key={genre}
             className="flex items-center gap-3 p-4 rounded-lg"
@@ -24,6 +32,14 @@ const UserTopGenres = ({ user }: Props) => {
             <p className="text-white font-sans text-lg">  {genre}</p>
           </div>
         ))}
+        {topGenres && topGenres.length > 10 && (
+              <div className="text-center py-4">
+                <button onClick={toggleShowMore} className="text-spotify-green hover:underline"
+                >
+                  {showAll ? "Show less" : "Show more"}
+                </button>
+              </div>
+            )}
       </div>
     </div>
   );

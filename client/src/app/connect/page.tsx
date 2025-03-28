@@ -115,7 +115,7 @@ export default function Page() {
   }
 
   return (
-    <div className="bg-spotify-dark-gray w-[90%] mb-[16rem] mx-auto md:w-[100%] md:mb-[4rem] md:ml-5 h-[100dvh] flex flex-col gap-[1rem] ">
+    <div className="bg-spotify-dark-gray min-h-[1100px] w-[90%] mx-auto md:w-[100%] md:mb-[4rem] md:ml-5 h-[100dvh] flex flex-col gap-[1rem] ">
       <ConnectHeader fetchFilter={fetchFilter} activeButton={activeButton} />
       <h2 className='text-center md:text-start mt-5 text-[1.8rem] font-extrabold'>{message}</h2>
 
