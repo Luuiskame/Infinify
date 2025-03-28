@@ -82,7 +82,7 @@ export default function Page({ params }: { params: Params }) {
   }, [timeRange, isOwnProfile, data]);
 
   // RTK Query: fetch top data when viewing someone else's profile
-  const { data: topData, isLoading: topDataLoading, error } =
+  const { data: topData, isLoading: topDataLoading } =
     useGetUserTopDataWithRangeQuery({
       timeRange,
       userId: !isOwnProfile ? spotify_id : null, // only call if not own profile
@@ -96,6 +96,7 @@ export default function Page({ params }: { params: Params }) {
       setSongToDisplay(topData.user_top_songs ?? []);
       setGenreToDisplay(userData?.favorite_genres ?? []);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [topData, isOwnProfile]);
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {

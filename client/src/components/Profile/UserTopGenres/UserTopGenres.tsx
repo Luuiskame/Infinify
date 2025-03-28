@@ -1,4 +1,3 @@
-import { Userinfo, userTopGenres } from "@/types";
 import { useState } from "react";
 import React from "react";
 
