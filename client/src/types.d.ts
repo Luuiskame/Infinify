@@ -62,6 +62,8 @@ export interface Userinfo {
   followers: number;
   uri: string;
   profile_photo: string;
+  user_top_artist: Artist[];
+  user_top_songs: Song[];
   user_top_artist_long: Artist[];
     user_top_artist_medium: Artist[];
     user_top_artist_short: Artist[];
