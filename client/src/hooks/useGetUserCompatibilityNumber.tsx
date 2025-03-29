@@ -23,7 +23,7 @@ export default function useGetUserCompatibilityNumber(favGenres: string[], favAr
     const userFavArtists = currentUserInfo?.user_top_artist || [];
     const artistMap: Record<string, boolean> = {};
 
-    userFavArtists.forEach(artist => {
+    userFavArtists.forEach((artist: Artist) => {
       artistMap[artist.artist_id] = true;
     });
 
