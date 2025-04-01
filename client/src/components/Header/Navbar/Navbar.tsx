@@ -147,7 +147,7 @@ const MobileNavbar = () => {
                 src={user.profile_photo}
                 width={40}
                 height={30}
-                className="rounded-full object-fill border-1 border-white"
+                className="rounded-full object-fill border-1 border-white h-auto w-full"
                 alt={user.display_name}
               />
             </Link>
