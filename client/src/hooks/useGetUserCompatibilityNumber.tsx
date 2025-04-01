@@ -66,6 +66,8 @@ export default function useGetUserCompatibilityNumber(
       calculateBasedOnArtist() +
       calculateBasedOnSongs();
 
+      console.log(`Total weighted matches: ${totalWeightedMatches}`);
+
     // Cap the weighted matches at 30 for the maximum score.
     // Scale the result to a 10-point system.
     const normalizedCompatibility = Math.min(totalWeightedMatches, 30) * (10 / 30);

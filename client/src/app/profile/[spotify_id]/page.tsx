@@ -90,13 +90,10 @@ export default function Page({ params }: { params: Params }) {
       userId: !isOwnProfile ? spotify_id : null, // only call if not own profile
     });
 
-  // Update display state when RTK Query data arrives
   useEffect(() => {
     if (!isOwnProfile && topData) {
-      console.log("Top data:", topData);
       setArtistToDisplay(topData.user_top_artist ?? []);
       setSongToDisplay(topData.user_top_songs ?? []);
-      setGenreToDisplay(userData?.favorite_genres ?? []);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [topData, isOwnProfile]);
