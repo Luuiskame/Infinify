@@ -5,8 +5,9 @@ import { getUser } from "@/slices/userSlice";
 import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import Search from "@/components/Search/Search";
-import { CiChat1 } from "react-icons/ci";
-import { FiMessageSquare } from "react-icons/fi";
+import { ChatBubbleLeftIcon } from "@heroicons/react/24/outline";
+import { ChatBubbleLeftIcon as ChatBubbleLeftSolid } from "@heroicons/react/24/solid";
+
 import NumberIcon from "@/shared/NumberIcon";
 import { usePathname } from "next/navigation";
 
@@ -21,9 +22,9 @@ const DesktopNavbar = () => {
     dispatch(getUser());
   }, [dispatch]);
 
-  const messagesIcon = <CiChat1 className="h-6 w-6" />;
+  const messagesIcon = <ChatBubbleLeftIcon className="h-6 w-6" />;
   const activeMessagesIcon = (
-    <FiMessageSquare className="h-6 w-6 text-spotify-green" />
+    <ChatBubbleLeftSolid className="h-6 w-6 text-spotify-green" />
   );
   const isMessagesActive = pathName === "/messages";
 
@@ -88,9 +89,9 @@ const MobileNavbar = () => {
     dispatch(getUser());
   }, [dispatch]);
 
-  const messagesIcon = <CiChat1 className="h-6 w-6" />;
+  const messagesIcon = <ChatBubbleLeftIcon className="h-6 w-6" />;
   const activeMessagesIcon = (
-    <FiMessageSquare className="h-6 w-6 text-spotify-green" />
+    <ChatBubbleLeftSolid className="h-6 w-6 text-spotify-green" />
   );
   const isMessagesActive = pathName === "/messages";
 
