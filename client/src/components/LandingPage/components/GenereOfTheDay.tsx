@@ -1,4 +1,4 @@
-"use client";
+
 import { useGetGenreOftheDayQuery } from "@/services/spotifyApi";
 import Image from "next/image";
 import React from "react";
