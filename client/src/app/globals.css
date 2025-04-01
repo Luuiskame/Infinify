@@ -1,6 +1,5 @@
 @tailwind base;
 @tailwind components;
-@tailwind utilities;
 
 :root {
   --font-body: var(--font-poppins, 'Poppins', sans-serif); 
@@ -22,3 +21,5 @@ h1, h2, h3, h4, h5, p {
     text-wrap: balance;
   }
 }
+
+@tailwind utilities;

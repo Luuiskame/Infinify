@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import React from "react";
 import { useGetSongOfTheDayQuery } from "@/services/spotifyApi";
@@ -18,7 +19,7 @@ export default function ArtistOfTheDay() {
         <h3 className="text-spotify-green text-center text-lg font-bold mb-4">
           Song Of The Day
         </h3>
-        <Skeleton height={550} width={550} className="rounded-lg" baseColor="#121212" highlightColor="#222" />
+        <Skeleton height={250} width={350} className="rounded-lg" baseColor="#121212" highlightColor="#222" />
         <div className="p-4 gap-2 bg-spotify-light-gray rounded-lg w-full">
           <Skeleton height={20} width={200} className="mb-4" baseColor="#121212" highlightColor="#222" />
           <Skeleton height={16} width={150} baseColor="#121212" highlightColor="#222" />
@@ -50,6 +51,7 @@ export default function ArtistOfTheDay() {
               height={420}
               className="rounded-lg"
               alt={TopSong.songName}
+              priority
             />
 
             {/* Overlay Text */}
