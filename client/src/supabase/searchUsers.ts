@@ -27,7 +27,9 @@ export const searchUsersById = async (userId: string) => {
       user_top_artist (*),
       user_top_songs (*)
     `)
-    .eq('spotify_id', userId);
+    .eq('spotify_id', userId)
+    .eq('user_top_artist.range', 'long')
+    .eq('user_top_songs.range', 'long');
 
   if (error) {
     console.error("Error buscando usuario:", error.message);

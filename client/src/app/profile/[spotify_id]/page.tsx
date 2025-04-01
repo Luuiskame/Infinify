@@ -44,7 +44,9 @@ export default function Page({ params }: { params: Params }) {
       } else {
         const users = await searchUsersById(spotify_id);
         if (users.length > 0) {
+          console.log("User found:", users[0]);
           setUserData(users[0]);
+          setGenreToDisplay(users[0].favorite_genres ?? []);
           // For other profiles, we will fetch top data via RTK Query.
         } else {
           console.error("User not found");

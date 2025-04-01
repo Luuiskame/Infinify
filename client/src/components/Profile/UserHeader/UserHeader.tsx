@@ -18,6 +18,8 @@ type Props = {
 const UserHeader = ({ isOwnProfile, user }: Props) => {
 
   const isLocalUser = useAppSelector(state=> state.userReducer?.user)
+
+  console.log(user)
   
 
   return (
@@ -40,7 +42,7 @@ const UserHeader = ({ isOwnProfile, user }: Props) => {
       <div className="flex flex-col gap-3 px-10 font-sans items-center md:items-end justify-center md:w-[50%] mb-8">
         <p className="text-white">{`${user?.followers || 0} Followers`}</p>
         <a href={user?.uri} className="text-white flex gap-3 items-center">
-          <FaSpotify className="text-xl text-white" /> open in Spotify
+          <FaSpotify className="text-xl text-white" /> Open spotify profile
         </a>
         {!isOwnProfile && (
           <div className="flex flex-col gap-3 max-w[300px]">
