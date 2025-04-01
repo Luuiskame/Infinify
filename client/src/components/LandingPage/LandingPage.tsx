@@ -1,4 +1,7 @@
 
+"use client";
+import { useAppSelector } from "@/redux/hooks";
+import LoginBtn from "@/shared/LoginBtn";
 import React, { lazy, Suspense } from "react";
 // Componentes principales
 
@@ -7,12 +10,11 @@ import React, { lazy, Suspense } from "react";
 const MostListened = lazy(() => import("./components/MostListened"));
 const GenereOfTheDay = lazy(() => import("./components/GenereOfTheDay"));
 const ArtisOfTheDay = lazy(() => import("./components/songOfTheDay"));
-const RecentlyJoined = lazy(() => import("./components/RecentlyJoined"));
-const Login = lazy(() => import("./components/Login"));
+const RecentlyJoined = lazy(() => import("./components/RecentlyJoined"))
 
 export default function LandingPage() {
 
-
+  const user = useAppSelector((state) => state.userReducer.user);
 
   return (
     <main className="w-[90%] mx-auto max-w-[1150px] h-[100%]">
@@ -24,7 +26,7 @@ export default function LandingPage() {
           <span className="block">Music Partner</span>
         </h1>
 
-      <Login/>
+        {!user && <LoginBtn />}
       </header>
 
       <section className="mt-8">
