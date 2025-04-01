@@ -1,8 +1,8 @@
 import { updateAbout } from "@/supabase/registerAbout";
 import { Userinfo } from "@/types";
 import React, { useState, useEffect } from "react";
-import { FaCalendarCheck } from "react-icons/fa";
-import { FiMapPin } from "react-icons/fi";
+import { CalendarDaysIcon, MapPinIcon } from "@heroicons/react/24/outline";
+import { CalendarDaysIcon as CalendarDaysSolid, MapPinIcon as MapPinSolid } from "@heroicons/react/24/solid";
 
 type Props = {
   isOwnProfile: boolean;
@@ -56,7 +56,7 @@ const AboutMe = ({ isOwnProfile, user }: Props) => {
 
       <div className="flex flex-col gap-4 px-8 py-4 mt-5">
         <div className="flex gap-3 text-center items-center">
-          <FaCalendarCheck className="text-white font-bold" />
+          <CalendarDaysIcon className="text-white font-bold" />
           {createdAt ? (
             <p className="font-sans text-white font-bold">
               Cuenta creada el:{" "}
@@ -70,7 +70,7 @@ const AboutMe = ({ isOwnProfile, user }: Props) => {
         </div>
 
         <div className="flex gap-3 text-center items-center">
-          <FiMapPin className="text-white font-bold" />
+          <MapPinIcon className="text-white font-bold" />
           <p className="font-sans text-white font-bold">País: {country}</p>
         </div>
       </div>
