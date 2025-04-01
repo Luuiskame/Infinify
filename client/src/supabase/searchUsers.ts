@@ -1,5 +1,4 @@
 import { supabase } from './supabaseClient';
-import { Artist, Song } from '@/types';
 
 export async function searchUsers(searchTerm: string) {
 

@@ -2,7 +2,6 @@ import { updateAbout } from "@/supabase/registerAbout";
 import { Userinfo } from "@/types";
 import React, { useState, useEffect } from "react";
 import { CalendarDaysIcon, MapPinIcon } from "@heroicons/react/24/outline";
-import { CalendarDaysIcon as CalendarDaysSolid, MapPinIcon as MapPinSolid } from "@heroicons/react/24/solid";
 
 type Props = {
   isOwnProfile: boolean;
