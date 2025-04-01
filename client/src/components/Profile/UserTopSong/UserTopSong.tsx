@@ -8,9 +8,7 @@ type Props = {
 };
 
 const UserTopSongs = ({songToDisplay}: Props) => {
-  const [showAll, setShowAll] = useState(false);
-  console.log(songToDisplay)
-  
+  const [showAll, setShowAll] = useState(false);  
   const topSongs = songToDisplay
   
   // Slice first 10 songs if not showing all
