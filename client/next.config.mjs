@@ -1,8 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    optimizeCss: true, // Reduce el CSS automáticamente
-  },
   images: {
     remotePatterns: [
       {
