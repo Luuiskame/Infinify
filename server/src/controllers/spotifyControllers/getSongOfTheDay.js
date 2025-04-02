@@ -5,7 +5,7 @@ const baseUrl = process.env.SPOTIFY_BASE_URL;
 const SONG_INDEX_KEY = 'song_of_the_day:current_index';
 const SONG_DATA_KEY = 'song_of_the_day:current_song';
 const MAX_INDEX = 14; // 0-14 gives 15 songs
-const CACHE_EXPIRY = 6; // 12 hours in seconds
+const CACHE_EXPIRY = 43200; // 12 hours in seconds
 
 export const getSongOfTheDay = async (req, res) => {
   let redisClient = null;

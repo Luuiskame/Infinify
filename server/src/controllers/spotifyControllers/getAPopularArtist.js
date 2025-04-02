@@ -3,8 +3,8 @@ import { getAppToken } from '../authControllers/getAppToken.js';
 import { getRedisClient } from '../../config/redis.js';
 
 const baseUrl = process.env.SPOTIFY_BASE_URL;
-const POPULAR_ARTISTS_KEY = 'popular_artists:list';
-const CACHE_EXPIRY = 6; // 12 hours in seconds
+const POPULAR_ARTIST_KEY = 'popular_artist:single';
+const CACHE_EXPIRY = 43200; // 12 hours in seconds
 
 export const getPopularArtist = async (req, res) => {
   let redisClient = null;
@@ -13,60 +13,61 @@ export const getPopularArtist = async (req, res) => {
     // Get a Redis client for this request
     redisClient = await getRedisClient();
     
-    // Check if we have cached artists data
-    const cachedArtists = await redisClient.get(POPULAR_ARTISTS_KEY);
+    // Check if we have a cached artist
+    const cachedArtist = await redisClient.get(POPULAR_ARTIST_KEY);
     
-    let artists = [];
-    if (cachedArtists) {
-      console.log('Using cached popular artists list');
-      artists = JSON.parse(cachedArtists);
+    let artistDetails = null;
+    if (cachedArtist) {
+      console.log('Using cached popular artist');
+      artistDetails = JSON.parse(cachedArtist);
     } else {
       // If no cached data, fetch from Spotify API
-      const limit = 8; // Fetch 5 artists
+      console.log('Fetching new popular artist from Spotify API');
       
       // Ensure we have a valid app token
       const accessToken = await getAppToken();
-
-      // Make the request to Spotify
+      
+      // Make the request to Spotify - we'll request several to pick one
+      const limit = 8; // Request multiple artists to choose from
       const response = await axios.get(`${baseUrl}search?q=genre:pop&type=artist&limit=${limit}`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-
-      // Extract just the artists array
-      artists = response.data.artists.items;
       
-      // Store the artists array in Redis with 12-hour expiry
-      await redisClient.set(POPULAR_ARTISTS_KEY, JSON.stringify(artists), {
+      // Extract the artists array
+      const artists = response.data.artists.items;
+      
+      // Select a random artist from the results
+      const randomIndex = Math.floor(Math.random() * artists.length);
+      const randomArtist = artists[randomIndex];
+      
+      // Format the artist details
+      artistDetails = {
+        name: randomArtist.name,
+        id: randomArtist.id,
+        popularity: randomArtist.popularity,
+        followers: randomArtist.followers.total,
+        genres: randomArtist.genres,
+        imageUrl: randomArtist.images.length > 0 ? randomArtist.images[0].url : null,
+        spotifyUrl: randomArtist.external_urls.spotify
+      };
+      
+      // Store just the single artist in Redis with 12-hour expiry
+      await redisClient.set(POPULAR_ARTIST_KEY, JSON.stringify(artistDetails), {
         EX: CACHE_EXPIRY
       });
     }
     
-    // Select a random artist from the 5 artists
-    const randomIndex = Math.floor(Math.random() * artists.length);
-    const randomArtist = artists[randomIndex];
-    
-    // Process the data to return a more formatted response
-    const artistDetails = {
-      name: randomArtist.name,
-      id: randomArtist.id,
-      popularity: randomArtist.popularity,
-      followers: randomArtist.followers.total,
-      genres: randomArtist.genres,
-      imageUrl: randomArtist.images.length > 0 ? randomArtist.images[0].url : null,
-      spotifyUrl: randomArtist.external_urls.spotify
-    };
-    
-    // Respond with the random artist data
-    res.status(200).json({ 
+    // Respond with the artist data
+    res.status(200).json({
       artist: artistDetails,
-      message: `Randomly selected from ${artists.length} popular artists`
+      message: 'Popular artist retrieved successfully'
     });
     
   } catch (error) {
-    console.error('Error fetching popular artists:', error);
-    res.status(500).json({ 
+    console.error('Error fetching popular artist:', error);
+    res.status(500).json({
       error: 'Failed to fetch popular artist',
       details: error.response ? error.response.data : error.message
     });
