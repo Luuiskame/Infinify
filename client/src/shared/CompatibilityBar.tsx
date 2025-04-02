@@ -13,7 +13,6 @@ interface Props {
 export default function CompatibilityBar({ favGenres = [], favArtists = [], favSongs = [] }: Props) {
   const {compatibilityNumber} = useGetUserCompatibilityNumber(favGenres, favArtists, favSongs)
 
-  console.log(favArtists)
   
   const percentage = (compatibilityNumber / 10) * 100;
   

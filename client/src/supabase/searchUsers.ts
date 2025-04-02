@@ -1,5 +1,4 @@
 import { supabase } from './supabaseClient';
-import { Artist, Song } from '@/types';
 
 export async function searchUsers(searchTerm: string) {
 
@@ -27,7 +26,9 @@ export const searchUsersById = async (userId: string) => {
       user_top_artist (*),
       user_top_songs (*)
     `)
-    .eq('spotify_id', userId);
+    .eq('spotify_id', userId)
+    .eq('user_top_artist.range', 'long') // Filter at the database level
+    .eq('user_top_songs.range', 'long'); // Filter at the database level
 
   if (error) {
     console.error("Error buscando usuario:", error.message);
@@ -39,12 +40,6 @@ export const searchUsersById = async (userId: string) => {
     return [];
   }
 
-  // Filter related tables to only include items with range = 'long'
-  const filteredData = data.map(user => ({
-    ...user,
-    user_top_artist: user.user_top_artist?.filter((artist: Artist) => artist.range === 'long') || [],
-    user_top_songs: user.user_top_songs?.filter((song: Song) => song.range === 'long') || [],
-  }));
-
-  return filteredData;
+  return data; // No need for additional filtering
 };
+

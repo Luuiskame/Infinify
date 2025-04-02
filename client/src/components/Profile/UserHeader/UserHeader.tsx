@@ -1,6 +1,5 @@
 "use client";
 import Image from "next/image";
-import { FaSpotify } from "react-icons/fa";
 import { Userinfo } from "@/types";
 import CompatibilityBar from "@/shared/CompatibilityBar";
 
@@ -14,11 +13,22 @@ type Props = {
   isOwnProfile: boolean;
   user: Userinfo | null;
 };
+const SpotifyLogoSVG = () => (
+  <svg
+    className="h-6 w-6 text-spotify-green"
+    role="img"
+    viewBox="0 0 496 512"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="currentColor"
+  >
+    <path d="M248 8C111 8 0 119 0 256s111 248 248 248 248-111 248-248S385 8 248 8zm111.4 365c-4.5 7.7-14.3 10.1-22.1 5.6-60.4-36.6-136.2-44.8-225.6-24-8.4 2-16.8-3.2-18.8-11.6-2-8.4 3.2-16.8 11.6-18.8 96.6-22.6 179.4-13 246.7 27.6 7.6 4.5 10 14.3 5.5 22.1zm31.4-64c-5.5 9.1-17.4 12-26.5 6.5-69.2-42-174.9-54.1-256.6-28.9-10.1 3-20.8-2.6-23.8-12.7-3-10.1 2.6-20.8 12.7-23.8 90.6-27.5 206.5-14.1 283.7 32.3 9.1 5.5 12 17.4 6.5 26.6zm34.4-76c-6.6 11-21 14.4-32 7.8-79.4-47.6-211-61.4-307.8-31.9-12 3.7-24.7-3.3-28.3-15.4-3.7-12 3.3-24.7 15.4-28.3 106.5-32.5 249.5-17.4 338.5 35.4 11.1 6.7 14.6 21.1 8 32.1z" />
+  </svg>
+);
+
 
 const UserHeader = ({ isOwnProfile, user }: Props) => {
 
-  const isLocalUser = useAppSelector(state=> state.userReducer?.user)
-  
+  const isLocalUser = useAppSelector(state=> state.userReducer?.user)  
 
   return (
     <section className="bg-spotify-light-gray flex flex-col md:flex-row">
@@ -38,9 +48,9 @@ const UserHeader = ({ isOwnProfile, user }: Props) => {
         </h2>
       </div>
       <div className="flex flex-col gap-3 px-10 font-sans items-center md:items-end justify-center md:w-[50%] mb-8">
-        <p className="text-white">{`${user?.followers || 0} Followers`}</p>
+        <p className="text-white">{`${user?.followers || 0} Followers on spotify`}</p>
         <a href={user?.uri} className="text-white flex gap-3 items-center">
-          <FaSpotify className="text-xl text-white" /> open in Spotify
+          <SpotifyLogoSVG/> Open spotify profile
         </a>
         {!isOwnProfile && (
           <div className="flex flex-col gap-3 max-w[300px]">
