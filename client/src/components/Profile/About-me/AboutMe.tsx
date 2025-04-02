@@ -55,22 +55,22 @@ const AboutMe = ({ isOwnProfile, user }: Props) => {
 
       <div className="flex flex-col gap-4 px-8 py-4 mt-5">
         <div className="flex gap-3 text-center items-center">
-          <CalendarDaysIcon className="text-white font-bold" />
+          <CalendarDaysIcon className="text-white font-bold w-6 h-6" />
           {createdAt ? (
             <p className="font-sans text-white font-bold">
-              Cuenta creada el:{" "}
+             Account created on:{" "}
               {`${createdAt.getDate()}/${
                 createdAt.getMonth() + 1
               }/${createdAt.getFullYear()}`}
             </p>
           ) : (
-            <p>Fecha de creación no disponible</p>
+            <p>Date of creation not available</p>
           )}
         </div>
 
         <div className="flex gap-3 text-center items-center">
-          <MapPinIcon className="text-white font-bold" />
-          <p className="font-sans text-white font-bold">País: {country}</p>
+          <MapPinIcon className="text-white font-bold w-6 h-6" />
+          <p className="font-sans text-white font-bold">Country: {country}</p>
         </div>
       </div>
 
