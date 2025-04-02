@@ -1,4 +1,3 @@
-"use client";
 import Image from "next/image";
 import { getRecentUsers } from "@/supabase/getRecentUsers";
 import { useEffect, useState } from "react";
