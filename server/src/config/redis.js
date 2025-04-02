@@ -1,14 +1,18 @@
 import { createClient } from 'redis';
 
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 // Create a factory function to get Redis client
 export async function getRedisClient() {
   // Create a new client
   const client = createClient({
-    username: 'default',
-    password: 'JMtTkSGYJ9AVeZMf2SdAyrCyJAHjhnh7',
+    username: process.env.REDIS_USERNAME || 'default',
+    password: process.env.REDIS_PASSWORD,
     socket: {
-      host: 'redis-15639.c275.us-east-1-4.ec2.redns.redis-cloud.com',
-      port: 15639
+      host: process.env.REDIS_HOST,
+      port: parseInt(process.env.REDIS_PORT || '6379')
     }
   });
 
