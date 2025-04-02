@@ -4,10 +4,13 @@ import { getAppToken } from '../authControllers/getAppToken.js';
 const baseUrl = process.env.SPOTIFY_BASE_URL;
 
 export const getSongOfTheDay = async (req, res) => {
+  const number = 5
+  console.log('index', number)
+
   try {
     const appToken = await getAppToken();
 
-    const playlistId = '0Hm1tCeFv45CJkNeIAtrfF?si=ff5da50493174f21'; // HAS TO BE A USER PLAYLIST
+    const playlistId = '65dJwQvalyEwX1C30toUVc?si=pKa91PSfTLuF9mYuPf-MlA'; 
 
     const playlistResponse = await axios.get(`${baseUrl}playlists/${playlistId}`, {
       headers: {
@@ -24,23 +27,30 @@ export const getSongOfTheDay = async (req, res) => {
       return res.status(404).json({ error: 'No songs found in the playlist' });
     }
 
-    const randomIndex = Math.floor(Math.random() * tracks.length);
-    const randomSong = tracks[randomIndex].track;
-
-    if (!randomSong) {
-      console.error('Random song is null', tracks[randomIndex]);
-      return res.status(500).json({ error: 'Unable to select a random song' });
+    // Check if the index is valid
+    if (number < 0 || number >= tracks.length) {
+      console.error('Invalid index:', number);
+      return res.status(400).json({ error: 'Invalid index for the playlist' });
     }
 
-    const selectedSong = {
-      songName: randomSong.name,
-      artists: randomSong.artists.map(artist => artist.name),
-      albumName: randomSong.album.name,
-      albumImageUrl: randomSong.album.images[0]?.url,
-      spotifyUrl: randomSong.external_urls.spotify,
+    // Get the song at the specified index
+    const selectedSong = tracks[number].track;
+
+    if (!selectedSong) {
+      console.error('Song not found at the specified index');
+      return res.status(500).json({ error: 'Unable to find song at the specified index' });
+    }
+
+    const songDetails = {
+      songName: selectedSong.name,
+      artists: selectedSong.artists.map(artist => artist.name),
+      albumName: selectedSong.album.name,
+      albumImageUrl: selectedSong.album.images[0]?.url,
+      spotifyUrl: selectedSong.external_urls.spotify,
     };
 
-    return res.status(200).json({ songOfTheDay: selectedSong });
+    return res.status(200).json({ songOfTheDay: songDetails });
+
   } catch (error) {
     console.error('Error fetching song of the day:', error);
     return res.status(500).json({
