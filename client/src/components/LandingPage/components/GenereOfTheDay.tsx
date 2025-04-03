@@ -166,9 +166,9 @@ const GenereOfTheDay = () => {
                 <Image
                   src={song.albumImageUrl}
                   alt={`${song.albumName}`}
-                  width={30}
-                  height={30}
-                  className="w-16 h-16 rounded-md object-cover"
+                  width={50}
+                  height={50}
+                  className="rounded-lg w-[50px] h-[50px] object-cover"
                 />
                 <div className="flex-1">
                   <h3 className="text-spotify-white font-semibold">
