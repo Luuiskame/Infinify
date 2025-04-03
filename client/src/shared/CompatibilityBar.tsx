@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import useGetUserCompatibilityNumber from "@/hooks/useGetUserCompatibilityNumber";
 import { Artist, Song } from "@/types";
-import { MusicalNoteIcon } from "@heroicons/react/24/outline";
+import { MusicalNoteIcon } from "@heroicons/react/24/solid";
 
 interface Props {
   favSongs?: Song[];
@@ -44,27 +44,70 @@ export default function CompatibilityBar({
   };
 
   return (
-    <div className="flex flex-col gap-3 w-[100%] lg:w-[50%] rounded-lg ">
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "12px",
+        borderRadius: "0.5rem",
+        width: "100%",
+      }}
+     
+    >
       {/* Porcentaje */}
-      <div className="flex gap-2 -mt-2">
-        <div className="flex items-center gap-2 mb-2">
-          <MusicalNoteIcon className="text-[#1DB954] w-6 h-6" />
-          <span className="text-white">Musical Compatibility</span>
+      <div
+        style={{
+          display: "flex",
+          gap: "8px",
+          alignItems: "center",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+          }}
+        >
+          <MusicalNoteIcon
+            style={{
+              color: "#1DB954",
+              width: "24px",
+              height: "24px",
+            }}
+          />
+          <span style={{ color: "white" }}>Musical Compatibility</span>
         </div>
         <span
-          className={`text-md font-bold  text-spotify-green mb-2 transition-opacity duration-500`}
+          style={{
+            fontSize: "1rem",
+            fontWeight: "bold",
+            color: "#1DB954",
+            transition: "opacity 500ms",
+          }}
         >
-          {" "}
           {Math.round(percentage)}%
         </span>
       </div>
 
-      <div className="h-2 bg-[#17171C] rounded-full overflow-hidden">
+      <div
+        style={{
+          height: "8px",
+          backgroundColor: "#090A0C",
+          borderRadius: "9999px",
+          overflow: "visible",
+          position: "relative",
+        }}
+      >
         <div
-          className="h-full bg-gradient-to-r from-[#1DB954] to-[#1ed760] transition-all duration-500 ease-out"
           style={{
-            background: getBarColor(compatibilityNumber),
-            width: isVisible ? `${percentage}%` : "0%",
+            height: "100%",
+            background:
+              getBarColor(compatibilityNumber) ||
+              "linear-gradient(to right, #1DB954, #1ed760)",
+            width: isVisible ? `${percentage}%` : "1%",
+            transition: "all 500ms ease-out",
+            borderRadius: "9999px",
           }}
         ></div>
       </div>
@@ -79,6 +122,11 @@ export default function CompatibilityBar({
           }
           100% {
             opacity: 1;
+          }
+        }
+        @media (min-width: 1024px) {
+          .lg-width-50 {
+            width: 50% !important;
           }
         }
       `}</style>
