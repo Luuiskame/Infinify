@@ -45,6 +45,7 @@ const userSlice = createSlice({
     logOut: (state) => {
       state.user = null;
       localStorage.removeItem("user");
+      localStorage.removeItem("persist:chat");
     }
   },
 });
