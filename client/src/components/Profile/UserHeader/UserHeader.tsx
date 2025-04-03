@@ -7,7 +7,6 @@ import { useAppSelector } from "@/redux/hooks";
 
 // shared components
 import SendMessage from "./SendMessage";
-import { MusicalNoteIcon } from "@heroicons/react/24/outline";
 
 type Props = {
   isOwnProfile: boolean;
@@ -75,10 +74,6 @@ const UserHeader = ({ isOwnProfile, user }: Props) => {
 
           {!isOwnProfile && (
             <div className="flex flex-col gap-2 mb-2">
-              <div className="flex items-center gap-2 mb-2">
-                <MusicalNoteIcon className="text-[#1DB954] w-6 h-6" />
-                <span className="text-white">Musical Compatibility</span>
-              </div>
               <CompatibilityBar
                 favGenres={user?.favorite_genres}
                 favArtists={user?.user_top_artist}
@@ -87,7 +82,7 @@ const UserHeader = ({ isOwnProfile, user }: Props) => {
             </div>
           )}
 
-          <div className="sr-only lg:not-sr-only flex flex-wrap gap-2 mt-4">
+          <div className="sr-only lg:not-sr-only flex flex-wrap gap-2 lg:mt-6">
             {favoritesGenres &&
               favoritesGenres.map((genre) => (
                 <span

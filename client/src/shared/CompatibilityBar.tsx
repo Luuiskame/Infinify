@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import useGetUserCompatibilityNumber from "@/hooks/useGetUserCompatibilityNumber";
 import { Artist, Song } from "@/types";
+import { MusicalNoteIcon } from "@heroicons/react/24/outline";
 
 interface Props {
   favSongs?: Song[];
@@ -27,10 +28,8 @@ export default function CompatibilityBar({
     setIsVisible(true);
   }, []);
 
-  
   const percentage = compatibilityNumber * 10;
 
-  
   const getBarColor = (num: number) => {
     const baseColor = "#1DB954"; // spotify-green
     const brighterColor = "#23fa6d"; // brighter green
@@ -47,9 +46,13 @@ export default function CompatibilityBar({
   return (
     <div className="flex flex-col gap-3 w-[100%] lg:w-[50%] rounded-lg ">
       {/* Porcentaje */}
-      <div className="-mt-2">
+      <div className="flex gap-2 -mt-2">
+        <div className="flex items-center gap-2 mb-2">
+          <MusicalNoteIcon className="text-[#1DB954] w-6 h-6" />
+          <span className="text-white">Musical Compatibility</span>
+        </div>
         <span
-          className={`text-md font-medium  text-spotify-green mb-2 transition-opacity duration-500`}
+          className={`text-md font-bold  text-spotify-green mb-2 transition-opacity duration-500`}
         >
           {" "}
           {Math.round(percentage)}%
