@@ -25,18 +25,9 @@ export const metadata: Metadata = {
   title: "Infinify - Connect with Music Enthusiasts | Music Social Network",
   description:
     "Find music partners, discover new music, and connect with music enthusiasts. Join our music lovers network for music taste matching and collaboration.",
-  keywords: [
-    "music social media",
-    "find music partners",
-    "music taste matching",
-    "music enthusiasts community",
-    "music interest groups",
-    "music recommendation platform",
-    "music lovers network",
-    "music discovery social network",
-    "music sharing community",
-    "music collaboration platform",
-  ],
+  icons: {
+    icon: "/default-genre-picv2.webp", // Default favicon
+  },
   openGraph: {
     title: "Infinify - Connect with Music Enthusiasts",
     description:
@@ -57,7 +48,7 @@ export const metadata: Metadata = {
     title: "Infinify - Connect with Music Enthusiasts",
     description:
       "Find music partners, discover new music, and connect with music enthusiasts. Join our music lovers network for music taste matching and collaboration.",
-    images: ["/og-image.png"], 
+    images: ["/og-image.png"],
   },
   robots: {
     index: true,
@@ -69,7 +60,7 @@ export const metadata: Metadata = {
       "max-image-preview": "large",
       "max-snippet": -1,
     },
-  }
+  },
 };
 
 // redux

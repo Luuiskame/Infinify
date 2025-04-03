@@ -102,8 +102,7 @@ const GenereOfTheDay = () => {
   const currentGenre = data?.genreInfo;
 
   return (
-    <div className=" mx-auto p-1 max-w-4xl">
-      <div className="bg-black rounded-xl shadow-2xl p-3 md:p-6 overflow-hidden hover:bg-spotify-dark-gray transition-colors">
+    <div className="">
         <div className="p-3 md:p-6">
           {/* Header Section */}
           <div className="flex justify-start items-start mb-6 flex-col gap-2">
@@ -116,7 +115,7 @@ const GenereOfTheDay = () => {
           </div>
 
           {/* Description */}
-          <p className="text-lg text-spotify-white italic mb-8 max-w-2xl">
+          <p className="md:text-lg text-spotify-white mb-8 max-w-2xl">
             {currentGenre.genreInfo}
           </p>
           {/* Spotify Embed */}
@@ -124,7 +123,7 @@ const GenereOfTheDay = () => {
             <div className="flex flex-col md:flex-row gap-6 items-center">
               <div className="relative w-full max-w-[250px] aspect-square">
                 <Image
-                  src={"/default-genre-pic.webp"}
+                  src={"/default-genre-picv2.webp"}
                   alt={`${currentGenre.name} playlist`}
                   fill
                   className="object-cover rounded-md shadow-md"
@@ -136,12 +135,12 @@ const GenereOfTheDay = () => {
                 </div>
               </div>
 
-              <div className="flex-1 px-4 py-6 bg-black rounded-lg shadow-md">
+              <div className="flex-1 max-w-[300px] text-center px-4 py-6 rounded-lg">
                 <h3 className="text-xl font-semibold mb-2 text-white">
                   Recommended Playlist
                 </h3>
                 <Link
-                  href={`https://open.spotify.com/playlist/${currentGenre.playlistId}?si=b0c7f3d9d6b94a1b`}
+                  href={`https://open.spotify.com/playlist/65dJwQvalyEwX1C30toUVc?si=pKa91PSfTLuF9mYuPf-MlA?si=b0c7f3d9d6b94a1b`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 py-2 px-4 rounded-full text-sm font-medium transition-colors bg-spotify-green hover:bg-spotify-green/80 text-black"
@@ -162,20 +161,20 @@ const GenereOfTheDay = () => {
             {data?.songs?.map((song: Song, index: number) => (
               <div
                 key={index}
-                className="bg-black rounded-lg p-4 flex items-center gap-4 hover:bg-spotify-dark-gray transition-colors group"
+                className="border border-gray-500 rounded-lg p-4 flex items-center gap-4 hover:bg-spotify-dark-gray transition-colors group"
               >
                 <Image
                   src={song.albumImageUrl}
                   alt={`${song.albumName}`}
-                  width={30}
-                  height={30}
-                  className="w-16 h-16 rounded-md object-cover"
+                  width={50}
+                  height={50}
+                  className="rounded-lg w-[50px] h-[50px] object-cover"
                 />
                 <div className="flex-1">
                   <h3 className="text-spotify-white font-semibold">
                     {song.songName}
                   </h3>
-                  <p className="text-spotify-white/70">{song.artists}</p>
+                  <p className="text-spotify-white/90">{song.artists}</p>
                 </div>
                 <button className="opacity-0 group-hover:opacity-100 transition-opacity p-2 rounded-full bg-spotify-light-gray hover:bg-spotify-dark-gray">
                   <PlayCircleIcon className="h-6 w-6 text-white" />
@@ -184,7 +183,6 @@ const GenereOfTheDay = () => {
             ))}
           </div>
         </div>
-      </div>
     </div>
   );
 };

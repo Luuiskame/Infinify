@@ -7,7 +7,7 @@ import React, { lazy, Suspense } from "react";
 
 
 // Lazy loading para componentes secundarios
-const MostListened = lazy(() => import("./components/MostListened"));
+const MostListened = lazy(() => import("./components/ArtistOfTheDay"));
 const GenereOfTheDay = lazy(() => import("./components/GenereOfTheDay"));
 const ArtisOfTheDay = lazy(() => import("./components/songOfTheDay"));
 const RecentlyJoined = lazy(() => import("./components/RecentlyJoined"))
