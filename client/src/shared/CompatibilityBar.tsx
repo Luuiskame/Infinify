@@ -1,8 +1,8 @@
-'use client'
+"use client";
 
+import { useState, useEffect } from "react";
 import useGetUserCompatibilityNumber from "@/hooks/useGetUserCompatibilityNumber";
-import { Artist, Song } from '@/types';
-
+import { Artist, Song } from "@/types";
 
 interface Props {
   favSongs?: Song[];
@@ -10,17 +10,31 @@ interface Props {
   favGenres?: string[];
 }
 
-export default function CompatibilityBar({ favGenres = [], favArtists = [], favSongs = [] }: Props) {
-  const {compatibilityNumber} = useGetUserCompatibilityNumber(favGenres, favArtists, favSongs)
+export default function CompatibilityBar({
+  favGenres = [],
+  favArtists = [],
+  favSongs = [],
+}: Props) {
+  const { compatibilityNumber } = useGetUserCompatibilityNumber(
+    favGenres,
+    favArtists,
+    favSongs
+  );
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    // Animación de entrada
+    setIsVisible(true);
+  }, []);
 
   
-  const percentage = (compatibilityNumber / 10) * 100;
+  const percentage = compatibilityNumber * 10;
+
   
-  // Function to generate gradient colors based on number
-  const getGradient = (num: number) => {
-    const baseColor = '#1DB954'; // spotify-green
-    const brighterColor = '#23fa6d'; // brighter green
-    
+  const getBarColor = (num: number) => {
+    const baseColor = "#1DB954"; // spotify-green
+    const brighterColor = "#23fa6d"; // brighter green
+
     if (num <= 3) {
       return `linear-gradient(90deg, ${baseColor} 0%, ${baseColor} 100%)`;
     } else if (num <= 6) {
@@ -30,96 +44,41 @@ export default function CompatibilityBar({ favGenres = [], favArtists = [], favS
     }
   };
 
-  // Function to get text emphasis based on number
-  const getCompatibilityText = (num: number) => {
-    const style = {
-      fontSize: '14px',
-      fontWeight: 500,
-      margin: 0,
-      transition: 'all 300ms ease-in-out'
-    };
-
-    if (num >= 8) {
-      return {
-        ...style,
-        fontSize: '16px',
-        fontWeight: 700,
-        textShadow: '0 0 10px rgba(29, 185, 84, 0.3)'
-      };
-    } else if (num >= 5) {
-      return {
-        ...style,
-        fontWeight: 600
-      };
-    }
-    return style;
-  };
-  
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      width: '100%',
-      textAlign: 'center',
-      gap: '12px'
-    }}>
-      <p style={getCompatibilityText(compatibilityNumber)}>
-        Compatibility {compatibilityNumber >= 8 ? '✨' : ''}
-      </p>
-      
-      <div style={{
-        position: 'relative',
-        height: '24px',
-        backgroundColor: '#282828',
-        borderRadius: '12px',
-        overflow: 'hidden',
-        maxWidth: '350px',
-        margin: '0 auto',
-        width: '100%',
-        boxShadow: compatibilityNumber >= 8 ? '0 0 10px rgba(29, 185, 84, 0.3)' : 'none',
-        transition: 'box-shadow 300ms ease-in-out'
-      }}>
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          height: '100%',
-          background: getGradient(compatibilityNumber),
-          width: `${percentage}%`,
-          transition: 'all 300ms ease-in-out',
-          animation: compatibilityNumber >= 8 ? 'pulse 2s infinite' : 'none'
-        }} />
-        
-        {/* Grid marks */}
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          display: 'flex'
-        }}>
-          {Array.from({ length: 10 }).map((_, i) => (
-            <div 
-              key={i}
-              style={{
-                flex: 1,
-                borderLeft: i === 0 ? 'none' : `1px solid ${compatibilityNumber >= 8 ? '#1a1a1a' : '#282828'}`,
-                transition: 'border-color 300ms ease-in-out'
-              }}
-            />
-          ))}
-        </div>
+    <div className="flex flex-col gap-3 w-[100%] lg:w-[50%] rounded-lg ">
+      {/* Porcentaje */}
+      <div className="-mt-2">
+        <span
+          className={`text-md font-medium  text-spotify-green mb-2 transition-opacity duration-500`}
+        >
+          {" "}
+          {Math.round(percentage)}%
+        </span>
       </div>
-      <style>
-        {`
-          @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.8; }
-            100% { opacity: 1; }
+
+      <div className="h-2 bg-[#17171C] rounded-full overflow-hidden">
+        <div
+          className="h-full bg-gradient-to-r from-[#1DB954] to-[#1ed760] transition-all duration-500 ease-out"
+          style={{
+            background: getBarColor(compatibilityNumber),
+            width: isVisible ? `${percentage}%` : "0%",
+          }}
+        ></div>
+      </div>
+
+      <style jsx>{`
+        @keyframes pulse {
+          0% {
+            opacity: 1;
           }
-        `}
-      </style>
+          50% {
+            opacity: 0.8;
+          }
+          100% {
+            opacity: 1;
+          }
+        }
+      `}</style>
     </div>
   );
 }
