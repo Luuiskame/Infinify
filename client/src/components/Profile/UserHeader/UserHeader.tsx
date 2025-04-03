@@ -32,7 +32,7 @@ const UserHeader = ({ isOwnProfile, user }: Props) => {
   const favoritesGenres = user?.favorite_genres.slice(0, 3);
 
   return (
-    <section className="w-full bg-[#191414] px-20 py-6 rounded-xl transition-all duration-300">
+    <section className="w-full bg-spotify-light-gray px-20 py-6  transition-all duration-300">
       <div className="flex flex-col md:flex-row items-center gap-6 md:gap-10">
         <div className="relative group">
           <Image
@@ -41,9 +41,9 @@ const UserHeader = ({ isOwnProfile, user }: Props) => {
               "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3"
             }
             alt={user?.display_name || ""}
-            width={200}
+            width={300}
             height={100}
-            className="w-32 h-32 rounded-full object-cover border-2 border-[#1DB954] transition-transform duration-300 group-hover:scale-105"
+            className="w-32 h-32 md:w-48 md:h-48 rounded-full object-cover border-2 border-[#1DB954] transition-transform duration-300 group-hover:scale-105"
           />
           <div className="absolute inset-0 rounded-full bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300"></div>
         </div>

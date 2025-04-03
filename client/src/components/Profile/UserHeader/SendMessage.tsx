@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useAppSelector } from "@/redux/hooks";
 import { socket } from "@/socket-io/socket";
 import {useRouter} from "next/navigation";
-import { PaperAirplaneIcon } from "@heroicons/react/24/outline";
+import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
 
 interface chatUsersInfo {
   localUser: string;
@@ -63,7 +63,7 @@ export default function SendMessage(chatInfo: chatUsersInfo) {
   return (
     <button
     onClick={trigger}
-    className="flex items-center justify-center gap-2 px-6 py-3 bg-[#17171C] hover:bg-[#252529] text-white rounded-full transition-all duration-300 transform hover:scale-105"
+    className="flex items-center justify-center gap-2 px-6 py-3 hover:bg-[#252529]/50 bg-[#252529] text-white rounded-full transition-all duration-300 transform hover:scale-105"
     title="Send Message"
   >
     <PaperAirplaneIcon className="text-xl w-6 h-6" />
