@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import { ArrowLeftIcon } from "@heroicons/react/24/solid";
 
 const Compare = () => {
-  const [compatibility, setCompatibility] = useState(78);
   const dummyData = {
     user1: {
       name: "Alex Turner",
@@ -210,15 +209,8 @@ const Compare = () => {
         </div>
 
         <div className="mb-12">
-          <h3 className="text-xl font-semibold mb-6">Compatibility</h3>
-          <motion.div
-            className="h-4 bg-[#17171C] rounded-full overflow-hidden"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
+          <h3 className="text-xl font-semibold mb-6">Compatibility</h3>          
             <CompatibilityBar />
-          </motion.div>
-          <p className="text-right mt-2">{compatibility}% Match</p>
         </div>
 
         <div className="flex justify-center">
