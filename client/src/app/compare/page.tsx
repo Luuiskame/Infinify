@@ -103,40 +103,47 @@ const Compare = () => {
     <div className="min-h-screen bg-spotify-dark text-white p-6">
       <div className="max-w-7xl mx-auto">
         <div className="mb-12">
-          <h3 className="text-xl font-semibold mb-6 text-center pb-6">
+          <h3 className="text-xl font-semibold mb-6 text-center pb-6 hover:text-[#1DB954] transition-colors duration-300">
             Common Artists
           </h3>
           <div className="flex flex-wrap items-center gap-3 lg:gap-12 justify-center">
             {dummyData.commonArtists.map((artist, index) => (
-              <div key={index} className="flex flex-col items-center">
+              <div
+                key={index}
+                className="flex flex-col items-center group cursor-pointer"
+              >
                 <img
                   src={artist.image}
                   alt={artist.name}
-                  className="w-20 h-20 rounded-full object-cover mb-2"
+                  className="w-20 h-20 rounded-full object-cover mb-2 transition-transform duration-300 group-hover:scale-110 group-hover:shadow-lg shadow-[#1DB954]"
                 />
-                <p className="text-center text-sm">{artist.name}</p>
+                <p className="text-center text-sm group-hover:text-[#1DB954] transition-colors duration-300">
+                  {artist.name}
+                </p>
               </div>
             ))}
           </div>
         </div>
 
         <div className="mb-12">
-          <h3 className="text-xl font-semibold text-center mb-6">
+          <h3 className="text-xl font-semibold text-center mb-6 hover:text-[#1DB954] transition-colors duration-300">
             Common Songs
           </h3>
           <div className="flex flex-wrap items-center gap-3 lg:gap-12 justify-center">
             {dummyData.commonSongs.map((song, index) => (
               <div
                 key={index}
-                className="flex-shrink-0 flex flex-col items-center"
+                className="flex-shrink-0 flex flex-col items-center group cursor-pointer"
               >
                 <img
                   src={song.image}
                   alt={song.name}
-                  className="w-24 h-24 rounded-full object-cover mb-2"
+                  className="w-24 h-24 rounded-full object-cover mb-2 transition-transform duration-300 group-hover:scale-110 group-hover:shadow-lg"
                 />
-                <p className="text-center text-sm font-medium">{song.name}</p>
-                <p className="text-center text-xs text-gray-400">
+                <p className="text-center text-sm font-medium group-hover:text-[#1DB954] transition-colors duration-300">
+                  {song.name}
+                </p>
+                <p className="text-center text-xs text-gray-400 group-hover:text-white transition-colors duration-300">
                   {song.artist}
                 </p>
               </div>
@@ -146,31 +153,34 @@ const Compare = () => {
 
         {/* main div for both cards, fav songs and artist */}
         <div className="grid grid-cols-1 text-center place-items-center lg:grid-cols-2 gap-4">
-        <h2 className="lg:col-span-2">VS</h2>
+          <h2 className="lg:col-span-2 text-2xl font-bold hover:text-[#1DB954] transition-colors duration-300">
+            VS
+          </h2>
 
-
-        <div className="w-full md:max-w-[600px] lg:max-w-[450px] lg:bg-spotify-light-gray rounded-lg shadow-lg p-6">
-            <h3 className="mb-6">Both favorite Songs right now</h3>
+          <div className="w-full md:max-w-[600px] lg:max-w-[450px] lg:bg-spotify-light-gray rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 hover:shadow-[#1DB954]/20">
+            <h3 className="mb-6 font-semibold hover:text-[#1DB954] transition-colors duration-300">
+              Both favorite Songs right now
+            </h3>
 
             {/* song main container */}
             <div className="flex justify-between text-center items-center gap-6 mb-6">
-              <div className="flex flex-col items-center gap-3 mb-6 w-[50%]">
-                <p className="text-center">
+              <div className="flex flex-col items-center gap-3 mb-6 w-[50%] group cursor-pointer">
+                <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium">
                   {dummyData.user1.favoriteSongs[0].name}
                 </p>
                 <img
-                  className="w-20 h-20 rounded-full object-cover mb-2"
+                  className="w-20 h-20 rounded-full object-cover mb-2 transition-transform duration-300 group-hover:scale-110"
                   src={dummyData.user1.favoriteSongs[0].image}
                   alt=""
                 />
               </div>
 
-              <div className="flex flex-col items-center gap-3 mb-6 w-[50%]">
-                <p className="text-center">
+              <div className="flex flex-col items-center gap-3 mb-6 w-[50%] group cursor-pointer">
+                <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium">
                   {dummyData.user2.favoriteSongs[0].name}
                 </p>
                 <img
-                  className="w-20 h-20 rounded-full object-cover mb-2"
+                  className="w-20 h-20 rounded-full object-cover mb-2 transition-transform duration-300 group-hover:scale-110"
                   src={dummyData.user2.favoriteSongs[0].image}
                   alt=""
                 />
@@ -178,28 +188,29 @@ const Compare = () => {
             </div>
           </div>
 
-          <div className="w-full md:max-w-[600px] lg:max-w-[450px] lg:bg-spotify-light-gray rounded-lg shadow-lg p-6">
-          <h3 className="mb-6">Both favorite Artist right now</h3>
+          <div className="w-full md:max-w-[600px] lg:max-w-[450px] lg:bg-spotify-light-gray rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 hover:shadow-[#1DB954]/20">
+            <h3 className="mb-6 font-semibold hover:text-[#1DB954] transition-colors duration-300">
+              Both favorite Artist right now
+            </h3>
 
             <div className="flex justify-between text-center items-center gap-6 mb-6">
-              <div className="flex flex-col items-center gap-3 mb-6 w-[50%]">
-                <p className="text-center">
+              <div className="flex flex-col items-center gap-3 mb-6 w-[50%] group cursor-pointer">
+                <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium">
                   {dummyData.user1.favoriteArtists[0].name}
                 </p>
                 <img
-                  className="w-20 h-20 rounded-full object-cover mb-2"
+                  className="w-20 h-20 rounded-full object-cover mb-2 transition-transform duration-300 group-hover:scale-110"
                   src={dummyData.user1.favoriteArtists[0].image}
-                  
                   alt=""
                 />
               </div>
 
-              <div className="flex flex-col items-center gap-3 mb-6 w-[50%]">
-                <p className="text-center">
+              <div className="flex flex-col items-center gap-3 mb-6 w-[50%] group cursor-pointer">
+                <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium">
                   {dummyData.user2.favoriteArtists[0].name}
                 </p>
                 <img
-                  className="w-20 h-20 rounded-full object-cover mb-2"
+                  className="w-20 h-20 rounded-full object-cover mb-2 transition-transform duration-300 group-hover:scale-110"
                   src={dummyData.user2.favoriteArtists[0].image}
                   alt=""
                 />
@@ -208,17 +219,19 @@ const Compare = () => {
           </div>
         </div>
 
-        <div className="mb-12">
-          <h3 className="text-xl font-semibold mb-6">Compatibility</h3>          
-            <CompatibilityBar />
+        <div className="max-w-[700px] flex flex-col items-center mx-auto mt-12 mb-6">
+          <h3 className="text-xl font-semibold mb-6 text-center hover:text-[#1DB954] transition-colors duration-300">
+            Compatibility
+          </h3>
+          <CompatibilityBar />
         </div>
 
-        <div className="flex justify-center">
-          <button className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
+        <div className="flex justify-center mt-12 gap-12">
+          <button className="flex items-center space-x-2 hover:text-[#1DB954] hover:opacity-80 transition-all duration-300">
             <ArrowLeftIcon className="h-6 w-6" />
             <span>Back</span>
           </button>
-          <button className="bg-[#1DB954] hover:opacity-90 transition-opacity px-8 py-3 rounded-full flex items-center space-x-2">
+          <button className="bg-[#1DB954] hover:opacity-90 transition-all duration-300 px-8 py-3 rounded-full flex items-center space-x-2 hover:shadow-lg hover:scale-105">
             {/* <FaSpotify className="text-xl" /> */}
             <span>Message</span>
           </button>
