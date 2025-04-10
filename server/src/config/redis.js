@@ -7,8 +7,7 @@ dotenv.config();
 // Create a factory function to get Redis client
 export async function getRedisClient() {
   // Create a new client
-  const client = createClient({
-    username: process.env.REDIS_USERNAME || 'default',
+  const client = createClient({    username: process.env.REDIS_USERNAME || 'default',
     password: process.env.REDIS_PASSWORD,
     socket: {
       host: process.env.REDIS_HOST,
