@@ -61,7 +61,7 @@ routes.get('/song-of-the-day', getSongOfTheDay)
 routes.post('/get-profile', getUserInfo)
 routes.get('/get-user-refresh-token', getNewUsertoken)
 routes.get('/get-user-range-info/:range', getUserRangeData)
-routes.get('/profile/userId/compare', getCompareData)
+routes.get('/profile/:userId/compare', getCompareData)
 
 //chats
 routes.post('/chats', createChats)

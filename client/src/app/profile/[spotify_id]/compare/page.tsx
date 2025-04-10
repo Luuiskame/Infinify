@@ -6,12 +6,16 @@ import Link from "next/link";
 import { ArrowLeftIcon } from "@heroicons/react/24/solid";
 import { useAppSelector } from "@/redux/hooks";
 import { useParams } from "next/navigation";
+import { useGetUserCompareDataQuery } from "@/services/profileApi";
 
 const Compare = () => {
 
   const user1 = useAppSelector((state) => state.userReducer.user);
   const params = useParams();
   const { spotify_id } = params;
+
+  const { data: user2, isLoading, error } = useGetUserCompareDataQuery({ userId: spotify_id as string });
+  console.log(user2);
 
   const dummyData = {
     user2: {
@@ -160,11 +164,11 @@ const Compare = () => {
 
               <div className="flex flex-col items-center gap-3 mb-6 w-[50%] group cursor-pointer">
                 <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium">
-                  {dummyData.user2.favoriteSongs[0].name}
+                  {user2?.short_term.user_top_songs.song_name}
                 </p>
                 <img
                   className="w-20 h-20 rounded-full object-cover mb-2 transition-transform duration-300 group-hover:scale-110"
-                  src={dummyData.user2.favoriteSongs[0].image}
+                  src={user2?.short_term.user_top_songs.song_image}
                   alt=""
                 />
               </div>
@@ -185,11 +189,11 @@ const Compare = () => {
 
               <div className="flex flex-col items-center gap-3 mb-6 w-[50%] group cursor-pointer">
                 <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium">
-                  {dummyData.user2.favoriteSongs[0].name}
+                  {user2?.long_term.user_top_songs[0].song_name}
                 </p>
                 <img
                   className="w-20 h-20 rounded-full object-cover mb-2 transition-transform duration-300 group-hover:scale-110"
-                  src={dummyData.user2.favoriteSongs[0].image}
+                  src={user2?.long_term.user_top_songs[0].song_image}
                   alt=""
                 />
               </div>
@@ -215,11 +219,11 @@ const Compare = () => {
 
               <div className="flex flex-col items-center gap-3 mb-6 w-[50%] group cursor-pointer">
                 <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium">
-                  {dummyData.user2.favoriteArtists[0].name}
+                  {user2?.short_term.user_top_artist.artist_name}
                 </p>
                 <img
                   className="w-20 h-20 rounded-full object-cover mb-2 transition-transform duration-300 group-hover:scale-110"
-                  src={dummyData.user2.favoriteArtists[0].image}
+                  src={user2?.short_term.user_top_artist.artist_photo}
                   alt=""
                 />
               </div>
@@ -239,11 +243,11 @@ const Compare = () => {
 
               <div className="flex flex-col items-center gap-3 mb-6 w-[50%] group cursor-pointer">
                 <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium">
-                  {dummyData.user2.favoriteArtists[0].name}
+                  {user2?.long_term.user_top_artist[0].artist_name}
                 </p>
                 <img
                   className="w-20 h-20 rounded-full object-cover mb-2 transition-transform duration-300 group-hover:scale-110"
-                  src={dummyData.user2.favoriteArtists[0].image}
+                  src={user2?.long_term.user_top_artist[0].artist_photo}
                   alt=""
                 />
               </div>

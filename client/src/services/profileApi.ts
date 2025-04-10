@@ -1,5 +1,16 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { Song, Artist } from "../types";
 
+interface compareDataResponse {
+  long_term: {
+    user_top_artist: Artist[];
+    user_top_songs: Song[];
+  };
+  short_term: {
+    user_top_artist: Artist;
+    user_top_songs: Song;
+  };
+}
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export const profileApi = createApi({
@@ -28,8 +39,15 @@ export const profileApi = createApi({
         method: 'GET',
       }), 
       keepUnusedDataFor: 60 * 60 * 24
+    }),
+    getUserCompareData: builder.query<compareDataResponse, { userId: string | null }>({
+      query: ({ userId }: { userId: string | null }) => ({
+        url: `profile/${userId}/compare`,
+        method: 'GET',
+      }),
+      keepUnusedDataFor: 60 * 60 * 24
     })
   }),
 });
 
-export const { useGetUserProfileInfoQuery, useGetUserTopDataWithRangeQuery } = profileApi;
+export const { useGetUserProfileInfoQuery, useGetUserTopDataWithRangeQuery, useGetUserCompareDataQuery } = profileApi;
