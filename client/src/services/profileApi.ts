@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { Song, Artist } from "../types";
 
 interface compareDataResponse {
+  favorite_genres: string[];
   long_term: {
     user_top_artist: Artist[];
     user_top_songs: Song[];

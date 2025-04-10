@@ -2,6 +2,12 @@ import { useState, useEffect } from 'react';
 import { useAppSelector } from '@/redux/hooks';
 import { Artist, Song } from '@/types';
 
+interface ThingsInCommon {
+  songsInCommon: Song[] | [];
+  artistInCommon: Artist[] | [];
+  genresInCommon: string[] | [];
+}
+
 export default function useGetUserCompatibilityNumber(
   favGenres: string[],
   favArtists: Artist[],
@@ -9,6 +15,12 @@ export default function useGetUserCompatibilityNumber(
 ) {
   const [compatibilityNumber, setCompatibilityNumber] = useState<number>(0);
   const currentUserInfo = useAppSelector(state => state.userReducer.user);
+
+  const [thingsInCommon, setThingsInCommon] = useState<ThingsInCommon>({
+    songsInCommon: [],
+    artistInCommon: [],
+    genresInCommon: []
+  });
 
   // For genres: each common genre adds 0.8 weighted points.
   const calculateRateBasedOnGenre = (): number => {
@@ -77,5 +89,6 @@ export default function useGetUserCompatibilityNumber(
 
   return {
     compatibilityNumber,
+    thingsInCommon
   };
 }

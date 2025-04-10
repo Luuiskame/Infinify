@@ -143,7 +143,7 @@ const Compare = () => {
             VS
           </h2>
 
-          <div className="w-full md:max-w-[600px] lg:max-w-[450px] lg:bg-spotify-light-gray rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 hover:shadow-[#1DB954]/20">
+          <div className="w-full md:max-w-[600px] lg:max-w-[450px] bg-spotify-light-gray rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 hover:shadow-[#1DB954]/20">
             <h3 className="mb-8 text-xl font-semibold hover:text-[#1DB954] transition-colors duration-300">
               Both favorite Songs
             </h3>
@@ -200,7 +200,7 @@ const Compare = () => {
             </div>
           </div>
 
-          <div className="w-full md:max-w-[600px] lg:max-w-[450px] lg:bg-spotify-light-gray rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 hover:shadow-[#1DB954]/20">
+          <div className="w-full md:max-w-[600px] lg:max-w-[450px] bg-spotify-light-gray rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 hover:shadow-[#1DB954]/20">
             <h3 className="mb-8 text-xl font-semibold hover:text-[#1DB954] transition-colors duration-300">
               Both favorite Artist 
             </h3>
@@ -259,7 +259,7 @@ const Compare = () => {
           <h3 className="text-xl font-semibold mb-6 text-center hover:text-[#1DB954] transition-colors duration-300">
             Compatibility
           </h3>
-          <CompatibilityBar />
+          <CompatibilityBar favArtists={user2?.long_term.user_top_artist} favSongs={user2?.long_term.user_top_songs} favGenres={user2?.favorite_genres} />
         </div>
 
         <div className="flex justify-center mt-12 gap-12">

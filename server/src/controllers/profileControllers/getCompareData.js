@@ -13,6 +13,7 @@ export const getCompareData = async (req, res) => {
             supabase
                 .from("user")
                 .select(`
+                    favorite_genres,
                     user_top_artist (*),
                     user_top_songs (*)
                 `)
@@ -46,6 +47,7 @@ export const getCompareData = async (req, res) => {
 
         // Combine the data, taking only the first short-term artist and song
         const responseData = {
+            favorite_genres: longRangeResult.data?.favorite_genres || [],
             long_term: longRangeResult.data,
             short_term: {
                 user_top_artist: shortRangeResult.data?.user_top_artist?.[0] || null,
