@@ -38,12 +38,12 @@ const UserHeader = ({ isOwnProfile, user }: Props) => {
           <Image
             src={
               user?.profile_photo ||
-              "https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3"
+              "/og-image.png"
             }
             alt={user?.display_name || ""}
             width={300}
             height={100}
-            className="w-32 h-32 md:w-48 md:h-48 rounded-full object-cover border-2 border-[#1DB954] transition-transform duration-300 group-hover:scale-105"
+            className="w-32 h-32 md:w-48 md:h-48 rounded-full object-contain border-2 border-[#1DB954] transition-transform duration-300 group-hover:scale-105"
           />
           <div className="absolute inset-0 rounded-full bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300"></div>
         </div>

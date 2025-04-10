@@ -4,9 +4,9 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "i.scdn.co", // Correct hostname without protocol and path
+        hostname: "i.scdn.co",
         port: "",
-        pathname: "/image/**", // Match all images under the /image path
+        pathname: "/image/**",
       },
       {
         protocol: "https",
@@ -36,6 +36,13 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "via.placeholder.com",
+        port: "",
+        pathname: "/**",
+      },
+      // Nuevo patrón para Unsplash
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
         port: "",
         pathname: "/**",
       },

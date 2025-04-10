@@ -17,6 +17,7 @@ import { createChats } from '../controllers/chatControllers/createChats.js';
 import { getChatMessages } from '../controllers/chatControllers/getChatMessages.js';
 import { getUserRangeData } from '../controllers/userControllers/getUserRangeData.js';
 import { getCompareData } from '../controllers/profileControllers/getCompareData.js';
+import { searchUsers, searchUsersById } from '../controllers/userControllers/searchUser.js';
 
 const clientId = process.env.SPOTIFY_CLIENT_ID;
 const redirectUri = process.env.SPOTIFY_REDIRECT_URI; 
@@ -66,5 +67,10 @@ routes.get('/profile/:userId/compare', getCompareData)
 //chats
 routes.post('/chats', createChats)
 routes.get('/chats/messages/:chatId', getChatMessages)
+
+
+//search users
+routes.get('/search-users', searchUsers)
+routes.get('/search-users/:userId', searchUsersById)
 
 export default routes

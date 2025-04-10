@@ -23,8 +23,8 @@ export default function ConnectCard({ spotify_id, country, display_name, profile
 
       <div className="flex items-center space-x-4 self-start">
         <Image
-          className="rounded-full object-cover"
-          src={profile_photo}
+          className="rounded-full object-contain"
+          src={profile_photo || "/og-image.png" }
           alt={`${display_name} profile`}
           width={60}
           height={40}
