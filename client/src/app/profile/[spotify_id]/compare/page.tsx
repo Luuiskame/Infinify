@@ -23,7 +23,7 @@ const Compare = () => {
   );
 
   return (
-    <div className="min-h-screen bg-spotify-dark text-white p-6">
+    <div className="min-h-screen bg-spotify-dark text-white p-6 mb-[6rem] lg:mb-3">
       <div className="max-w-7xl mx-auto">
         <div className="mb-12">
           <h3 className="text-xl font-semibold mb-6 text-center pb-6 hover:text-[#1DB954] transition-colors duration-300">
