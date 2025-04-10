@@ -108,15 +108,19 @@ export default function Page({ params }: { params: Params }) {
       case "Info":
         return (
           <div className="flex flex-col gap-4">
+            <div className="flex flex-row justify-between max-w-[400px] mx-auto gap-6 items-stretch">
+            <button className="bg-spotify-light-gray text-white p-2 self-center rounded-md border-none outline-none focus:ring-2 hover:bg-spotify-green min-h-[60px]">Compare stats</button>
             <select
               value={timeRange}
               onChange={handleChange}
-              className="bg-spotify-light-gray text-white p-2 self-center rounded-md border-none outline-none focus:ring-2 focus:ring-spotify-green"
+              className="bg-spotify-light-gray text-white p-2 self-center rounded-md border-none outline-none focus:ring-2 focus:ring-spotify-green h-full min-h-[60px]"
             >
               <option value="long">All Time</option>
               <option value="medium">Last 6 Months</option>
               <option value="short">Last 4 Weeks</option>
             </select>
+
+            </div>
             <div className="flex flex-col lg:flex-row gap-4">
               <UserTopArtist artistToDisplay={artistToDisplay} />
               <UserTopSong songToDisplay={songToDisplay} />

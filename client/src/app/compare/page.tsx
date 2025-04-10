@@ -3,35 +3,13 @@ import { useState, useEffect } from "react";
 import CompatibilityBar from "@/shared/CompatibilityBar";
 import { motion } from "framer-motion";
 import { ArrowLeftIcon } from "@heroicons/react/24/solid";
+import { useAppSelector } from "@/redux/hooks";
 
 const Compare = () => {
+
+  const user1 = useAppSelector((state) => state.userReducer.user);
+
   const dummyData = {
-    user1: {
-      name: "Alex Turner",
-      image: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61",
-      favoriteArtists: [
-        {
-          name: "Arctic Monkeys",
-          image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f",
-        },
-        {
-          name: "The Strokes",
-          image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819",
-        },
-      ],
-      favoriteSongs: [
-        {
-          name: "505",
-          artist: "Arctic Monkeys",
-          image: "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae",
-        },
-        {
-          name: "Last Nite",
-          artist: "The Strokes",
-          image: "https://images.unsplash.com/photo-1511735111819-9a3f7709049c",
-        },
-      ],
-    },
     user2: {
       name: "Julian Casablancas",
       image: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6",
@@ -159,18 +137,44 @@ const Compare = () => {
 
           <div className="w-full md:max-w-[600px] lg:max-w-[450px] lg:bg-spotify-light-gray rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 hover:shadow-[#1DB954]/20">
             <h3 className="mb-6 font-semibold hover:text-[#1DB954] transition-colors duration-300">
-              Both favorite Songs right now
+              Both favorite Songs
             </h3>
 
             {/* song main container */}
+            <h4>Right now</h4>
             <div className="flex justify-between text-center items-center gap-6 mb-6">
               <div className="flex flex-col items-center gap-3 mb-6 w-[50%] group cursor-pointer">
                 <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium">
-                  {dummyData.user1.favoriteSongs[0].name}
+                  {user1?.user_top_songs_short[0].song_name}
                 </p>
                 <img
                   className="w-20 h-20 rounded-full object-cover mb-2 transition-transform duration-300 group-hover:scale-110"
-                  src={dummyData.user1.favoriteSongs[0].image}
+                  src={user1?.user_top_songs_short[0].song_image}
+                  alt=""
+                />
+              </div>
+
+              <div className="flex flex-col items-center gap-3 mb-6 w-[50%] group cursor-pointer">
+                <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium">
+                  {dummyData.user2.favoriteSongs[0].name}
+                </p>
+                <img
+                  className="w-20 h-20 rounded-full object-cover mb-2 transition-transform duration-300 group-hover:scale-110"
+                  src={dummyData.user2.favoriteSongs[0].image}
+                  alt=""
+                />
+              </div>
+            </div>
+
+            <h4>Of all time</h4>
+            <div className="flex justify-between text-center items-center gap-6 mb-6">
+              <div className="flex flex-col items-center gap-3 mb-6 w-[50%] group cursor-pointer">
+                <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium">
+                  {user1?.user_top_songs_long[0].song_name}
+                </p>
+                <img
+                  className="w-20 h-20 rounded-full object-cover mb-2 transition-transform duration-300 group-hover:scale-110"
+                  src={user1?.user_top_songs_long[0].song_image}
                   alt=""
                 />
               </div>
@@ -190,17 +194,41 @@ const Compare = () => {
 
           <div className="w-full md:max-w-[600px] lg:max-w-[450px] lg:bg-spotify-light-gray rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 hover:shadow-[#1DB954]/20">
             <h3 className="mb-6 font-semibold hover:text-[#1DB954] transition-colors duration-300">
-              Both favorite Artist right now
+              Both favorite Artist 
             </h3>
-
+            <h4>Right now</h4>
             <div className="flex justify-between text-center items-center gap-6 mb-6">
               <div className="flex flex-col items-center gap-3 mb-6 w-[50%] group cursor-pointer">
                 <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium">
-                  {dummyData.user1.favoriteArtists[0].name}
+                  {user1?.user_top_artist_short[0].artist_name}
                 </p>
                 <img
                   className="w-20 h-20 rounded-full object-cover mb-2 transition-transform duration-300 group-hover:scale-110"
-                  src={dummyData.user1.favoriteArtists[0].image}
+                  src={user1?.user_top_artist_short[0].artist_photo}
+                  alt=""
+                />
+              </div>
+
+              <div className="flex flex-col items-center gap-3 mb-6 w-[50%] group cursor-pointer">
+                <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium">
+                  {dummyData.user2.favoriteArtists[0].name}
+                </p>
+                <img
+                  className="w-20 h-20 rounded-full object-cover mb-2 transition-transform duration-300 group-hover:scale-110"
+                  src={dummyData.user2.favoriteArtists[0].image}
+                  alt=""
+                />
+              </div>
+            </div>
+            <h4>Of all time</h4>
+            <div className="flex justify-between text-center items-center gap-6 mb-6">
+              <div className="flex flex-col items-center gap-3 mb-6 w-[50%] group cursor-pointer">
+                <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium">
+                  {user1?.user_top_artist_long[0].artist_name}
+                </p>
+                <img
+                  className="w-20 h-20 rounded-full object-cover mb-2 transition-transform duration-300 group-hover:scale-110"
+                  src={user1?.user_top_artist_long[0].artist_photo}
                   alt=""
                 />
               </div>
