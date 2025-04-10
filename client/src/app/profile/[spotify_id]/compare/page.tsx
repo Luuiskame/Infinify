@@ -100,7 +100,7 @@ const Compare = () => {
               >
                 <img
                   src={artist.image}
-                  alt={artist.name}
+                  alt={`${artist.name} artist profile`}
                   className="w-20 h-20 rounded-full object-cover mb-2 transition-transform duration-300 group-hover:scale-110 group-hover:shadow-lg shadow-[#1DB954]"
                 />
                 <p className="text-center text-sm group-hover:text-[#1DB954] transition-colors duration-300">
@@ -123,7 +123,7 @@ const Compare = () => {
               >
                 <img
                   src={song.image}
-                  alt={song.name}
+                  alt={`${song.name} by ${song.artist} album cover`}
                   className="w-24 h-24 rounded-full object-cover mb-2 transition-transform duration-300 group-hover:scale-110 group-hover:shadow-lg"
                 />
                 <p className="text-center text-sm font-medium group-hover:text-[#1DB954] transition-colors duration-300">
@@ -144,111 +144,111 @@ const Compare = () => {
           </h2>
 
           <div className="w-full md:max-w-[600px] lg:max-w-[450px] lg:bg-spotify-light-gray rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 hover:shadow-[#1DB954]/20">
-            <h3 className="mb-6 font-semibold hover:text-[#1DB954] transition-colors duration-300">
+            <h3 className="mb-8 text-xl font-semibold hover:text-[#1DB954] transition-colors duration-300">
               Both favorite Songs
             </h3>
 
             {/* song main container */}
-            <h4>Right now</h4>
-            <div className="flex justify-between text-center items-center gap-6 mb-6">
-              <div className="flex flex-col items-center gap-3 mb-6 w-[50%] group cursor-pointer">
-                <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium">
+            <h4 className="text-lg font-medium mb-4 text-gray-200">Right now</h4>
+            <div className="flex justify-between text-center items-center gap-6 mb-8">
+              <div className="flex flex-col items-center gap-4 mb-6 w-[50%] group cursor-pointer">
+                <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium text-base">
                   {user1?.user_top_songs_short[0].song_name}
                 </p>
                 <img
                   className="w-20 h-20 rounded-full object-cover mb-2 transition-transform duration-300 group-hover:scale-110"
                   src={user1?.user_top_songs_short[0].song_image}
-                  alt=""
+                  alt={`${user1?.user_top_songs_short[0].song_name} album cover`}
                 />
               </div>
 
-              <div className="flex flex-col items-center gap-3 mb-6 w-[50%] group cursor-pointer">
-                <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium">
+              <div className="flex flex-col items-center gap-4 mb-6 w-[50%] group cursor-pointer">
+                <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium text-base">
                   {user2?.short_term.user_top_songs.song_name}
                 </p>
                 <img
                   className="w-20 h-20 rounded-full object-cover mb-2 transition-transform duration-300 group-hover:scale-110"
                   src={user2?.short_term.user_top_songs.song_image}
-                  alt=""
+                  alt={`${user2?.short_term.user_top_songs.song_name} album cover`}
                 />
               </div>
             </div>
 
-            <h4>Of all time</h4>
+            <h4 className="text-lg font-medium mb-4 text-gray-200">Of all time</h4>
             <div className="flex justify-between text-center items-center gap-6 mb-6">
-              <div className="flex flex-col items-center gap-3 mb-6 w-[50%] group cursor-pointer">
-                <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium">
+              <div className="flex flex-col items-center gap-4 mb-6 w-[50%] group cursor-pointer">
+                <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium text-base">
                   {user1?.user_top_songs_long[0].song_name}
                 </p>
                 <img
                   className="w-20 h-20 rounded-full object-cover mb-2 transition-transform duration-300 group-hover:scale-110"
                   src={user1?.user_top_songs_long[0].song_image}
-                  alt=""
+                  alt={`${user1?.user_top_songs_long[0].song_name} album cover`}
                 />
               </div>
 
-              <div className="flex flex-col items-center gap-3 mb-6 w-[50%] group cursor-pointer">
-                <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium">
+              <div className="flex flex-col items-center gap-4 mb-6 w-[50%] group cursor-pointer">
+                <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium text-base">
                   {user2?.long_term.user_top_songs[0].song_name}
                 </p>
                 <img
                   className="w-20 h-20 rounded-full object-cover mb-2 transition-transform duration-300 group-hover:scale-110"
                   src={user2?.long_term.user_top_songs[0].song_image}
-                  alt=""
+                  alt={`${user2?.long_term.user_top_songs[0].song_name} album cover`}
                 />
               </div>
             </div>
           </div>
 
           <div className="w-full md:max-w-[600px] lg:max-w-[450px] lg:bg-spotify-light-gray rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-300 hover:shadow-[#1DB954]/20">
-            <h3 className="mb-6 font-semibold hover:text-[#1DB954] transition-colors duration-300">
+            <h3 className="mb-8 text-xl font-semibold hover:text-[#1DB954] transition-colors duration-300">
               Both favorite Artist 
             </h3>
-            <h4>Right now</h4>
-            <div className="flex justify-between text-center items-center gap-6 mb-6">
-              <div className="flex flex-col items-center gap-3 mb-6 w-[50%] group cursor-pointer">
-                <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium">
+            <h4 className="text-lg font-medium mb-4 text-gray-200">Right now</h4>
+            <div className="flex justify-between text-center items-center gap-6 mb-8">
+              <div className="flex flex-col items-center gap-4 mb-6 w-[50%] group cursor-pointer">
+                <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium text-base">
                   {user1?.user_top_artist_short[0].artist_name}
                 </p>
                 <img
                   className="w-20 h-20 rounded-full object-cover mb-2 transition-transform duration-300 group-hover:scale-110"
                   src={user1?.user_top_artist_short[0].artist_photo}
-                  alt=""
+                  alt={`${user1?.user_top_artist_short[0].artist_name} artist profile`}
                 />
               </div>
 
-              <div className="flex flex-col items-center gap-3 mb-6 w-[50%] group cursor-pointer">
-                <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium">
+              <div className="flex flex-col items-center gap-4 mb-6 w-[50%] group cursor-pointer">
+                <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium text-base">
                   {user2?.short_term.user_top_artist.artist_name}
                 </p>
                 <img
                   className="w-20 h-20 rounded-full object-cover mb-2 transition-transform duration-300 group-hover:scale-110"
                   src={user2?.short_term.user_top_artist.artist_photo}
-                  alt=""
+                  alt={`${user2?.short_term.user_top_artist.artist_name} artist profile`}
                 />
               </div>
             </div>
-            <h4>Of all time</h4>
+            <h4 className="text-lg font-medium mb-4 text-gray-200">Of all time</h4>
             <div className="flex justify-between text-center items-center gap-6 mb-6">
-              <div className="flex flex-col items-center gap-3 mb-6 w-[50%] group cursor-pointer">
-                <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium">
+              <div className="flex flex-col items-center gap-4 mb-6 w-[50%] group cursor-pointer">
+                <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium text-base">
                   {user1?.user_top_artist_long[0].artist_name}
                 </p>
                 <img
                   className="w-20 h-20 rounded-full object-cover mb-2 transition-transform duration-300 group-hover:scale-110"
                   src={user1?.user_top_artist_long[0].artist_photo}
-                  alt=""
+                  alt={`${user1?.user_top_artist_long[0].artist_name} artist profile`}
                 />
               </div>
 
-              <div className="flex flex-col items-center gap-3 mb-6 w-[50%] group cursor-pointer">
-                <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium">
+              <div className="flex flex-col items-center gap-4 mb-6 w-[50%] group cursor-pointer">
+                <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium text-base">
                   {user2?.long_term.user_top_artist[0].artist_name}
                 </p>
                 <img
                   className="w-20 h-20 rounded-full object-cover mb-2 transition-transform duration-300 group-hover:scale-110"
                   src={user2?.long_term.user_top_artist[0].artist_photo}
-                  alt=""
+                  alt={`${user2?.long_term.user_top_artist[0].artist_name} artist profile`}
                 />
               </div>
             </div>
