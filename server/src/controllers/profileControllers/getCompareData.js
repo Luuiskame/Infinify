@@ -1,8 +1,7 @@
 import { supabase } from "../../db.js";
 
-export const getUserRangeData = async (req, res) => {
-    const { range } = req.params; // Extract 'range' from URL parameters
-    const { userId } = req.query; // Extract 'userId' from query parameters
+export const getCompareData = async (req, res) => {
+    const { userId } = req.params; // Extract 'userId' from query parameters
 
     if (!userId) {
         return res.status(400).json({ error: "User ID is required" });
@@ -15,8 +14,7 @@ export const getUserRangeData = async (req, res) => {
             user_top_songs (*)
         `)
         .eq("spotify_id", userId)
-        .eq('user_top_artist.range', range) // Filter at the database level
-        .eq('user_top_songs.range', range); // Filter at the database level
+        .single(); // Ensure we get only one user
 
     if (error) {
         console.error("Error fetching user:", error.message);
@@ -27,5 +25,11 @@ export const getUserRangeData = async (req, res) => {
         return res.status(404).json({ error: "User not found" });
     }
 
-    return res.json(data[0]); // ✅ Send as a single object
+    // Extract and filter only the relevant top artist and songs based on the range
+    const responseData = {
+        user_top_artist: data.user_top_artist?.filter(artist => artist.range === range) || [],
+        user_top_songs: data.user_top_songs?.filter(song => song.range === range) || [],
+    };
+
+    return res.json(responseData); // ✅ Send as a single object
 };

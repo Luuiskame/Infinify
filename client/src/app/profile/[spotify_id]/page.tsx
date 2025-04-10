@@ -12,6 +12,7 @@ import { useAppSelector } from "@/redux/hooks";
 import { searchUsersById } from "@/supabase/searchUsers";
 import { Userinfo, Artist, Song } from "@/types";
 import { useGetUserTopDataWithRangeQuery } from "@/services/profileApi";
+import Link from "next/link";
 
 type Params = {
   spotify_id: string;
@@ -109,7 +110,9 @@ export default function Page({ params }: { params: Params }) {
         return (
           <div className="flex flex-col gap-4">
             <div className="flex flex-row justify-between max-w-[400px] mx-auto gap-6 items-stretch">
-            <button className="bg-spotify-light-gray text-white p-2 self-center rounded-md border-none outline-none focus:ring-2 hover:bg-spotify-green min-h-[60px]">Compare stats</button>
+            <Link 
+            href={`/profile/${spotify_id}/compare`}
+            className="bg-spotify-light-gray flex p-2 text-white items-center self-center rounded-md border-none outline-none focus:ring-2 hover:bg-spotify-green min-h-[60px]">Compare stats</Link>
             <select
               value={timeRange}
               onChange={handleChange}

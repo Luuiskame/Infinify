@@ -2,12 +2,16 @@
 import { useState, useEffect } from "react";
 import CompatibilityBar from "@/shared/CompatibilityBar";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { ArrowLeftIcon } from "@heroicons/react/24/solid";
 import { useAppSelector } from "@/redux/hooks";
+import { useParams } from "next/navigation";
 
 const Compare = () => {
 
   const user1 = useAppSelector((state) => state.userReducer.user);
+  const params = useParams();
+  const { spotify_id } = params;
 
   const dummyData = {
     user2: {
@@ -255,10 +259,12 @@ const Compare = () => {
         </div>
 
         <div className="flex justify-center mt-12 gap-12">
-          <button className="flex items-center space-x-2 hover:text-[#1DB954] hover:opacity-80 transition-all duration-300">
+          <Link
+            href={`/profile/${spotify_id}`}
+          className="flex items-center space-x-2 hover:text-[#1DB954] hover:opacity-80 transition-all duration-300">
             <ArrowLeftIcon className="h-6 w-6" />
             <span>Back</span>
-          </button>
+          </Link>
           <button className="bg-[#1DB954] hover:opacity-90 transition-all duration-300 px-8 py-3 rounded-full flex items-center space-x-2 hover:shadow-lg hover:scale-105">
             {/* <FaSpotify className="text-xl" /> */}
             <span>Message</span>
