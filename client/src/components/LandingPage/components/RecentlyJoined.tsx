@@ -9,10 +9,10 @@ function CardUserRJ({ user }: { user: Userinfo }) {
     <li className="text-white text-base">
       <a href={`/profile/${user.spotify_id}`} className="flex flex-row items-center justify-center gap-x-2">
         <Image
-          src={user.profile_photo || "/default-profile.jpg"}
+          src={user.profile_photo || "/og-image.png"}
           width={24}
           height={24}
-          className="rounded-full w-6 h-6"
+          className="rounded-full w-6 h-6 object-contain"
           alt={user.display_name}
         />
         <span>{user.display_name}</span>
