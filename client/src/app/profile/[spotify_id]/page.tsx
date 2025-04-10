@@ -12,7 +12,10 @@ import { useAppSelector } from "@/redux/hooks";
 import { searchUsersById } from "@/supabase/searchUsers";
 import { Userinfo, Artist, Song } from "@/types";
 import { useGetUserTopDataWithRangeQuery } from "@/services/profileApi";
+import LoginBtn from "@/shared/LoginBtn";
 import Link from "next/link";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 type Params = {
   spotify_id: string;
@@ -109,13 +112,38 @@ export default function Page({ params }: { params: Params }) {
       case "Info":
         return (
           <div className="flex flex-col gap-4">
+            {!currentUser?.id && (
+              <div className="flex flex-col items-center gap-2 mb-4">
+                <p className="text-gray-300 text-center">{`Log in to compare your music tastes with ${userData?.display_name}`}</p>
+                <LoginBtn />
+              </div>
+            )}
             <div className="flex flex-row justify-between max-w-[400px] mx-auto gap-6 items-stretch">
               {!isOwnProfile && (
-                <Link 
-                href={`/profile/${spotify_id}/compare`}
-                className="bg-spotify-light-gray flex p-2 text-white items-center self-center rounded-md border-none outline-none focus:ring-2 hover:bg-spotify-green min-h-[60px]">Compare stats</Link>
+                currentUser?.id ? (
+                  <Link 
+                    href={`/profile/${spotify_id}/compare`}
+                    className="bg-spotify-light-gray flex p-2 text-white items-center self-center rounded-md border-none outline-none focus:ring-2 hover:bg-spotify-green min-h-[60px]"
+                  >
+                    Compare stats
+                  </Link>
+                ) : (
+                  <button
+                    onClick={() => toast.info("Please log in to compare stats", {
+                      position: "top-center",
+                      autoClose: 3000,
+                      hideProgressBar: false,
+                      closeOnClick: true,
+                      pauseOnHover: true,
+                      draggable: true,
+                    })}
+                    className="bg-spotify-light-gray/50 flex p-2 text-gray-400 items-center self-center rounded-md border-none outline-none cursor-not-allowed min-h-[60px]"
+                  >
+                    Compare stats
+                  </button>
+                )
               )}
-              
+              <ToastContainer />
             
             <select
               value={timeRange}

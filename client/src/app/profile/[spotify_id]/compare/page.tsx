@@ -8,6 +8,8 @@ import { useAppSelector } from "@/redux/hooks";
 import { useParams } from "next/navigation";
 import { useGetUserCompareDataQuery } from "@/services/profileApi";
 import useGetUserCompatibilityNumber from "@/hooks/useGetUserCompatibilityNumber";
+import LoginBtn from "@/shared/LoginBtn";
+import { toast } from "react-toastify";
 
 const Compare = () => {
   const user1 = useAppSelector((state) => state.userReducer.user);
@@ -22,9 +24,36 @@ const Compare = () => {
     user2?.long_term.user_top_songs || []
   );
 
+  const handleBlockedInteraction = () => {
+    if (!user1?.user?.id) {
+      toast.info("Please log in to compare music tastes!", {
+        position: "top-center",
+        autoClose: 3000,
+        theme: "dark",
+      });
+    }
+  };
+
+  const containerStyle = !user1?.user?.id ? {
+    position: "relative" as const,
+    opacity: 0.6,
+    cursor: "not-allowed",
+  } : {};
+
   return (
     <div className="min-h-screen bg-spotify-dark text-white p-6 mb-[6rem] lg:mb-3">
-      <div className="max-w-7xl mx-auto">
+      <div 
+        className="max-w-7xl mx-auto relative"
+        style={containerStyle}
+        onClick={handleBlockedInteraction}
+      >
+        {!user1?.user?.id && (
+          <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+            <div className="bg-spotify-dark px-6 py-3 rounded-lg border border-[#1DB954] shadow-lg">
+              <p className="text-[#1DB954] font-medium">Log in to compare music tastes</p>
+            </div>
+          </div>
+        )}
         <div className="mb-12">
           <h3 className="text-xl font-semibold mb-6 text-center pb-6 hover:text-[#1DB954] transition-colors duration-300">
             Common Artists
@@ -232,14 +261,17 @@ const Compare = () => {
         <div className="flex justify-center mt-12 gap-12">
           <Link
             href={`/profile/${spotify_id}`}
-          className="flex items-center space-x-2 hover:text-[#1DB954] hover:opacity-80 transition-all duration-300">
+            className="flex items-center space-x-2 hover:text-[#1DB954] hover:opacity-80 transition-all duration-300">
             <ArrowLeftIcon className="h-6 w-6" />
             <span>Back</span>
           </Link>
-          <button className="bg-[#1DB954] hover:opacity-90 transition-all duration-300 px-8 py-3 rounded-full flex items-center space-x-2 hover:shadow-lg hover:scale-105">
-            {/* <FaSpotify className="text-xl" /> */}
-            <span>Message</span>
-          </button>
+          {user1?.user?.id ? (
+            <button className="bg-[#1DB954] hover:opacity-90 transition-all duration-300 px-8 py-3 rounded-full flex items-center space-x-2 hover:shadow-lg hover:scale-105">
+              <span>Message</span>
+            </button>
+          ) : (
+            <LoginBtn />
+          )}
         </div>
       </div>
     </div>
