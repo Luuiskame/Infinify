@@ -16,12 +16,13 @@ export default function CompatibilityBar({
   favArtists = [],
   favSongs = [],
 }: Props) {
-  const { compatibilityNumber } = useGetUserCompatibilityNumber(
+  const { compatibilityNumber, thingsInCommon } = useGetUserCompatibilityNumber(
     favGenres,
     favArtists,
     favSongs
   );
   const [isVisible, setIsVisible] = useState(false);
+  console.log(thingsInCommon);
 
   useEffect(() => {
     // Animación de entrada

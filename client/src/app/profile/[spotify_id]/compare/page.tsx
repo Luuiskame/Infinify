@@ -7,83 +7,20 @@ import { ArrowLeftIcon } from "@heroicons/react/24/solid";
 import { useAppSelector } from "@/redux/hooks";
 import { useParams } from "next/navigation";
 import { useGetUserCompareDataQuery } from "@/services/profileApi";
+import useGetUserCompatibilityNumber from "@/hooks/useGetUserCompatibilityNumber";
 
 const Compare = () => {
-
   const user1 = useAppSelector((state) => state.userReducer.user);
   const params = useParams();
   const { spotify_id } = params;
 
   const { data: user2, isLoading, error } = useGetUserCompareDataQuery({ userId: spotify_id as string });
-  console.log(user2);
-
-  const dummyData = {
-    user2: {
-      name: "Julian Casablancas",
-      image: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6",
-      favoriteArtists: [
-        {
-          name: "Arctic Monkeys",
-          image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f",
-        },
-        {
-          name: "Tame Impala",
-          image: "https://images.unsplash.com/photo-1501612780327-45045538702b",
-        },
-      ],
-      favoriteSongs: [
-        {
-          name: "Do I Wanna Know?",
-          artist: "Arctic Monkeys",
-          image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819",
-        },
-        {
-          name: "The Less I Know The Better",
-          artist: "Tame Impala",
-          image: "https://images.unsplash.com/photo-1598387993441-a364f854c3e1",
-        },
-      ],
-    },
-    commonArtists: [
-      {
-        name: "Arctic Monkeys",
-        image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f",
-      },
-      {
-        name: "The Strokes",
-        image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819",
-      },
-      {
-        name: "Tame Impala",
-        image: "https://images.unsplash.com/photo-1501612780327-45045538702b",
-      },
-      {
-        name: "Radiohead",
-        image: "https://images.unsplash.com/photo-1598387993441-a364f854c3e1",
-      },
-      {
-        name: "The Killers",
-        image: "https://images.unsplash.com/photo-1511735111819-9a3f7709049c",
-      },
-    ],
-    commonSongs: [
-      {
-        name: "R U Mine?",
-        artist: "Arctic Monkeys",
-        image: "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae",
-      },
-      {
-        name: "Reptilia",
-        artist: "The Strokes",
-        image: "https://images.unsplash.com/photo-1511735111819-9a3f7709049c",
-      },
-      {
-        name: "Let It Happen",
-        artist: "Tame Impala",
-        image: "https://images.unsplash.com/photo-1598387993441-a364f854c3e1",
-      },
-    ],
-  };
+  
+  const { thingsInCommon } = useGetUserCompatibilityNumber(
+    user2?.favorite_genres || [],
+    user2?.long_term.user_top_artist || [],
+    user2?.long_term.user_top_songs || []
+  );
 
   return (
     <div className="min-h-screen bg-spotify-dark text-white p-6">
@@ -93,21 +30,25 @@ const Compare = () => {
             Common Artists
           </h3>
           <div className="flex flex-wrap items-center gap-3 lg:gap-12 justify-center">
-            {dummyData.commonArtists.map((artist, index) => (
-              <div
-                key={index}
-                className="flex flex-col items-center group cursor-pointer"
-              >
-                <img
-                  src={artist.image}
-                  alt={`${artist.name} artist profile`}
-                  className="w-20 h-20 rounded-full object-cover mb-2 transition-transform duration-300 group-hover:scale-110 group-hover:shadow-lg shadow-[#1DB954]"
-                />
-                <p className="text-center text-sm group-hover:text-[#1DB954] transition-colors duration-300">
-                  {artist.name}
-                </p>
-              </div>
-            ))}
+            {thingsInCommon?.artistInCommon.length > 0 ? (
+              thingsInCommon.artistInCommon.map((artist, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col items-center group cursor-pointer"
+                >
+                  <img
+                    src={artist.artist_photo}
+                    alt={`${artist.artist_name} artist profile`}
+                    className="w-20 h-20 rounded-full object-cover mb-2 transition-transform duration-300 group-hover:scale-110 group-hover:shadow-lg shadow-[#1DB954]"
+                  />
+                  <p className="text-center text-sm group-hover:text-[#1DB954] transition-colors duration-300">
+                    {artist.artist_name}
+                  </p>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-400 text-center italic">No artists in common yet. Keep exploring music!</p>
+            )}
           </div>
         </div>
 
@@ -116,24 +57,50 @@ const Compare = () => {
             Common Songs
           </h3>
           <div className="flex flex-wrap items-center gap-3 lg:gap-12 justify-center">
-            {dummyData.commonSongs.map((song, index) => (
-              <div
-                key={index}
-                className="flex-shrink-0 flex flex-col items-center group cursor-pointer"
-              >
-                <img
-                  src={song.image}
-                  alt={`${song.name} by ${song.artist} album cover`}
-                  className="w-24 h-24 rounded-full object-cover mb-2 transition-transform duration-300 group-hover:scale-110 group-hover:shadow-lg"
-                />
-                <p className="text-center text-sm font-medium group-hover:text-[#1DB954] transition-colors duration-300">
-                  {song.name}
-                </p>
-                <p className="text-center text-xs text-gray-400 group-hover:text-white transition-colors duration-300">
-                  {song.artist}
-                </p>
-              </div>
-            ))}
+            {thingsInCommon?.songsInCommon.length > 0 ? (
+              thingsInCommon.songsInCommon.map((song, index) => (
+                <div
+                  key={index}
+                  className="flex-shrink-0 flex flex-col items-center group cursor-pointer"
+                >
+                  <img
+                    src={song.song_image}
+                    alt={`${song.song_name} by ${song.artist_name} album cover`}
+                    className="w-24 h-24 rounded-full object-cover mb-2 transition-transform duration-300 group-hover:scale-110 group-hover:shadow-lg"
+                  />
+                  <p className="text-center text-sm font-medium group-hover:text-[#1DB954] transition-colors duration-300">
+                    {song.song_name}
+                  </p>
+                  <p className="text-center text-xs text-gray-400 group-hover:text-white transition-colors duration-300">
+                    {song.artist_name}
+                  </p>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-400 text-center italic p-6">No songs in common yet. Time to share some music!</p>
+            )}
+          </div>
+        </div>
+
+        <div className="mb-12">
+          <h3 className="text-xl font-semibold text-center mb-6 hover:text-[#1DB954] transition-colors duration-300">
+            Common Genres
+          </h3>
+          <div className="flex flex-wrap items-center gap-3 lg:gap-6 justify-center">
+            {thingsInCommon?.genresInCommon.length > 0 ? (
+              thingsInCommon.genresInCommon.map((genre, index) => (
+                <div
+                  key={index}
+                  className="bg-spotify-light-gray px-4 py-2 rounded-full group cursor-pointer hover:bg-[#1DB954]/20 transition-all duration-300"
+                >
+                  <p className="text-center text-sm group-hover:text-[#1DB954] transition-colors duration-300 capitalize">
+                    {genre}
+                  </p>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-400 text-center italic p-6">No genres in common yet. Explore different music styles!</p>
+            )}
           </div>
         </div>
 
