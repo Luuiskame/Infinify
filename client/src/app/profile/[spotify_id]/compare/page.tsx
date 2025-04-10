@@ -40,6 +40,8 @@ const Compare = () => {
     cursor: "not-allowed",
   } : {};
 
+  console.log("user2", user2);
+
   return (
     <div className="min-h-screen bg-spotify-dark text-white p-6 mb-[6rem] lg:mb-3">
       {error && (
@@ -160,10 +162,10 @@ const Compare = () => {
                   >
                     <div className="relative w-20 h-20 mb-2">
                       <Image
-                        src={artist.artist_photo || ""}
+                        src={artist.artist_photo || "/og-image.png"}
                         alt={`${artist.artist_name} artist profile`}
                         fill
-                        className="rounded-full object-cover transition-transform duration-300 group-hover:scale-110 group-hover:shadow-lg shadow-[#1DB954]"
+                        className="rounded-full object-contain transition-transform duration-300 group-hover:scale-110 group-hover:shadow-lg shadow-[#1DB954]"
                       />
                     </div>
                     <p className="text-center text-sm group-hover:text-[#1DB954] transition-colors duration-300">
@@ -190,10 +192,10 @@ const Compare = () => {
                   >
                     <div className="relative w-24 h-24 mb-2">
                       <Image
-                        src={song.song_image || ""}
+                        src={song.song_image || "/og-image.png"}
                         alt={`${song.song_name} by ${song.artist_name} album cover`}
                         fill
-                        className="rounded-full object-cover transition-transform duration-300 group-hover:scale-110 group-hover:shadow-lg"
+                        className="rounded-full object-contain transition-transform duration-300 group-hover:scale-110 group-hover:shadow-lg"
                       />
                     </div>
                     <p className="text-center text-sm font-medium group-hover:text-[#1DB954] transition-colors duration-300">
@@ -252,8 +254,8 @@ const Compare = () => {
                   </p>
                   <div className="relative w-20 h-20 mb-2">
                     <Image
-                      className="rounded-full object-cover transition-transform duration-300 group-hover:scale-110"
-                      src={user1?.user_top_songs_short[0].song_image || ""}
+                      className="rounded-full object-contain transition-transform duration-300 group-hover:scale-110"
+                      src={user1?.user_top_songs_short[0].song_image || "/og-image.png"}
                       alt={`${user1?.user_top_songs_short[0].song_name} album cover`}
                       fill
                     />
@@ -262,13 +264,13 @@ const Compare = () => {
 
                 <div className="flex flex-col items-center gap-4 mb-6 w-[50%] group cursor-pointer">
                   <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium text-base">
-                    {user2?.short_term.user_top_songs.song_name}
+                    {user2?.short_term?.user_top_songs?.song_name}
                   </p>
                   <div className="relative w-20 h-20 mb-2">
                     <Image
-                      className="rounded-full object-cover transition-transform duration-300 group-hover:scale-110"
-                      src={user2?.short_term.user_top_songs.song_image || ""}
-                      alt={`${user2?.short_term.user_top_songs.song_name} album cover`}
+                      className="rounded-full object-contain transition-transform duration-300 group-hover:scale-110"
+                      src={user2?.short_term?.user_top_songs?.song_image || "/og-image.png"}
+                      alt={`${user2?.short_term?.user_top_songs?.song_name} album cover`}
                       fill
                     />
                   </div>
@@ -279,12 +281,12 @@ const Compare = () => {
               <div className="flex justify-between text-center items-center gap-6 mb-6">
                 <div className="flex flex-col items-center gap-4 mb-6 w-[50%] group cursor-pointer">
                   <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium text-base">
-                    {user1?.user_top_songs_long[0].song_name}
+                    {user1?.user_top_songs_long[0]?.song_name}
                   </p>
                   <div className="relative w-20 h-20 mb-2">
                     <Image
-                      className="rounded-full object-cover transition-transform duration-300 group-hover:scale-110"
-                      src={user1?.user_top_songs_long[0].song_image || ""}
+                      className="rounded-full object-contain transition-transform duration-300 group-hover:scale-110"
+                      src={user1?.user_top_songs_long[0].song_image || "/og-image.png"}
                       alt={`${user1?.user_top_songs_long[0].song_name} album cover`}
                       fill
                     />
@@ -297,8 +299,8 @@ const Compare = () => {
                   </p>
                   <div className="relative w-20 h-20 mb-2">
                     <Image
-                      className="rounded-full object-cover transition-transform duration-300 group-hover:scale-110"
-                      src={user2?.long_term.user_top_songs[0].song_image || ""}
+                      className="rounded-full object-contain transition-transform duration-300 group-hover:scale-110"
+                      src={user2?.long_term.user_top_songs[0].song_image || "/og-image.png"}
                       alt={`${user2?.long_term.user_top_songs[0].song_name} album cover`}
                       fill
                     />
@@ -319,8 +321,8 @@ const Compare = () => {
                   </p>
                   <div className="relative w-20 h-20 mb-2">
                     <Image
-                      className="rounded-full object-cover transition-transform duration-300 group-hover:scale-110"
-                      src={user1?.user_top_artist_short[0].artist_photo || ""}
+                      className="rounded-full object-contain transition-transform duration-300 group-hover:scale-110"
+                      src={user1?.user_top_artist_short[0].artist_photo || "/og-image.png"}
                       alt={`${user1?.user_top_artist_short[0].artist_name} artist profile`}
                       fill
                     />
@@ -329,13 +331,13 @@ const Compare = () => {
 
                 <div className="flex flex-col items-center gap-4 mb-6 w-[50%] group cursor-pointer">
                   <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium text-base">
-                    {user2?.short_term.user_top_artist.artist_name}
+                    {user2?.short_term?.user_top_artist?.artist_name}
                   </p>
                   <div className="relative w-20 h-20 mb-2">
                     <Image
-                      className="rounded-full object-cover transition-transform duration-300 group-hover:scale-110"
-                      src={user2?.short_term.user_top_artist.artist_photo || ""}
-                      alt={`${user2?.short_term.user_top_artist.artist_name} artist profile`}
+                      className="rounded-full object-contain transition-transform duration-300 group-hover:scale-110"
+                      src={user2?.short_term?.user_top_artist?.artist_photo || "/og-image.png"}
+                      alt={`${user2?.short_term?.user_top_artist?.artist_name} artist profile`}
                       fill
                     />
                   </div>
@@ -349,8 +351,8 @@ const Compare = () => {
                   </p>
                   <div className="relative w-20 h-20 mb-2">
                     <Image
-                      className="rounded-full object-cover transition-transform duration-300 group-hover:scale-110"
-                      src={user1?.user_top_artist_long[0].artist_photo || ""}
+                      className="rounded-full object-contain transition-transform duration-300 group-hover:scale-110"
+                      src={user1?.user_top_artist_long[0].artist_photo || "/og-image.png"}
                       alt={`${user1?.user_top_artist_long[0].artist_name} artist profile`}
                       fill
                     />
@@ -359,13 +361,13 @@ const Compare = () => {
 
                 <div className="flex flex-col items-center gap-4 mb-6 w-[50%] group cursor-pointer">
                   <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium text-base">
-                    {user2?.long_term.user_top_artist[0].artist_name}
+                    {user2?.long_term.user_top_artist[0]?.artist_name}
                   </p>
                   <div className="relative w-20 h-20 mb-2">
                     <Image
-                      className="rounded-full object-cover transition-transform duration-300 group-hover:scale-110"
-                      src={user2?.long_term.user_top_artist[0].artist_photo || ""}
-                      alt={`${user2?.long_term.user_top_artist[0].artist_name} artist profile`}
+                      className="rounded-full object-contain transition-transform duration-300 group-hover:scale-110"
+                      src={user2?.long_term.user_top_artist[0]?.artist_photo || "/og-image.png"}
+                      alt={`${user2?.long_term.user_top_artist[0]?.artist_name} artist profile`}
                       fill
                     />
                   </div>
