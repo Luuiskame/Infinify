@@ -20,14 +20,14 @@ const UserTopSongs = ({songToDisplay}: Props) => {
 
   return (
     <div className="w-[100%] lg:w-[50%]">
-      <h2 className="text-3xl text-white font-bold font-sans">Top Songs</h2>
+      <h2 className="text-3xl text-white font-bold font-sans text-center">Top Songs</h2>
       <div className="bg-spotify-light-gray mt-4 rounded-lg mb-10">
         <div>
           <div className="relative flex justify-center items-center p-10">
             <Image
               src={
                 topSongs?.[1]?.song_image ||
-                "https://i.scdn.co/image/ab6775700000ee852ba57998f0be198a92734260"
+                "/userMusic"
               }
               alt={topSongs?.[0]?.artist_name || "artist"}
               width={120}
@@ -37,7 +37,7 @@ const UserTopSongs = ({songToDisplay}: Props) => {
             <Image
               src={
                 topSongs?.[0]?.song_image ||
-                "https://i.scdn.co/image/ab6775700000ee852ba57998f0be198a92734260"
+                "/userMusic"
               }
               alt={topSongs?.[1]?.artist_name || "artist"}
               width={160}
@@ -47,7 +47,7 @@ const UserTopSongs = ({songToDisplay}: Props) => {
             <Image
               src={
                 topSongs?.[2]?.song_image ||
-                "https://i.scdn.co/image/ab6775700000ee852ba57998f0be198a92734260"
+                "/userMusic"
               }
               alt={topSongs?.[2]?.artist_name || "artist"}
               width={120}
@@ -64,8 +64,8 @@ const UserTopSongs = ({songToDisplay}: Props) => {
                   <Image
                     width={48}
                     height={50}
-                    src={song.song_image}
-                    alt={song.song_name}
+                    src={song.song_image || "/userMusic.png"}
+                    alt={song.song_name || "song"}
                     className="rounded-full object-fill border-white"
                   />
                 ) : null}
@@ -76,7 +76,7 @@ const UserTopSongs = ({songToDisplay}: Props) => {
               </div>
             ))
           ) : (
-            <p>No highlight songs available for this user</p>
+            <p className="text-gray-400 px-4 py-2 text-center italic">No highlight songs available for this user</p>
           )}
 
           {topSongs && topSongs.length > 10 && (

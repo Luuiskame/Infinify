@@ -20,14 +20,14 @@ const UserTopArtist = ({artistToDisplay }: Props) => {
 
   return (
     <div className="w-[100%] lg:w-[50%]">
-      <h2 className="text-3xl text-white font-bold font-sans">Top Artist</h2>
+      <h2 className="text-3xl text-white font-bold font-sans text-center">Top Artist</h2>
       <div className="bg-spotify-light-gray mt-4 rounded-lg mb-10">
         <div>
           <div className="relative flex justify-center items-center p-10 ">
             <Image
               src={
                 topArtist?.[1]?.artist_photo ||
-                "https://i.scdn.co/image/ab6775700000ee852ba57998f0be198a92734260"
+                "/userMusic.png"
               }
               alt={topArtist?.[0]?.artist_name || "artist"}
               width={120}
@@ -37,7 +37,7 @@ const UserTopArtist = ({artistToDisplay }: Props) => {
             <Image
               src={
                 topArtist?.[0]?.artist_photo ||
-                "https://i.scdn.co/image/ab6775700000ee852ba57998f0be198a92734260"
+                "/userMusic.png"
               }
               alt={topArtist?.[1]?.artist_name || "artist"}
               width={160}
@@ -47,7 +47,7 @@ const UserTopArtist = ({artistToDisplay }: Props) => {
             <Image
               src={
                 topArtist?.[2]?.artist_photo ||
-                "https://i.scdn.co/image/ab6775700000ee852ba57998f0be198a92734260"
+                "/userMusic.png"
               }
               alt={topArtist?.[2]?.artist_name || "artist"}
               width={120}
@@ -69,8 +69,8 @@ const UserTopArtist = ({artistToDisplay }: Props) => {
                   <Image
                     width={50}
                     height={50}
-                    src={artist?.artist_photo}
-                    alt={artist?.artist_name}
+                    src={artist?.artist_photo || "/userMusic.png"}
+                    alt={artist?.artist_name || "artist"}
                     className="rounded-full object-fill border-white"
                   />
                 ) : null}
@@ -82,7 +82,7 @@ const UserTopArtist = ({artistToDisplay }: Props) => {
               </div>
             ))
           ) : (
-            <p>No highlight Artists available for this user.</p>
+            <p className="text-gray-400 px-4 py-2 text-center italic">No highlight Artists available for this user.</p>
           )}
 
           {topArtist && topArtist.length > 10 && (
