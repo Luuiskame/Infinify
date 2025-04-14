@@ -2,8 +2,6 @@
 import Loading from "@/components/Loading/Loading";
 import { Suspense, useEffect, useState, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { searchUsers } from "@/supabase/searchUsers";
-import { Userinfo } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -19,11 +17,11 @@ import {
   removeSearchHistory,
   setSearchHistory,
 } from "@/slices/searchHistorySlice";
+import { useSearchUsersQuery } from "@/services/getUsersApi";
+import { Userinfo } from "@/types";
 
 const PageContent = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [results, setResults] = useState<Userinfo[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -33,6 +31,12 @@ const PageContent = () => {
 
   const dispatch = useAppDispatch();
   const history = useAppSelector((state) => state.searchHistory.searchHistory);
+
+  
+  const { data: results = [], isFetching: isLoading } = useSearchUsersQuery(
+    { q: searchTerm },
+    { skip: !searchTerm.trim() }
+  );
 
   // Cargar historial al inicio
   useEffect(() => {
@@ -57,31 +61,6 @@ const PageContent = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Efecto principal para manejar búsquedas
-  useEffect(() => {
-    const search = async () => {
-      if (!searchTerm.trim()) {
-        setResults([]);
-        return;
-      }
-
-      setIsLoading(true);
-      try {
-        const users = await searchUsers(searchTerm);
-        setResults(users);
-        dispatch(addSearchHistory(searchTerm));
-      } catch (error) {
-        console.error("Search error:", error);
-        setResults([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    const timer = setTimeout(search, 500);
-    return () => clearTimeout(timer);
-  }, [searchTerm, dispatch]);
-
   // Sincronizar con parámetros de URL
   useEffect(() => {
     if (isInitialMount.current) {
@@ -96,6 +75,7 @@ const PageContent = () => {
     e.preventDefault();
     if (searchTerm.trim()) {
       router.push(`/search?q=${encodeURIComponent(searchTerm)}`);
+      dispatch(addSearchHistory(searchTerm));
       setShowHistory(false);
     }
   };
@@ -221,7 +201,7 @@ const PageContent = () => {
                   Search Results
                 </h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                  {results.map((user) => (
+                  {results.map((user: Userinfo) => (
                     <Link
                       href={`/profile/${user.spotify_id}`}
                       key={user.spotify_id}

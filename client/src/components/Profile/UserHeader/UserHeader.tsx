@@ -38,7 +38,7 @@ const UserHeader = ({ isOwnProfile, user }: Props) => {
           <Image
             src={
               user?.profile_photo ||
-              "/og-image.png"
+              "/userImage.png"
             }
             alt={user?.display_name || ""}
             width={300}

@@ -18,6 +18,7 @@ import { getChatMessages } from '../controllers/chatControllers/getChatMessages.
 import { getUserRangeData } from '../controllers/userControllers/getUserRangeData.js';
 import { getCompareData } from '../controllers/profileControllers/getCompareData.js';
 import { searchUsers, searchUsersById } from '../controllers/userControllers/searchUser.js';
+import { getRecentUsers } from '../controllers/userControllers/getRecentUsers.js';
 
 const clientId = process.env.SPOTIFY_CLIENT_ID;
 const redirectUri = process.env.SPOTIFY_REDIRECT_URI; 
@@ -70,7 +71,58 @@ routes.get('/chats/messages/:chatId', getChatMessages)
 
 
 //search users
-routes.get('/search-users', searchUsers)
-routes.get('/search-users/:userId', searchUsersById)
+//busqueda con nombre
+routes.get('/search-users', async (req, res) => {
+  try {
+    const { q } = req.query; // Obtener el término de búsqueda de los query params
+    if (!q) {
+      return res.status(400).json({ error: 'Se requiere un término de búsqueda' });
+    }
+    
+    const results = await searchUsers(q);
+    res.json(results);
+  } catch (error) {
+    console.error('Error en la ruta de búsqueda:', error);
+    res.status(500).json({ error: 'Error al buscar usuarios' });
+  }
+});
+
+
+// Búsqueda de usuario por ID
+routes.get('/search-users/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    if (!userId) {
+      return res.status(400).json({ error: 'Se requiere un ID de usuario' });
+    }
+    
+    const user = await searchUsersById(userId);
+    if (user.length === 0) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+    
+    res.json(user[0]); // Devuelve el primer usuario encontrado
+  } catch (error) {
+    console.error('Error en la ruta de búsqueda por ID:', error);
+    res.status(500).json({ error: 'Error al buscar el usuario' });
+  }
+});
+
+
+//get recently users
+routes.get('/get-recent-users', async (req, res) => {
+  try {
+    const { limit, userId } = req.query;
+    if (!limit) {
+      return res.status(400).json({ error: 'Se requiere el número de usuarios' });
+    }
+    
+    const users = await getRecentUsers(limit, userId);
+    res.json(users);
+  } catch (error) {
+    console.error('Error en la ruta de búsqueda:', error);
+    res.status(500).json({ error: 'Error al buscar usuarios' });
+  }
+});
 
 export default routes

@@ -162,7 +162,7 @@ const Compare = () => {
                   >
                     <div className="relative w-20 h-20 mb-2">
                       <Image
-                        src={artist.artist_photo || "/og-image.png"}
+                        src={artist.artist_photo || "/userMusic.png"}
                         alt={`${artist.artist_name} artist profile`}
                         fill
                         className="rounded-full object-contain transition-transform duration-300 group-hover:scale-110 group-hover:shadow-lg shadow-[#1DB954]"
@@ -174,7 +174,7 @@ const Compare = () => {
                   </div>
                 ))
               ) : (
-                <p className="text-gray-400 text-center italic">No artists in common yet. Keep exploring music!</p>
+                <p className="text-gray-400 text-center italic ">No artists in common yet. Keep exploring music!</p>
               )}
             </div>
           </div>
@@ -192,17 +192,17 @@ const Compare = () => {
                   >
                     <div className="relative w-24 h-24 mb-2">
                       <Image
-                        src={song.song_image || "/og-image.png"}
+                        src={song.song_image || "/userMusic.png"}
                         alt={`${song.song_name} by ${song.artist_name} album cover`}
                         fill
                         className="rounded-full object-contain transition-transform duration-300 group-hover:scale-110 group-hover:shadow-lg"
                       />
                     </div>
                     <p className="text-center text-sm font-medium group-hover:text-[#1DB954] transition-colors duration-300">
-                      {song.song_name}
+                      {song?.song_name ||  "No recent favorite song"}
                     </p>
                     <p className="text-center text-xs text-gray-400 group-hover:text-white transition-colors duration-300">
-                      {song.artist_name}
+                      {song?.artist_name || "No recent favorite artist"}
                     </p>
                   </div>
                 ))
@@ -250,12 +250,12 @@ const Compare = () => {
               <div className="flex justify-between text-center items-center gap-6 mb-8">
                 <div className="flex flex-col items-center gap-4 mb-6 w-[50%] group cursor-pointer">
                   <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium text-base">
-                    {user1?.user_top_songs_short[0].song_name}
+                    {user1?.user_top_songs_short[0]?.song_name || "No recent favorite song"}
                   </p>
                   <div className="relative w-20 h-20 mb-2">
                     <Image
                       className="rounded-full object-contain transition-transform duration-300 group-hover:scale-110"
-                      src={user1?.user_top_songs_short[0].song_image || "/og-image.png"}
+                      src={user1?.user_top_songs_short[0].song_image || "/userMusic.png"}
                       alt={`${user1?.user_top_songs_short[0].song_name} album cover`}
                       fill
                     />
@@ -264,12 +264,12 @@ const Compare = () => {
 
                 <div className="flex flex-col items-center gap-4 mb-6 w-[50%] group cursor-pointer">
                   <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium text-base">
-                    {user2?.short_term?.user_top_songs?.song_name}
+                    {user2?.short_term?.user_top_songs?.song_name || "No recent favorite song"}
                   </p>
                   <div className="relative w-20 h-20 mb-2">
                     <Image
                       className="rounded-full object-contain transition-transform duration-300 group-hover:scale-110"
-                      src={user2?.short_term?.user_top_songs?.song_image || "/og-image.png"}
+                      src={user2?.short_term?.user_top_songs?.song_image || "/userMusic.png"}
                       alt={`${user2?.short_term?.user_top_songs?.song_name} album cover`}
                       fill
                     />
@@ -281,12 +281,12 @@ const Compare = () => {
               <div className="flex justify-between text-center items-center gap-6 mb-6">
                 <div className="flex flex-col items-center gap-4 mb-6 w-[50%] group cursor-pointer">
                   <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium text-base">
-                    {user1?.user_top_songs_long[0]?.song_name}
+                    {user1?.user_top_songs_long[0]?.song_name || "No recent favorite song"}
                   </p>
                   <div className="relative w-20 h-20 mb-2">
                     <Image
                       className="rounded-full object-contain transition-transform duration-300 group-hover:scale-110"
-                      src={user1?.user_top_songs_long[0].song_image || "/og-image.png"}
+                      src={user1?.user_top_songs_long[0].song_image || "/userMusic.png"}
                       alt={`${user1?.user_top_songs_long[0].song_name} album cover`}
                       fill
                     />
@@ -295,12 +295,12 @@ const Compare = () => {
 
                 <div className="flex flex-col items-center gap-4 mb-6 w-[50%] group cursor-pointer">
                   <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium text-base">
-                    {user2?.long_term.user_top_songs[0].song_name}
+                    {user2?.long_term.user_top_songs[0].song_name || "No recent favorite song"}
                   </p>
                   <div className="relative w-20 h-20 mb-2">
                     <Image
                       className="rounded-full object-contain transition-transform duration-300 group-hover:scale-110"
-                      src={user2?.long_term.user_top_songs[0].song_image || "/og-image.png"}
+                      src={user2?.long_term.user_top_songs[0].song_image || "/userMusic.png"}
                       alt={`${user2?.long_term.user_top_songs[0].song_name} album cover`}
                       fill
                     />
@@ -317,12 +317,12 @@ const Compare = () => {
               <div className="flex justify-between text-center items-center gap-6 mb-8">
                 <div className="flex flex-col items-center gap-4 mb-6 w-[50%] group cursor-pointer">
                   <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium text-base">
-                    {user1?.user_top_artist_short[0].artist_name}
+                    {user1?.user_top_artist_short[0].artist_name || "No recent favorite artist"}
                   </p>
                   <div className="relative w-20 h-20 mb-2">
                     <Image
                       className="rounded-full object-contain transition-transform duration-300 group-hover:scale-110"
-                      src={user1?.user_top_artist_short[0].artist_photo || "/og-image.png"}
+                      src={user1?.user_top_artist_short[0].artist_photo || "/userMusic.png"}
                       alt={`${user1?.user_top_artist_short[0].artist_name} artist profile`}
                       fill
                     />
@@ -331,12 +331,12 @@ const Compare = () => {
 
                 <div className="flex flex-col items-center gap-4 mb-6 w-[50%] group cursor-pointer">
                   <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium text-base">
-                    {user2?.short_term?.user_top_artist?.artist_name}
+                    {user2?.short_term?.user_top_artist?.artist_name || "No recent favorite artist"}
                   </p>
                   <div className="relative w-20 h-20 mb-2">
                     <Image
                       className="rounded-full object-contain transition-transform duration-300 group-hover:scale-110"
-                      src={user2?.short_term?.user_top_artist?.artist_photo || "/og-image.png"}
+                      src={user2?.short_term?.user_top_artist?.artist_photo || "/userMusic.png"}
                       alt={`${user2?.short_term?.user_top_artist?.artist_name} artist profile`}
                       fill
                     />
@@ -347,12 +347,12 @@ const Compare = () => {
               <div className="flex justify-between text-center items-center gap-6 mb-6">
                 <div className="flex flex-col items-center gap-4 mb-6 w-[50%] group cursor-pointer">
                   <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium text-base">
-                    {user1?.user_top_artist_long[0].artist_name}
+                    {user1?.user_top_artist_long[0]?.artist_name || "No favorite artist"}
                   </p>
                   <div className="relative w-20 h-20 mb-2">
                     <Image
                       className="rounded-full object-contain transition-transform duration-300 group-hover:scale-110"
-                      src={user1?.user_top_artist_long[0].artist_photo || "/og-image.png"}
+                      src={user1?.user_top_artist_long[0].artist_photo || "/userMusic.png"}
                       alt={`${user1?.user_top_artist_long[0].artist_name} artist profile`}
                       fill
                     />
@@ -361,12 +361,12 @@ const Compare = () => {
 
                 <div className="flex flex-col items-center gap-4 mb-6 w-[50%] group cursor-pointer">
                   <p className="text-center group-hover:text-[#1DB954] transition-colors duration-300 font-medium text-base">
-                    {user2?.long_term.user_top_artist[0]?.artist_name}
+                    {user2?.long_term.user_top_artist[0]?.artist_name || "No recent favorite artist"}
                   </p>
                   <div className="relative w-20 h-20 mb-2">
                     <Image
                       className="rounded-full object-contain transition-transform duration-300 group-hover:scale-110"
-                      src={user2?.long_term.user_top_artist[0]?.artist_photo || "/og-image.png"}
+                      src={user2?.long_term.user_top_artist[0]?.artist_photo || "/userMusic.png"}
                       alt={`${user2?.long_term.user_top_artist[0]?.artist_name} artist profile`}
                       fill
                     />

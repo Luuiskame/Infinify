@@ -7,6 +7,7 @@ import { spotifyApi } from "@/services/spotifyApi";
 import { authApi } from "@/services/authApi";
 import { profileApi } from "@/services/profileApi";
 import { chatsApi } from "@/services/chatsApi";
+import { getUsersApi } from "@/services/getUsersApi";
 
 // slices
 import userSlice from "../slices/userSlice";
@@ -31,6 +32,7 @@ const store = configureStore({
     [authApi.reducerPath]: authApi.reducer,
     [profileApi.reducerPath]: profileApi.reducer,
     [chatsApi.reducerPath]: chatsApi.reducer,
+    [getUsersApi.reducerPath]: getUsersApi.reducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -41,7 +43,8 @@ const store = configureStore({
       spotifyApi.middleware,
       authApi.middleware,
       profileApi.middleware,
-      chatsApi.middleware
+      chatsApi.middleware,
+      getUsersApi.middleware
     ),
 });
 
