@@ -3,12 +3,12 @@
 import ConnectHeader from '@/components/Connect/ConnectHeader';
 import ConnectCard from '@/components/Connect/ConnectCard';
 import { useState, useEffect } from 'react';
-import { getRecentUsers } from '@/supabase/getRecentUsers';
 import { Artist, Song } from '@/types';
 
 import { useAppSelector } from "@/redux/hooks"
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { useGetRecentUsersQuery } from '@/services/getUsersApi';
 
 interface UserResponse {
   favorite_genres: string[];
@@ -30,11 +30,13 @@ export default function Page() {
 
     console.log(userId)
 
+  const {data: recentUsers, isLoading: isLoadingData} = useGetRecentUsersQuery({ limit: 5, userId: userId });
+
+
   //! to do next: use effect having dep arr with active button, based on that fetchLastestUsers needs to be remake to handle all different cases which should be done within this function
   const fetchLastestUsers = async () => {
     setLoading(true);
     try {
-      const recentUsers = await getRecentUsers(5, userId) as UserResponse[];
       setCurrentData([...recentUsers]);
       console.log(recentUsers);
     } catch (error) {
@@ -76,7 +78,7 @@ export default function Page() {
     }
   };
 
-  if (loading) {
+  if (loading || isLoadingData) {
     return (
       <section className="bg-spotify-dark-gray w-[90%] mx-auto md:w-[100%] md:ml-5 h-[100dvh] flex flex-col gap-[1rem]">
         {/* Skeleton para el encabezado (ConnectHeader) */}

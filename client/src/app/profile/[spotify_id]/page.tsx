@@ -9,14 +9,14 @@ import Setting from "@/components/Profile/Setting/Setting";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useAppSelector } from "@/redux/hooks";
-import { searchUsersById } from "@/supabase/searchUsers";
 import { Userinfo, Artist, Song } from "@/types";
-import { useGetUserTopDataWithRangeQuery } from "@/services/profileApi";
+import {  useGetUserTopDataWithRangeQuery } from "@/services/profileApi";
 import LoginBtn from "@/shared/LoginBtn";
 import Link from "next/link";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ArrowsRightLeftIcon } from "@heroicons/react/24/solid";
+import { useSearchUsersByIdQuery } from "@/services/getUsersApi";
 
 type Params = {
   spotify_id: string;
@@ -39,6 +39,11 @@ export default function Page({ params }: { params: Params }) {
   const data = useAppSelector((state) => state.userReducer.user);
   const currentUser = data?.user;
 
+  const {data: users, isLoading: isLoadingData} = useSearchUsersByIdQuery({ userId: spotify_id });
+ 
+
+
+  
   // Fetch user data for the profile
   useEffect(() => {
     const fetchUserData = async () => {
@@ -47,12 +52,10 @@ export default function Page({ params }: { params: Params }) {
         setIsOwnProfile(true);
         setUserData(currentUser);
       } else {
-        const users = await searchUsersById(spotify_id);
-        if (users.length > 0) {
-          console.log("User found:", users[0]);
-          setUserData(users[0]);
-          setGenreToDisplay(users[0].favorite_genres ?? []);
-          // For other profiles, we will fetch top data via RTK Query.
+        if (users) {
+          console.log("User found:", users);
+          setUserData(users);
+          setGenreToDisplay(users.favorite_genres ?? []);
         } else {
           console.error("User not found");
         }
@@ -61,7 +64,12 @@ export default function Page({ params }: { params: Params }) {
     };
 
     fetchUserData();
-  }, [spotify_id, currentUser]);
+  }, [spotify_id, currentUser, users]);
+  
+
+
+
+
 
   // When viewing own profile, update based on local state
   useEffect(() => {
@@ -107,6 +115,62 @@ export default function Page({ params }: { params: Params }) {
     const range = event.target.value as TimeRange;
     setTimeRange(range);
   };
+
+  if (isLoadingData || (!isOwnProfile && topDataLoading)) {
+    return (
+      <div className="bg-spotify-dark-gray h-screen">
+        {/* Skeleton for header */}
+        <div className="p-10">
+          <div className="flex items-center gap-4">
+            <Skeleton circle height={100} width={100} baseColor="#121212" highlightColor="#222" />
+            <div className="flex flex-col gap-2">
+              <Skeleton height={24} width={200} baseColor="#121212" highlightColor="#222" />
+              <Skeleton height={16} width={150} baseColor="#121212" highlightColor="#222" />
+            </div>
+          </div>
+        </div>
+        {/* Skeleton for navigation bar */}
+        <div className="flex justify-start bg-spotify-light-gray px-10">
+          <Skeleton
+            height={40}
+            width={100}
+            className="mr-4"
+            baseColor="#121212"
+            highlightColor="#222"
+          />
+          <Skeleton
+            height={40}
+            width={100}
+            baseColor="#121212"
+            highlightColor="#222"
+          />
+        </div>
+        {/* Skeleton for active tab content */}
+        <div className="py-2 px-10 mt-6 bg-spotify-dark-gray w-full">
+          <div className="flex flex-col md:flex-row gap-4">
+            <Skeleton
+              height={300}
+              width="100%"
+              baseColor="#121212"
+              highlightColor="#222"
+            />
+            <Skeleton
+              height={300}
+              width="100%"
+              baseColor="#121212"
+              highlightColor="#222"
+            />
+            <Skeleton
+              height={300}
+              width="100%"
+              baseColor="#121212"
+              highlightColor="#222"
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const renderSection = () => {
     switch (activeTab) {
