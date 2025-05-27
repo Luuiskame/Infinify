@@ -8,6 +8,7 @@ import { authApi } from "@/services/authApi";
 import { profileApi } from "@/services/profileApi";
 import { chatsApi } from "@/services/chatsApi";
 import { getUsersApi } from "@/services/getUsersApi";
+import {wikipediaApi} from "@/services/WikiApi";
 
 // slices
 import userSlice from "../slices/userSlice";
@@ -32,7 +33,8 @@ const store = configureStore({
     [authApi.reducerPath]: authApi.reducer,
     [profileApi.reducerPath]: profileApi.reducer,
     [chatsApi.reducerPath]: chatsApi.reducer,
-    [getUsersApi.reducerPath]: getUsersApi.reducer
+    [getUsersApi.reducerPath]: getUsersApi.reducer,
+    [wikipediaApi.reducerPath]: wikipediaApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -44,7 +46,8 @@ const store = configureStore({
       authApi.middleware,
       profileApi.middleware,
       chatsApi.middleware,
-      getUsersApi.middleware
+      getUsersApi.middleware,
+      wikipediaApi.middleware
     ),
 });
 

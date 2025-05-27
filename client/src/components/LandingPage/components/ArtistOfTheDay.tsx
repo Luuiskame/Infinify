@@ -17,7 +17,7 @@ export default function MostListened() {
   if (isLoading) {
     return (
       <article className="md:w-[50%] flex flex-col items-center">
-        <h3 className="text-spotify-green text-center text-lg font-bold mb-4">
+        <h3 className="text-spotify-green text-center text-lg font-bold">
           Artist Of The Day
         </h3>
         <Skeleton
@@ -28,24 +28,12 @@ export default function MostListened() {
           highlightColor="#222"
         />
         <Skeleton
-          height={20}
-          width={200}
-          className="mb-4"
+          height={220}
+          width={520}
+          className=""
           baseColor="#121212"
           highlightColor="#222"
-        />
-        <Skeleton
-          height={16}
-          width={150}
-          baseColor="#121212"
-          highlightColor="#222"
-        />
-        <Skeleton
-          height={16}
-          width={100}
-          baseColor="#121212"
-          highlightColor="#222"
-        />
+          />
       </article>
     );
   }
